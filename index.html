@@ -19,15 +19,16 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 
 /* ── Header ── */
 .site-header{background:linear-gradient(180deg,#08081a 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
-.header-top{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
-.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3)}
+.header-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;margin-bottom:1rem}
+.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap}
 .site-logo span{color:var(--text2);font-weight:400}
-.header-right{margin-left:auto;display:flex;align-items:center;gap:.6rem}
-.search-wrap{position:relative}
-.search-wrap input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Crimson Pro',serif;font-size:1rem;padding:.4rem .8rem .4rem 2rem;width:200px;transition:border-color .2s,width .3s;outline:none}
-.search-wrap input:focus{border-color:var(--gold);width:260px}
+.header-center{display:flex;align-items:center;justify-content:center}
+.header-right{display:flex;align-items:center;gap:.6rem;justify-content:flex-end}
+.search-wrap{position:relative;width:100%;max-width:420px}
+.search-wrap input{background:rgba(255,255,255,.07);border:1.5px solid var(--border-hover);border-radius:8px;color:var(--text);font-family:'Crimson Pro',serif;font-size:1.05rem;padding:.45rem 2.2rem .45rem 2.2rem;width:100%;transition:border-color .2s,background .2s;outline:none}
+.search-wrap input:focus{border-color:var(--gold);background:rgba(255,255,255,.1)}
 .search-wrap input::placeholder{color:var(--text2)}
-.search-icon{position:absolute;left:.6rem;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;font-size:.9rem}
+.search-icon{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;font-size:.95rem}
 .search-mode-badge{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);font-size:.62rem;padding:.1rem .35rem;border-radius:4px;font-family:'Cinzel',serif;letter-spacing:.04em;pointer-events:none;background:var(--bg4);color:var(--gold)}
 
 /* owned-only button */
@@ -362,15 +363,22 @@ body.edit-mode .add-deck-btn{display:flex}
 <header class="site-header">
   <div class="header-top">
     <div class="site-logo">Jumpstart <span>Deck Browser</span></div>
+    <div class="header-center">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false">
+        <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
+      </div>
+    </div>
     <div class="header-right">
       <span class="edit-mode-badge" id="edit-mode-badge">🔓 EDIT MODE</span>
-      <button class="edit-btn-header" id="edit-mode-btn" title="Toggle edit mode">✏ Edit</button>
       <div class="save-menu-wrap">
         <button class="save-menu-btn" id="save-menu-btn">💾 Save ▾</button>
         <div class="save-dropdown" id="save-dropdown">
           <button class="save-dropdown-item" id="save-download-btn">⬇ Download index.html</button>
           <button class="save-dropdown-item" id="save-github-btn">⬆ Push to GitHub…</button>
           <button class="save-dropdown-item" id="save-rebuild-btn">⟳ Wipe &amp; Rebuild from Source</button>
+          <button class="save-dropdown-item" id="save-sync-collection-btn">📲 Sync collection from file</button>
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
       </div>
@@ -380,11 +388,7 @@ body.edit-mode .add-deck-btn{display:flex}
       <button class="import-btn" id="import-btn" title="Import a card list into data.js format">
         ＋ Import List
       </button>
-      <div class="search-wrap">
-        <span class="search-icon">⌕</span>
-        <input type="text" id="search-input" placeholder="Deck or card name…" autocomplete="off" spellcheck="false">
-        <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
-      </div>
+      <button class="edit-btn-header" id="edit-mode-btn" title="Toggle edit mode">✏ Edit</button>
     </div>
   </div>
   <nav class="edition-tabs" id="edition-tabs" role="tablist">
@@ -33798,6 +33802,9 @@ const DECK_DATA = {
   ]
 };
 // DECK_DATA_END — do not remove this comment
+// OWNED_DATA_START — do not remove this comment (syncs collection across devices)
+const OWNED_DATA = [];
+// OWNED_DATA_END — do not remove this comment
 </script>
 <script>
 // ─── EDIT PASSWORD (change this in the file to your preferred password) ───────
@@ -33845,8 +33852,16 @@ function findDeck(deckId) {
 
 // ─── OWNERSHIP (localStorage) ─────────────────────────────────────────────────
 function loadOwned() {
-  try { return new Set(JSON.parse(localStorage.getItem('jmp-owned') || '[]')); }
-  catch { return new Set(); }
+  try {
+    const saved = localStorage.getItem('jmp-owned');
+    if (saved !== null) return new Set(JSON.parse(saved));
+    // No localStorage data — seed from embedded OWNED_DATA (set by GitHub/Download sync)
+    if (OWNED_DATA && OWNED_DATA.length > 0) {
+      localStorage.setItem('jmp-owned', JSON.stringify(OWNED_DATA));
+      return new Set(OWNED_DATA);
+    }
+    return new Set();
+  } catch { return new Set(); }
 }
 function saveOwned() {
   localStorage.setItem('jmp-owned', JSON.stringify([...state.owned]));
@@ -33975,7 +33990,7 @@ function getFilteredData() {
     const isTieIn = getTieInIds().has(ed.id);
     if (state.edition === 'tie-ins' && !isTieIn) continue;
     if (state.edition !== 'all' && state.edition !== 'tie-ins' && ed.id !== state.edition) continue;
-    if (state.edition === 'all' && isTieIn) continue; // hide tie-ins from "all" unless selected
+    // tie-ins are included in 'all' so search finds them everywhere
     const q = state.search;
     const filteredDecks = [];
     for (const deck of ed.decks) {
@@ -34795,6 +34810,26 @@ document.getElementById('save-rebuild-btn').addEventListener('click', () => {
   wipeAndRebuildFromSource();
 });
 
+document.getElementById('save-sync-collection-btn').addEventListener('click', () => {
+  document.getElementById('save-dropdown').classList.remove('open');
+  if (!OWNED_DATA || OWNED_DATA.length === 0) {
+    showToast('No collection data embedded in this file yet. Download after marking your collection on another device first.', 5000);
+    return;
+  }
+  const incoming = new Set(OWNED_DATA);
+  const merged   = new Set([...state.owned, ...incoming]);
+  const newCount = merged.size - state.owned.size;
+  if (newCount === 0 && incoming.size === state.owned.size) {
+    showToast('✓ Already up to date — nothing to merge.', 3000);
+    return;
+  }
+  if (!confirm(`Merge ${incoming.size} owned variants from the embedded file with your current ${state.owned.size} variants on this device? (${newCount} new items will be added.)`)) return;
+  state.owned = merged;
+  saveOwned();
+  renderGrid();
+  showToast(`✓ Merged: ${merged.size} total owned variants across all devices.`, 4000);
+});
+
 document.getElementById('save-reset-btn').addEventListener('click', () => {
   if (!confirm('Reset ALL data and settings including ownership? This cannot be undone.')) return;
   localStorage.clear();
@@ -34924,8 +34959,14 @@ async function wipeAndRebuildFromSource() {
 async function generateSelfContainedHtml() {
   const res = await fetch(location.href);
   let src = await res.text();
+  // Embed deck data
   const newDataBlock = `// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
-  return src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+  src = src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+  // Embed ownership — so any device loading this file sees your collection
+  const ownedArr = JSON.stringify([...state.owned]);
+  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\n// OWNED_DATA_END — do not remove this comment`;
+  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
+  return src;
 }
 
 // Add Deck button
