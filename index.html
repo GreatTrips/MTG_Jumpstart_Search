@@ -664,8 +664,6 @@ Moxfield, or plain card names."></textarea>
 <script id="jmp-data-script">
 // DECK_VERSION — bump this when deck structure changes to force localStorage refresh
 const DECK_VERSION = "2025-06";
-// DECK_VERSION — bump this when deck structure changes to force localStorage refresh
-const DECK_VERSION = "2025-06";
 // DECK_DATA_START — do not remove this comment (used by Download feature)
 const DECK_DATA = {
   "editions": [
@@ -34406,7 +34404,7 @@ const DECK_DATA = {
     }
   ]
 };
-// DECK_DATA_END — do not remove this comment — do not remove this comment
+// DECK_DATA_END — do not remove this comment
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
 const OWNED_DATA = [];
 // OWNED_DATA_END — do not remove this comment
@@ -35390,27 +35388,25 @@ document.getElementById('save-menu-btn').addEventListener('click', e => {
 document.addEventListener('click', () => document.getElementById('save-dropdown').classList.remove('open'));
 
 // Download complete self-contained index.html
-document.getElementById('save-download-btn').addEventListener('click', async () => {
-  try {
-    // Fetch current page source
-    const res = await fetch(location.href);
-    let src = await res.text();
-    // Replace inline data block with current liveData
-    const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
-    src = src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
-    const blob = new Blob([src], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
-    URL.revokeObjectURL(url);
-  } catch(e) {
-    // Fallback: generate minimal standalone file
-    const content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Jumpstart Data</title></head><body><script>const DECK_DATA = ${JSON.stringify(liveData, null, 2)};<\/script><p>Data exported. Replace the DECK_DATA block in your index.html with the script tag above.</p></body></html>`;
-    const blob = new Blob([content], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'deck-data-export.html'; a.click();
-    URL.revokeObjectURL(url);
-  }
+document.getElementById('save-download-btn').addEventListener('click', () => {
+  // Reconstruct from document.documentElement — no fetch needed, no stale cache risk
+  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+  // Swap in live deck data + version
+  const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
+  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+
+  // Embed current ownership so other devices pick it up
+  const ownedArr = JSON.stringify([...state.owned]);
+  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\n// OWNED_DATA_END — do not remove this comment`;
+  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
+
+  const blob = new Blob([src], { type: 'text/html' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
+  URL.revokeObjectURL(url);
   document.getElementById('save-dropdown').classList.remove('open');
+  showToast('✓ Downloaded index.html — ready to push to GitHub', 3000);
 });
 
 // Reset
@@ -35567,12 +35563,14 @@ async function wipeAndRebuildFromSource() {
 
 // Generate self-contained HTML content (used by GitHub push)
 async function generateSelfContainedHtml() {
-  const res = await fetch(location.href);
-  let src = await res.text();
-  // Embed deck data
-  const newDataBlock = `// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
-  src = src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
-  // Embed ownership — so any device loading this file sees your collection
+  // Use document.documentElement — no fetch, no stale cache, always the live running app
+  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+  // Embed live deck data + version
+  const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
+  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+
+  // Embed current ownership so other devices pick it up
   const ownedArr = JSON.stringify([...state.owned]);
   const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\n// OWNED_DATA_END — do not remove this comment`;
   src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
