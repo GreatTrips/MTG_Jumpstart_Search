@@ -251,6 +251,19 @@ main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
 .import-copy-btn{background:var(--gold);border:none;border-radius:6px;color:#1a1000;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.04em;padding:.42rem 1.1rem;transition:opacity .2s}
 .import-copy-btn:hover{opacity:.85}
 .import-copy-btn:disabled{opacity:.35;cursor:default}
+.import-add-btn{background:var(--own-color);border:none;border-radius:6px;color:#fff;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.04em;padding:.42rem 1.1rem;transition:opacity .2s}
+.import-add-btn:hover{opacity:.85}
+.import-add-btn:disabled{opacity:.35;cursor:default}
+/* Toast */
+.toast{background:var(--bg4);border:1px solid var(--own-color);border-radius:8px;bottom:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.5);color:var(--text);font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;left:50%;padding:.6rem 1.2rem;position:fixed;transform:translateX(-50%) translateY(20px);transition:opacity .3s,transform .3s;opacity:0;pointer-events:none;z-index:900;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Bulk import progress */
+.bulk-progress{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:.77rem;margin-top:.4rem;padding:.4rem .7rem;width:100%;display:none}
+.bulk-progress.visible{display:block}
+.bulk-import-btn{background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.45);border-radius:5px;color:var(--own-color);cursor:pointer;font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap;display:none}
+.bulk-import-btn:hover{background:rgba(92,184,92,.22)}
+.bulk-import-btn:disabled{opacity:.4;cursor:default}
+.bulk-import-btn.visible{display:inline-block}
 .import-close-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;padding:.38rem .9rem;transition:color .2s,border-color .2s}
 .import-close-btn:hover{color:var(--text);border-color:var(--border-hover)}
 
@@ -412,7 +425,10 @@ body.edit-mode .add-deck-btn{display:flex}
       <select class="fetch-deck-select" id="mtgjson-deck-select" style="display:none">
         <option value="">— Select a deck to auto-fill —</option>
       </select>
+      <button class="bulk-import-btn" id="mtgjson-bulk-btn" title="Fetch all decks and add card lists to the browser">⬇ Import All to Browser</button>
       <span class="fetch-status" id="mtgjson-status"></span>
+    </div>
+    <div class="bulk-progress" id="bulk-progress"></div>
     </div>
 
     <!-- 3-column body -->
@@ -514,10 +530,13 @@ Works with:
     <div class="import-actions">
       <span class="import-actions-left" id="import-actions-msg"></span>
       <button class="import-close-btn" id="import-close-btn2">Close</button>
-      <button class="import-copy-btn" id="import-copy-btn" disabled>Copy to Clipboard</button>
+      <button class="import-copy-btn" id="import-copy-btn" disabled>Copy</button>
+      <button class="import-add-btn" id="import-add-btn">＋ Add to Browser</button>
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <!-- Password Modal -->
 <div class="pw-modal" id="pw-modal">
@@ -1722,6 +1741,7 @@ async function loadMtgjsonList() {
     populateMtgjsonSelect(allMtgjsonDecks);
     document.getElementById('mtgjson-search').style.display = '';
     document.getElementById('mtgjson-deck-select').style.display = '';
+    document.getElementById('mtgjson-bulk-btn').classList.add('visible');
   } catch(e) {
     status.textContent = `⚠ Could not reach MTGJSON (${e.message}). Use manual paste instead.`;
     btn.disabled = false;
@@ -2113,7 +2133,189 @@ document.getElementById('gh-push-btn').addEventListener('click', async () => {
   }
 });
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+// ── Toast helper ──────────────────────────────────────────────────
+function showToast(msg, duration = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ── Detect colors from a cards array (looks at basic lands present) ─
+const LAND_COLOR_MAP = {
+  'Plains':'W','Snow-Covered Plains':'W','Thriving Heath':'W','The Fair Basilica':'W','Secluded Steppe':'W',
+  'Island':'U','Snow-Covered Island':'U','Thriving Isle':'U','Shimmerdrift Vale':'U','Lonely Sandbar':'U',
+  'Swamp':'B','Snow-Covered Swamp':'B','Thriving Moor':'B','Blighted Fen':'B','Leechridden Swamp':'B','Barren Moor':'B',
+  'Mountain':'R','Snow-Covered Mountain':'R','Thriving Bluff':'R','Forgotten Cave':'R','Blasted Landscape':'R',
+  'Forest':'G','Snow-Covered Forest':'G','Thriving Grove':'G','Tranquil Thicket':'G','The Hunter Maze':'G',
+};
+function detectColors(cards) {
+  const colors = new Set();
+  for (const c of cards) if (LAND_COLOR_MAP[c.name]) colors.add(LAND_COLOR_MAP[c.name]);
+  return colors.size > 0 ? [...colors] : [];
+}
+
+// ── "Add to Browser" from importer ────────────────────────────────
+document.getElementById('import-add-btn').addEventListener('click', () => {
+  const raw = document.getElementById('import-input').value;
+  const cards = parseDecklist(raw);
+  const variantLabel = document.getElementById('import-variant-label').value.trim();
+
+  if (importState.mode === 'new') {
+    const deckName  = document.getElementById('import-deck-name').value.trim();
+    const headliner = document.getElementById('import-headliner').value.trim();
+    const edSel     = document.getElementById('import-edition-select').value;
+    const edCustom  = document.getElementById('import-edition-custom').value.trim();
+    const colors    = [...importState.colors];
+
+    if (!deckName) { showToast('⚠ Enter a deck name first.'); return; }
+    if (!edSel)    { showToast('⚠ Select an edition first.'); return; }
+
+    const edId = edSel === '__custom__' ? slugify(edCustom || deckName) : edSel;
+    let ed = liveData.editions.find(e => e.id === edId);
+
+    if (!ed && edSel === '__custom__') {
+      ed = { id: edId, name: edCustom || deckName, year: new Date().getFullYear(), code: edId.toUpperCase().slice(0,4), decks: [] };
+      liveData.editions.push(ed);
+    }
+    if (!ed) { showToast('⚠ Edition not found.'); return; }
+
+    const deckId = `${edId}-${slugify(deckName)}`;
+    let deck = ed.decks.find(d => d.id === deckId);
+    const label = variantLabel || deckName || 'Variant 1';
+
+    if (deck) {
+      // Deck exists — add variant
+      deck.variants.push({ label, cards });
+      showToast(`✓ Variant added to "${deck.name}"`);
+    } else {
+      ed.decks.push({ id: deckId, name: deckName, headliner: headliner||undefined,
+        colors: colors.length ? colors : detectColors(cards), variants: [{ label, cards }] });
+      showToast(`✓ "${deckName}" added to ${ed.name}`);
+    }
+
+  } else {
+    // Add Variant mode
+    const selVal = document.getElementById('existing-deck-select').value;
+    if (!selVal) { showToast('⚠ Select an existing deck first.'); return; }
+    const [edId, deckId] = selVal.split('|');
+    const ed   = liveData.editions.find(e => e.id === edId);
+    const deck = ed && ed.decks.find(d => d.id === deckId);
+    if (!deck) { showToast('⚠ Deck not found.'); return; }
+    const label = variantLabel || `Variant ${deck.variants.length + 1}`;
+    deck.variants.push({ label, cards });
+    showToast(`✓ Variant "${label}" added to "${deck.name}"`);
+  }
+
+  saveLiveData();
+  renderGrid();
+  // Reset card list and variant label but keep metadata for quick re-use
+  document.getElementById('import-input').value = '';
+  document.getElementById('import-variant-label').value = '';
+  rebuildOutput();
+});
+
+// ── MTGJSON Bulk Import ────────────────────────────────────────────
+document.getElementById('mtgjson-bulk-btn').addEventListener('click', bulkImportFromMtgjson);
+
+async function bulkImportFromMtgjson() {
+  if (!allMtgjsonDecks.length) { showToast('⚠ Load deck list first.'); return; }
+  const btn      = document.getElementById('mtgjson-bulk-btn');
+  const status   = document.getElementById('mtgjson-status');
+  const progress = document.getElementById('bulk-progress');
+  btn.disabled = true;
+  progress.classList.add('visible');
+
+  // Group by base deck name + set code so variants are handled together
+  const grouped = {}; // key: "deckName|setCode"
+  for (const d of allMtgjsonDecks) {
+    const baseName = d.fileName.replace(/_[A-Z0-9]+$/, '').replace(/\d+$/, '');
+    const key = `${baseName}|${d.code}`;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(d);
+  }
+
+  const groups = Object.values(grouped);
+  let addedDecks = 0, addedVariants = 0, skipped = 0, failed = 0;
+
+  for (let gi = 0; gi < groups.length; gi++) {
+    const group = groups[gi];
+    // Sort by variant number
+    group.sort((a, b) => {
+      const na = parseInt((a.fileName.match(/(\d+)_/) || [0,0])[1]);
+      const nb = parseInt((b.fileName.match(/(\d+)_/) || [0,0])[1]);
+      return na - nb;
+    });
+
+    const firstMeta = group[0];
+    const ourEdId   = firstMeta.code.toLowerCase();
+    const ed        = liveData.editions.find(e => e.id === ourEdId);
+
+    progress.textContent = `[${gi+1}/${groups.length}] ${firstMeta.code}: ${group[0].name} (${group.length} variant${group.length>1?'s':''})`;
+
+    if (!ed) { skipped += group.length; continue; }
+
+    // Find or create the deck in our data
+    const normName = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+    let deck = ed.decks.find(d => normName(d.name) === normName(firstMeta.name || ''));
+
+    // Fetch each variant
+    for (let vi = 0; vi < group.length; vi++) {
+      const meta = group[vi];
+      try {
+        const r = await fetch(`${MTGJSON_BASE}/decks/${meta.fileName}.json`);
+        if (!r.ok) { failed++; await delay(80); continue; }
+        const json = await r.json();
+        const dData = json.data;
+
+        const cards = (dData.mainBoard || []).map(c => ({
+          name: c.name, qty: c.count,
+          ...(isBasicCard(c.name) ? { basic: true } : {})
+        }));
+
+        const varNumMatch = meta.fileName.match(/(\d+)_[A-Z0-9]+$/);
+        const varNum   = varNumMatch ? parseInt(varNumMatch[1]) : vi + 1;
+        const varLabel = dData.name || meta.name || `Variant ${varNum}`;
+
+        if (!deck) {
+          // Create deck skeleton from first variant
+          const deckId = `${ourEdId}-${normName(dData.name||meta.name)}`;
+          deck = {
+            id: deckId,
+            name: dData.name || meta.name,
+            headliner: undefined,
+            colors: detectColors(cards),
+            variants: []
+          };
+          ed.decks.push(deck);
+          addedDecks++;
+        }
+
+        // Pad variants array to reach this variant index
+        while (deck.variants.length < varNum) {
+          deck.variants.push({ label: `Variant ${deck.variants.length + 1}`, cards: [] });
+        }
+        // Only overwrite if the slot is empty (don't clobber existing hand-curated data)
+        const slot = deck.variants[varNum - 1];
+        if (!slot.cards || slot.cards.length === 0) {
+          deck.variants[varNum - 1] = { label: varLabel, cards };
+          addedVariants++;
+        } else {
+          skipped++;
+        }
+      } catch(e) { failed++; }
+      await delay(120); // polite rate limit
+    }
+  }
+
+  saveLiveData();
+  renderGrid();
+  progress.textContent = `✓ Done — ${addedDecks} new decks, ${addedVariants} variants filled, ${skipped} skipped (already had data), ${failed} errors`;
+  btn.disabled = false;
+  showToast(`Import complete! ${addedVariants} variants added.`, 5000);
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 renderGrid();
 </script>
 </body>
