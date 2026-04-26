@@ -648,6 +648,8 @@ Moxfield, or plain card names."></textarea>
 </div>
 
 <script id="jmp-data-script">
+// DECK_VERSION — bump this when deck structure changes to force localStorage refresh
+const DECK_VERSION = "2025-06";
 // DECK_DATA_START — do not remove this comment (used by Download feature)
 const DECK_DATA = {
   "editions": [
@@ -34401,28 +34403,33 @@ const EDIT_PASSWORD = 'jumpstart';
 function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
 let liveData = (() => {
   try {
-    const saved = localStorage.getItem('jmp-live-data');
-    if (saved) {
+    const saved     = localStorage.getItem('jmp-live-data');
+    const savedVer  = localStorage.getItem('jmp-data-version');
+    if (saved && savedVer === DECK_VERSION) {
       const loaded = JSON.parse(saved);
-      // Merge any editions in DECK_DATA not in localStorage (e.g. J21 after taw rebuild)
-      const loadedIds = new Set(loaded.editions.map(e => e.id));
-      for (const ed of DECK_DATA.editions) {
-        if (!loadedIds.has(ed.id)) {
-          const idx = DECK_DATA.editions.indexOf(ed);
-          const insertBefore = loaded.editions.findIndex(le =>
-            DECK_DATA.editions.findIndex(de => de.id === le.id) > idx
-          );
-          if (insertBefore === -1) loaded.editions.push(deepClone(ed));
-          else loaded.editions.splice(insertBefore, 0, deepClone(ed));
-        }
+      // Always ensure every edition in DECK_DATA exists in liveData
+      // (handles rebuilds that added new sets, or stale localStorage)
+      const loadedMap = new Map(loaded.editions.map(e => [e.id, e]));
+      const finalEds = DECK_DATA.editions.map(ded => {
+        // If this edition exists in localStorage, keep localStorage version (has user's data)
+        // but guarantee all editions from DECK_DATA are represented
+        return loadedMap.get(ded.id) || deepClone(ded);
+      });
+      // Also keep any editions that were added by a rebuild but aren't in static DECK_DATA
+      const staticIds = new Set(DECK_DATA.editions.map(e => e.id));
+      for (const [id, ed] of loadedMap) {
+        if (!staticIds.has(id)) finalEds.push(ed);
       }
+      loaded.editions = finalEds;
       return loaded;
     }
   } catch(e) {}
+  // No saved data, wrong version, or error — start fresh from DECK_DATA
   return deepClone(DECK_DATA);
 })();
 function saveLiveData() {
   localStorage.setItem('jmp-live-data', JSON.stringify(liveData));
+  localStorage.setItem('jmp-data-version', DECK_VERSION);
 }
 function resetLiveData() {
   liveData = deepClone(DECK_DATA);
@@ -35373,7 +35380,7 @@ document.getElementById('save-download-btn').addEventListener('click', async () 
     const res = await fetch(location.href);
     let src = await res.text();
     // Replace inline data block with current liveData
-    const newDataBlock = `// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
+    const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
     src = src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
     const blob = new Blob([src], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
