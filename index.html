@@ -194,27 +194,65 @@ main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
 .import-btn{align-items:center;background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.4rem .75rem;transition:all .2s;white-space:nowrap}
 .import-btn:hover{border-color:var(--border-hover);color:var(--text)}
 .import-modal{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.82);backdrop-filter:blur(4px)}
-.import-modal.open{display:flex;align-items:center;justify-content:center;padding:1rem}
-.import-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;max-width:760px;width:100%;max-height:92vh;overflow:hidden}
-.import-header{border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:1rem 1.4rem;flex-shrink:0}
-.import-header h2{font-family:'Cinzel',serif;font-size:1.05rem;color:var(--gold);flex:1}
-.import-body{display:grid;grid-template-columns:1fr 1fr;flex:1;overflow:hidden;gap:0}
-@media(max-width:600px){.import-body{grid-template-columns:1fr;overflow-y:auto}}
-.import-pane{display:flex;flex-direction:column;padding:1rem 1.2rem;overflow:hidden}
-.import-pane+.import-pane{border-left:1px solid var(--border)}
-.import-pane h3{font-family:'Cinzel',serif;font-size:.75rem;color:var(--text2);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.55rem;flex-shrink:0}
-.import-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);flex:1;font-family:'Crimson Pro',serif;font-size:.9rem;line-height:1.5;min-height:200px;outline:none;padding:.65rem .8rem;resize:none;transition:border-color .2s;width:100%}
+.import-modal.open{display:flex;align-items:flex-start;justify-content:center;padding:.75rem;overflow-y:auto}
+.import-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;max-width:940px;width:100%;overflow:hidden;margin:auto}
+.import-header{border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.3rem;flex-shrink:0}
+.import-header h2{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1}
+/* MTGJSON fetch bar */
+.import-fetch-bar{background:rgba(201,168,76,.04);border-bottom:1px solid var(--border);padding:.7rem 1.3rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;flex-shrink:0}
+.import-fetch-bar .fetch-label{font-family:'Cinzel',serif;font-size:.7rem;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.fetch-load-btn{background:var(--bg4);border:1px solid var(--border-hover);border-radius:5px;color:var(--text);cursor:pointer;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap}
+.fetch-load-btn:hover{border-color:var(--gold);color:var(--gold)}
+.fetch-load-btn:disabled{opacity:.4;cursor:default}
+.fetch-status{color:var(--text2);font-size:.78rem;font-style:italic}
+.fetch-deck-select{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.88rem;padding:.3rem .6rem;min-width:260px;flex:1;max-width:400px;outline:none;cursor:pointer}
+.fetch-deck-select:focus{border-color:var(--gold)}
+.fetch-search{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.88rem;padding:.3rem .6rem;width:180px;outline:none}
+.fetch-search:focus{border-color:var(--gold)}
+.fetch-search::placeholder{color:var(--text2)}
+/* main body grid */
+.import-body{display:grid;grid-template-columns:260px 1fr 1fr;flex:1;gap:0}
+@media(max-width:780px){.import-body{grid-template-columns:1fr}}
+.import-col{display:flex;flex-direction:column;padding:.9rem 1.1rem;border-right:1px solid var(--border);overflow-y:auto;max-height:calc(92vh - 200px)}
+.import-col:last-child{border-right:none}
+@media(max-width:780px){.import-col{border-right:none;border-bottom:1px solid var(--border);max-height:none}}
+.import-col-head{font-family:'Cinzel',serif;font-size:.68rem;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.7rem;flex-shrink:0}
+/* form fields */
+.import-field{margin-bottom:.7rem}
+.import-field label{display:block;font-family:'Cinzel',serif;font-size:.67rem;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.28rem}
+.import-field input,.import-field select{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.9rem;outline:none;padding:.32rem .6rem;transition:border-color .2s;width:100%}
+.import-field input:focus,.import-field select:focus{border-color:var(--gold)}
+.import-field input::placeholder{color:var(--text2)}
+.import-field select option{background:var(--bg2)}
+/* mode toggle */
+.mode-toggle{display:flex;gap:.3rem}
+.mode-btn{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.67rem;font-weight:600;letter-spacing:.04em;padding:.28rem .65rem;transition:all .15s;white-space:nowrap}
+.mode-btn.active{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold)}
+/* color picker */
+.import-color-row{display:flex;gap:.3rem;flex-wrap:wrap}
+.import-color-pip{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s;flex-shrink:0;position:relative}
+.import-color-pip:hover{transform:scale(1.12)}
+.import-color-pip.selected::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+.import-color-pip[data-c="W"]{background:var(--mana-w)}.import-color-pip[data-c="W"].selected{border-color:var(--mana-w);filter:brightness(1.1)}
+.import-color-pip[data-c="U"]{background:var(--mana-u)}.import-color-pip[data-c="U"].selected{border-color:#78b4f0}
+.import-color-pip[data-c="B"]{background:var(--mana-b)}.import-color-pip[data-c="B"].selected{border-color:#c098f0}
+.import-color-pip[data-c="R"]{background:var(--mana-r)}.import-color-pip[data-c="R"].selected{border-color:#f09080}
+.import-color-pip[data-c="G"]{background:var(--mana-g)}.import-color-pip[data-c="G"].selected{border-color:#80e8a0}
+/* textarea + output */
+.import-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);flex:1;font-family:'Crimson Pro',serif;font-size:.88rem;line-height:1.5;min-height:180px;outline:none;padding:.6rem .8rem;resize:vertical;transition:border-color .2s;width:100%}
 .import-textarea:focus{border-color:var(--gold)}
-.import-textarea::placeholder{color:var(--text2)}
-.import-output{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);flex:1;font-family:'Courier New',monospace;font-size:.75rem;line-height:1.5;min-height:200px;overflow-y:auto;padding:.65rem .8rem;white-space:pre;user-select:all}
-.import-hint{color:var(--text2);font-size:.78rem;margin-top:.5rem;flex-shrink:0}
-.import-actions{border-top:1px solid var(--border);display:flex;gap:.5rem;justify-content:flex-end;padding:.75rem 1.2rem;flex-shrink:0}
-.import-copy-btn{background:var(--gold);border:none;border-radius:6px;color:#1a1000;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.04em;padding:.45rem 1.1rem;transition:opacity .2s}
+.import-textarea::placeholder{color:var(--text2);font-size:.82rem}
+.import-output{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);flex:1;font-family:'Courier New',monospace;font-size:.72rem;line-height:1.55;min-height:180px;overflow-y:auto;padding:.6rem .8rem;white-space:pre;user-select:all}
+.import-stats{background:rgba(92,184,92,.06);border:1px solid rgba(92,184,92,.2);border-radius:5px;color:var(--text2);font-size:.76rem;margin-top:.45rem;padding:.35rem .6rem}
+.import-hint{color:var(--text2);font-size:.75rem;margin-top:.4rem;line-height:1.4}
+/* actions */
+.import-actions{border-top:1px solid var(--border);display:flex;align-items:center;gap:.5rem;padding:.7rem 1.3rem;flex-shrink:0}
+.import-actions-left{flex:1;color:var(--text2);font-size:.76rem;font-style:italic}
+.import-copy-btn{background:var(--gold);border:none;border-radius:6px;color:#1a1000;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.04em;padding:.42rem 1.1rem;transition:opacity .2s}
 .import-copy-btn:hover{opacity:.85}
-.import-copy-btn:disabled{opacity:.4;cursor:default}
-.import-close-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;padding:.4rem .9rem;transition:color .2s,border-color .2s}
+.import-copy-btn:disabled{opacity:.35;cursor:default}
+.import-close-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;padding:.38rem .9rem;transition:color .2s,border-color .2s}
 .import-close-btn:hover{color:var(--text);border-color:var(--border-hover)}
-.import-stats{background:rgba(92,184,92,.06);border:1px solid rgba(92,184,92,.2);border-radius:6px;color:var(--text2);font-size:.78rem;margin-bottom:.5rem;padding:.4rem .65rem;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -272,7 +310,10 @@ main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
     <div class="modal-body" id="modal-body"></div>
     <div class="scryfall-credit">
       <span>Card images via <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a></span>
-      <span id="modal-edition-label"></span>
+      <span style="display:flex;align-items:center;gap:.6rem">
+        <button id="modal-add-variant-btn" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.65rem;font-weight:600;letter-spacing:.04em;padding:.22rem .65rem;transition:all .2s" title="Open importer pre-filled for this deck">＋ Add Variant</button>
+        <span id="modal-edition-label"></span>
+      </span>
     </div>
   </div>
 </div>
@@ -281,39 +322,119 @@ main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
 <div class="import-modal" id="import-modal">
   <div class="import-box">
     <div class="import-header">
-      <h2>Decklist Importer</h2>
+      <h2>⚡ Decklist Importer</h2>
       <button class="modal-close" id="import-close-btn">✕</button>
     </div>
+
+    <!-- MTGJSON Auto-Fetch bar -->
+    <div class="import-fetch-bar">
+      <span class="fetch-label">MTGJSON Auto-Fetch</span>
+      <button class="fetch-load-btn" id="mtgjson-load-btn">Load Jumpstart Decks</button>
+      <input type="text" class="fetch-search" id="mtgjson-search" placeholder="Filter decks…" style="display:none">
+      <select class="fetch-deck-select" id="mtgjson-deck-select" style="display:none">
+        <option value="">— Select a deck to auto-fill —</option>
+      </select>
+      <span class="fetch-status" id="mtgjson-status"></span>
+    </div>
+
+    <!-- 3-column body -->
     <div class="import-body">
-      <div class="import-pane">
-        <h3>Paste Decklist</h3>
-        <textarea class="import-textarea" id="import-input" placeholder="Paste any standard decklist format:
 
-1 Goblin Rabblemaster
-1 Shock
-1 Krenko's Command
-7 Mountain
-1 Thriving Bluff
+      <!-- Col 1: Metadata -->
+      <div class="import-col">
+        <div class="import-col-head">Deck Metadata</div>
 
-Or without quantities:
-Goblin Rabblemaster
-Shock
+        <div class="import-field">
+          <label>Mode</label>
+          <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="new" id="mode-new-btn">New Deck</button>
+            <button class="mode-btn" data-mode="add" id="mode-add-btn">Add Variant</button>
+          </div>
+        </div>
 
-Supported sources:
+        <div class="import-field" id="existing-deck-field" style="display:none">
+          <label>Existing Deck</label>
+          <select id="existing-deck-select">
+            <option value="">— Select deck —</option>
+          </select>
+        </div>
+
+        <div class="import-field" id="import-edition-field">
+          <label>Edition</label>
+          <select id="import-edition-select">
+            <option value="">— Select edition —</option>
+          </select>
+        </div>
+        <div class="import-field" id="import-edition-custom-field" style="display:none">
+          <label>Custom Edition Name</label>
+          <input type="text" id="import-edition-custom" placeholder="e.g. Unfinity Jumpstart">
+        </div>
+
+        <div class="import-field" id="deck-name-field">
+          <label>Deck Name</label>
+          <input type="text" id="import-deck-name" placeholder="e.g. Above the Clouds">
+        </div>
+
+        <div class="import-field" id="headliner-field">
+          <label>Headliner Card</label>
+          <input type="text" id="import-headliner" placeholder="e.g. Warden of Evos Isle">
+        </div>
+
+        <div class="import-field" id="colors-field">
+          <label>Colors</label>
+          <div class="import-color-row">
+            <span class="import-color-pip" data-c="W" title="White"></span>
+            <span class="import-color-pip" data-c="U" title="Blue"></span>
+            <span class="import-color-pip" data-c="B" title="Black"></span>
+            <span class="import-color-pip" data-c="R" title="Red"></span>
+            <span class="import-color-pip" data-c="G" title="Green"></span>
+          </div>
+        </div>
+
+        <div class="import-field">
+          <label>Variant Label</label>
+          <input type="text" id="import-variant-label" placeholder="e.g. Warden variant 1">
+        </div>
+
+        <div class="import-hint">All fields optional — only filled fields appear in output. Variant label defaults to deck name if blank.</div>
+      </div>
+
+      <!-- Col 2: Paste area -->
+      <div class="import-col">
+        <div class="import-col-head">Paste Card List</div>
+        <textarea class="import-textarea" id="import-input" placeholder="Paste any standard decklist:
+
+1 Warden of Evos Isle
+1 Empyrean Eagle
+1 Concordia Pegasus
+9 Plains
+1 Thriving Heath
+
+Works with:
 • Wizards.com decklists
 • Scryfall / Moxfield export
-• MTGJSON deck text"></textarea>
-        <div class="import-hint">Basic lands (Plains, Island, Swamp, Mountain, Forest) and Thriving lands are auto-tagged.</div>
+• Plain card names (qty 1 assumed)
+• MTGJSON auto-fill above"></textarea>
+        <div class="import-hint">Basic lands, Thriving lands, and channel lands (e.g. Forgotten Cave) are auto-tagged <code style="color:var(--gold)">basic:true</code>.</div>
       </div>
-      <div class="import-pane">
-        <h3>data.js Output</h3>
-        <div id="import-stats" class="import-stats" style="display:none"></div>
-        <pre class="import-output" id="import-output">// Paste a decklist on the left →
-// The formatted cards array will appear here,
-// ready to paste into data.js</pre>
+
+      <!-- Col 3: Output -->
+      <div class="import-col">
+        <div class="import-col-head">data.js Output</div>
+        <pre class="import-output" id="import-output">// Fill in metadata + paste a card list
+// to generate the data.js snippet.
+//
+// Output will be a complete deck entry
+// (New Deck mode) or a variant object
+// (Add Variant mode) — ready to paste.</pre>
+        <div class="import-stats" id="import-stats" style="display:none"></div>
+        <div class="import-hint" id="import-paste-hint" style="display:none"></div>
       </div>
+
     </div>
+
     <div class="import-actions">
+      <span class="import-actions-left" id="import-actions-msg"></span>
       <button class="import-close-btn" id="import-close-btn2">Close</button>
       <button class="import-copy-btn" id="import-copy-btn" disabled>Copy to Clipboard</button>
     </div>
@@ -740,102 +861,274 @@ const BASIC_LAND_NAMES = new Set(['Plains','Island','Swamp','Mountain','Forest',
   'Snow-Covered Plains','Snow-Covered Island','Snow-Covered Swamp','Snow-Covered Mountain','Snow-Covered Forest']);
 const THRIVING_LAND_NAMES = new Set(['Thriving Heath','Thriving Isle','Thriving Moor','Thriving Bluff','Thriving Grove']);
 const CHANNEL_LAND_NAMES = new Set(['The Fair Basilica','The Hunter Maze','The Lair of the Hydra',
-  'The Locust God','The Mightstone and Weakstone','Forgotten Cave','Secluded Steppe',
-  'Barren Moor','Lonely Sandbar','Tranquil Thicket','Leechridden Swamp','Blighted Fen',
-  'Shimmerdrift Vale','Blasted Landscape']);
-
+  'Forgotten Cave','Secluded Steppe','Barren Moor','Lonely Sandbar','Tranquil Thicket',
+  'Leechridden Swamp','Blighted Fen','Shimmerdrift Vale','Blasted Landscape']);
 function isBasicCard(name) {
-  return BASIC_LAND_NAMES.has(name) || THRIVING_LAND_NAMES.has(name) || CHANNEL_LAND_NAMES.has(name)
-    || /^(Plains|Island|Swamp|Mountain|Forest)$/.test(name);
+  return BASIC_LAND_NAMES.has(name)||THRIVING_LAND_NAMES.has(name)||CHANNEL_LAND_NAMES.has(name);
 }
 
+// ── Import state ──────────────────────────────────────────────────
+const importState = {
+  mode: 'new', // 'new' | 'add'
+  colors: new Set(),
+  prefill: null   // {deckId, editionId} when opened from a deck modal
+};
+let lastSnippet = '';
+let mtgjsonDeckList = null;  // cached DeckList.json data
+
+// ── Populate dropdowns ─────────────────────────────────────────────
+function populateImportDropdowns() {
+  // Edition dropdown
+  const edSel = document.getElementById('import-edition-select');
+  edSel.innerHTML = '<option value="">— Select edition —</option>';
+  for (const ed of DECK_DATA.editions) {
+    const opt = document.createElement('option');
+    opt.value = ed.id;
+    opt.textContent = `${ed.name} (${ed.year})`;
+    edSel.appendChild(opt);
+  }
+  const customOpt = document.createElement('option');
+  customOpt.value = '__custom__';
+  customOpt.textContent = '✏ New edition…';
+  edSel.appendChild(customOpt);
+
+  // Existing deck dropdown (for "Add Variant" mode)
+  const dkSel = document.getElementById('existing-deck-select');
+  dkSel.innerHTML = '<option value="">— Select deck —</option>';
+  for (const ed of DECK_DATA.editions) {
+    const grp = document.createElement('optgroup');
+    grp.label = `${ed.name} (${ed.year})`;
+    for (const deck of ed.decks) {
+      const opt = document.createElement('option');
+      opt.value = `${ed.id}|${deck.id}`;
+      opt.textContent = deck.name;
+      grp.appendChild(opt);
+    }
+    dkSel.appendChild(grp);
+  }
+}
+
+// ── Mode toggle ────────────────────────────────────────────────────
+function setImportMode(mode) {
+  importState.mode = mode;
+  document.getElementById('mode-new-btn').classList.toggle('active', mode === 'new');
+  document.getElementById('mode-add-btn').classList.toggle('active', mode === 'add');
+  document.getElementById('existing-deck-field').style.display = mode === 'add' ? '' : 'none';
+  document.getElementById('deck-name-field').style.display   = mode === 'new' ? '' : 'none';
+  document.getElementById('headliner-field').style.display   = mode === 'new' ? '' : 'none';
+  document.getElementById('colors-field').style.display      = mode === 'new' ? '' : 'none';
+  document.getElementById('import-edition-field').style.display = mode === 'new' ? '' : 'none';
+  document.getElementById('import-edition-custom-field').style.display = 'none';
+  rebuildOutput();
+}
+document.getElementById('mode-new-btn').addEventListener('click', () => setImportMode('new'));
+document.getElementById('mode-add-btn').addEventListener('click', () => setImportMode('add'));
+
+// ── Edition selector ───────────────────────────────────────────────
+document.getElementById('import-edition-select').addEventListener('change', function() {
+  document.getElementById('import-edition-custom-field').style.display = this.value === '__custom__' ? '' : 'none';
+  rebuildOutput();
+});
+document.getElementById('import-edition-custom').addEventListener('input', rebuildOutput);
+
+// ── Existing deck selector ─────────────────────────────────────────
+document.getElementById('existing-deck-select').addEventListener('change', function() {
+  if (!this.value) return;
+  const [edId, deckId] = this.value.split('|');
+  const ed = DECK_DATA.editions.find(e => e.id === edId);
+  const deck = ed && ed.decks.find(d => d.id === deckId);
+  if (deck) {
+    document.getElementById('import-variant-label').value = '';
+    document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
+  }
+  rebuildOutput();
+});
+
+// ── Color pips ─────────────────────────────────────────────────────
+document.querySelectorAll('.import-color-pip').forEach(pip => {
+  pip.addEventListener('click', () => {
+    const c = pip.dataset.c;
+    if (importState.colors.has(c)) { importState.colors.delete(c); pip.classList.remove('selected'); }
+    else { importState.colors.add(c); pip.classList.add('selected'); }
+    rebuildOutput();
+  });
+});
+
+// ── Text fields ────────────────────────────────────────────────────
+['import-deck-name','import-headliner','import-variant-label'].forEach(id => {
+  document.getElementById(id).addEventListener('input', rebuildOutput);
+});
+
+// ── Card list parser ───────────────────────────────────────────────
 function parseDecklist(raw) {
-  const lines = raw.split('\n');
   const cards = [];
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('#') || trimmed.startsWith('Deck') || trimmed.startsWith('Sideboard')) continue;
-    // "1 Card Name" or "1x Card Name"
-    const m = trimmed.match(/^(\d+)x?\s+(.+?)(?:\s+\(.+?\)\s+\d+)?$/);
+  for (const line of raw.split('\n')) {
+    const t = line.trim();
+    if (!t || /^[/#]/.test(t) || /^(Deck|Sideboard|Commander|About)/i.test(t)) continue;
+    const m = t.match(/^(\d+)x?\s+(.+?)(?:\s+\(.{2,6}\)\s+\d+)?$/);
     if (m) {
-      const qty = parseInt(m[1]);
-      const name = m[2].trim();
-      if (name) cards.push({ name, qty });
-    } else if (/^[A-Z]/.test(trimmed)) {
-      // No quantity — treat as qty 1
-      const name = trimmed.replace(/\(.+?\)\s*\d*$/, '').trim();
+      const name = m[2].replace(/\s*\/\/.*$/, '').trim(); // strip // DFC half
+      if (name) cards.push({ name, qty: parseInt(m[1]) });
+    } else if (/^[A-ZÀ-Ö]/.test(t)) {
+      const name = t.replace(/\s*\(.{2,6}\)\s*\d*$/, '').replace(/\s*\/\/.*$/, '').trim();
       if (name) cards.push({ name, qty: 1 });
     }
   }
-  // Merge duplicates
   const merged = [];
   for (const c of cards) {
-    const existing = merged.find(x => x.name === c.name);
-    if (existing) existing.qty += c.qty;
-    else merged.push({ ...c });
+    const e = merged.find(x => x.name === c.name);
+    if (e) e.qty += c.qty; else merged.push({ ...c });
   }
   return merged;
 }
 
-function formatCardEntry(c) {
-  const isBasic = isBasicCard(c.name);
-  const basic = isBasic ? ',basic:true' : '';
-  const safeQty = c.qty === 1 ? '1' : String(c.qty);
-  const safeName = c.name.replace(/'/g, "\\'");
-  return `      {name:'${safeName}',qty:${safeQty}${basic}}`;
+function formatCard(c) {
+  const basic = isBasicCard(c.name) ? ',basic:true' : '';
+  return `      {name:'${c.name.replace(/'/g,"\\'")}',qty:${c.qty}${basic}}`;
 }
 
-function buildDataJsSnippet(cards) {
-  if (!cards.length) return '';
-  const spells = cards.filter(c => !isBasicCard(c.name));
-  const lands  = cards.filter(c =>  isBasicCard(c.name));
-  const all = [...spells, ...lands];
-  const total = all.reduce((s, c) => s + c.qty, 0);
-  const lines = all.map(formatCardEntry).join(',\n');
-  return `// ${total} cards total (${spells.reduce((s,c)=>s+c.qty,0)} spells, ${lands.reduce((s,c)=>s+c.qty,0)} lands)\n{ label:'VARIANT_LABEL', cards:[\n${lines}\n]}`;
+function slugify(s) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-// Wire up import modal
-document.getElementById('import-btn').addEventListener('click', () => {
-  document.getElementById('import-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('import-input').focus();
-});
-function closeImport() {
-  document.getElementById('import-modal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.getElementById('import-close-btn').addEventListener('click', closeImport);
-document.getElementById('import-close-btn2').addEventListener('click', closeImport);
-document.getElementById('import-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('import-modal')) closeImport();
-});
-
-let lastSnippet = '';
-document.getElementById('import-input').addEventListener('input', e => {
-  const raw = e.target.value;
-  const cards = parseDecklist(raw);
+// ── Main output builder ────────────────────────────────────────────
+function rebuildOutput() {
+  const rawText = document.getElementById('import-input').value;
+  const cards = parseDecklist(rawText);
+  const variantLabel = document.getElementById('import-variant-label').value.trim();
   const output = document.getElementById('import-output');
-  const stats = document.getElementById('import-stats');
+  const stats  = document.getElementById('import-stats');
+  const hint   = document.getElementById('import-paste-hint');
   const copyBtn = document.getElementById('import-copy-btn');
-
-  if (!cards.length) {
-    output.textContent = '// Paste a decklist on the left →\n// The formatted cards array will appear here.';
-    stats.style.display = 'none';
-    copyBtn.disabled = true;
-    lastSnippet = '';
-    return;
-  }
+  const actMsg  = document.getElementById('import-actions-msg');
 
   const spells = cards.filter(c => !isBasicCard(c.name));
   const lands  = cards.filter(c =>  isBasicCard(c.name));
   const total  = cards.reduce((s,c) => s+c.qty, 0);
-  const snippet = buildDataJsSnippet(cards);
+
+  let lines = [];
+
+  if (importState.mode === 'new') {
+    const deckName = document.getElementById('import-deck-name').value.trim();
+    const headliner = document.getElementById('import-headliner').value.trim();
+    const colors = [...importState.colors];
+    const edSel = document.getElementById('import-edition-select').value;
+    const edCustom = document.getElementById('import-edition-custom').value.trim();
+    const edId = edSel === '__custom__' ? slugify(edCustom) : edSel;
+    const deckId = edId && deckName ? `${edId}-${slugify(deckName)}` : 'EDITION_ID-DECK_ID';
+    const label = variantLabel || deckName || 'Variant 1';
+
+    const colorStr = colors.length ? `['${colors.join("','")}']` : `['W']`;
+    const headStr  = headliner ? `headliner:'${headliner.replace(/'/g,"\\'")}', ` : '';
+
+    if (cards.length > 0) {
+      const cardLines = [...spells, ...lands].map(formatCard).join(',\n');
+      lines = [
+        `{ id:'${deckId}', name:'${(deckName||'Deck Name').replace(/'/g,"\\'")}', colors:${colorStr}, ${headStr}variants:[`,
+        `  { label:'${label.replace(/'/g,"\\'")}', cards:[`,
+        cardLines,
+        `  ]}`,
+        `]}`
+      ];
+    } else {
+      lines = [
+        `{ id:'${deckId}', name:'${(deckName||'Deck Name').replace(/'/g,"\\'")}', colors:${colorStr}, ${headStr}variants:[`,
+        `  { label:'${label.replace(/'/g,"\\'")}', cards:[] }`,
+        `]}`
+      ];
+    }
+  } else {
+    // Add Variant mode
+    const label = variantLabel || 'Variant';
+    const cardLines = cards.length
+      ? [...spells, ...lands].map(formatCard).join(',\n')
+      : '';
+    lines = [
+      `{ label:'${label.replace(/'/g,"\\'")}', cards:[`,
+      cardLines,
+      `]}`
+    ];
+
+    const selVal = document.getElementById('existing-deck-select').value;
+    if (selVal) {
+      const [edId, deckId] = selVal.split('|');
+      const ed = DECK_DATA.editions.find(e => e.id === edId);
+      const deck = ed && ed.decks.find(d => d.id === deckId);
+      if (deck) actMsg.textContent = `Paste into ${deck.name}'s variants[] array in data.js`;
+      else actMsg.textContent = '';
+    } else actMsg.textContent = '';
+  }
+
+  const snippet = lines.join('\n');
   lastSnippet = snippet;
   output.textContent = snippet;
-  stats.style.display = 'block';
-  stats.textContent = `✓ ${cards.length} unique cards · ${total} total · ${spells.length} spell types · ${lands.length} land types`;
-  copyBtn.disabled = false;
+
+  if (cards.length > 0) {
+    stats.style.display = 'block';
+    stats.textContent = `✓ ${cards.length} unique cards · ${total} total · ${spells.length} spell types · ${lands.length} land types`;
+    hint.style.display = 'none';
+    copyBtn.disabled = false;
+  } else {
+    stats.style.display = 'none';
+    hint.style.display = 'block';
+    hint.textContent = 'Paste a card list in the middle column to generate the cards[] array.';
+    copyBtn.disabled = false; // allow copy of empty stub
+  }
+}
+
+document.getElementById('import-input').addEventListener('input', rebuildOutput);
+
+// ── Open / close import modal ──────────────────────────────────────
+function openImport(prefill = null) {
+  populateImportDropdowns();
+  importState.prefill = prefill;
+
+  if (prefill) {
+    setImportMode('add');
+    const sel = document.getElementById('existing-deck-select');
+    const targetVal = `${prefill.editionId}|${prefill.deckId}`;
+    for (const opt of sel.options) {
+      if (opt.value === targetVal) { sel.value = targetVal; break; }
+    }
+    // Also try to prefill deck name / headliner for reference
+    const ed = DECK_DATA.editions.find(e => e.id === prefill.editionId);
+    const deck = ed && ed.decks.find(d => d.id === prefill.deckId);
+    if (deck) {
+      document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
+      document.getElementById('import-actions-msg').textContent = `Adding variant to: ${deck.name}`;
+    }
+  } else {
+    setImportMode('new');
+    document.getElementById('import-actions-msg').textContent = '';
+  }
+
+  rebuildOutput();
+  document.getElementById('import-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('import-input').focus(), 80);
+}
+
+function closeImport() {
+  document.getElementById('import-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  // reset
+  document.getElementById('import-input').value = '';
+  document.getElementById('import-deck-name').value = '';
+  document.getElementById('import-headliner').value = '';
+  document.getElementById('import-variant-label').value = '';
+  document.getElementById('import-edition-select').value = '';
+  document.getElementById('import-edition-custom').value = '';
+  importState.colors.clear();
+  document.querySelectorAll('.import-color-pip').forEach(p => p.classList.remove('selected'));
+  document.getElementById('import-edition-custom-field').style.display = 'none';
+  setImportMode('new');
+}
+
+document.getElementById('import-btn').addEventListener('click', () => openImport());
+document.getElementById('import-close-btn').addEventListener('click', closeImport);
+document.getElementById('import-close-btn2').addEventListener('click', closeImport);
+document.getElementById('import-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('import-modal')) closeImport();
 });
 
 document.getElementById('import-copy-btn').addEventListener('click', () => {
@@ -845,11 +1138,123 @@ document.getElementById('import-copy-btn').addEventListener('click', () => {
     const orig = btn.textContent;
     btn.textContent = 'Copied ✓';
     setTimeout(() => btn.textContent = orig, 1800);
-  }).catch(() => {
-    const output = document.getElementById('import-output');
-    output.select && output.select();
-    document.execCommand('copy');
-  });
+  }).catch(() => { /* fallback silent */ });
+});
+
+// ── "+ Add Variant" from deck modal ───────────────────────────────
+document.getElementById('modal-add-variant-btn').addEventListener('click', () => {
+  if (state.openDeckId && state.openEditionId) {
+    closeModal();
+    setTimeout(() => openImport({ deckId: state.openDeckId, editionId: state.openEditionId }), 120);
+  }
+});
+
+// ── MTGJSON auto-fetcher ───────────────────────────────────────────
+const JMP_SET_CODES = new Set(['JMP','J21','J22','J25','JDMU','JBRO','JONE','JMOM','JLTR','JLTR2','ATJ']);
+const MTGJSON_BASE = 'https://mtgjson.com/api/v5';
+let allMtgjsonDecks = [];
+
+async function loadMtgjsonList() {
+  const btn = document.getElementById('mtgjson-load-btn');
+  const status = document.getElementById('mtgjson-status');
+  if (mtgjsonDeckList) { populateMtgjsonSelect(mtgjsonDeckList); return; }
+  btn.disabled = true;
+  status.textContent = 'Fetching deck list…';
+  try {
+    const r = await fetch(`${MTGJSON_BASE}/DeckList.json`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const json = await r.json();
+    mtgjsonDeckList = json.data || [];
+    allMtgjsonDecks = mtgjsonDeckList.filter(d => JMP_SET_CODES.has(d.code));
+    if (allMtgjsonDecks.length === 0) {
+      // MTGJSON may use different codes — show all if filter returns nothing
+      allMtgjsonDecks = mtgjsonDeckList.filter(d =>
+        (d.fileName || '').match(/JMP|J22|J25|J21|JDMU|JBRO|JONE|JMOM|JLTR/i)
+      );
+    }
+    status.textContent = allMtgjsonDecks.length > 0
+      ? `${allMtgjsonDecks.length} Jumpstart decks found`
+      : `${mtgjsonDeckList.length} total decks loaded (no Jumpstart filter match — showing all)`;
+    if (allMtgjsonDecks.length === 0) allMtgjsonDecks = mtgjsonDeckList;
+    populateMtgjsonSelect(allMtgjsonDecks);
+    document.getElementById('mtgjson-search').style.display = '';
+    document.getElementById('mtgjson-deck-select').style.display = '';
+  } catch(e) {
+    status.textContent = `⚠ Could not reach MTGJSON (${e.message}). Use manual paste instead.`;
+    btn.disabled = false;
+  }
+}
+
+function populateMtgjsonSelect(decks) {
+  const sel = document.getElementById('mtgjson-deck-select');
+  sel.innerHTML = '<option value="">— Select a deck to auto-fill —</option>';
+  for (const d of decks) {
+    const opt = document.createElement('option');
+    opt.value = d.fileName;
+    opt.textContent = `${d.name} (${d.code})`;
+    sel.appendChild(opt);
+  }
+}
+
+document.getElementById('mtgjson-load-btn').addEventListener('click', loadMtgjsonList);
+
+document.getElementById('mtgjson-search').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  const filtered = allMtgjsonDecks.filter(d =>
+    d.name.toLowerCase().includes(q) || d.code.toLowerCase().includes(q)
+  );
+  populateMtgjsonSelect(filtered);
+});
+
+document.getElementById('mtgjson-deck-select').addEventListener('change', async function() {
+  const fileName = this.value;
+  if (!fileName) return;
+  const status = document.getElementById('mtgjson-status');
+  status.textContent = 'Fetching deck…';
+  try {
+    const r = await fetch(`${MTGJSON_BASE}/decks/${fileName}.json`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const json = await r.json();
+    const deck = json.data;
+    if (!deck) throw new Error('No data');
+
+    // Auto-fill metadata fields
+    const rawName = deck.name || fileName.replace(/_[A-Z0-9]+$/, '').replace(/\d+$/, '').replace(/([A-Z])/g, ' $1').trim();
+    document.getElementById('import-deck-name').value = rawName;
+
+    // Build card list from mainBoard
+    const mainBoard = deck.mainBoard || [];
+    let listText = '';
+    const spells = mainBoard.filter(c => !isBasicCard(c.name));
+    const lands  = mainBoard.filter(c =>  isBasicCard(c.name));
+    for (const c of [...spells, ...lands]) {
+      listText += `${c.count} ${c.name}\n`;
+    }
+    document.getElementById('import-input').value = listText.trim();
+
+    // Try to detect colors from card colors
+    const colorSet = new Set();
+    for (const c of spells) {
+      if (c.colors) for (const cl of c.colors) colorSet.add(cl);
+    }
+    importState.colors.clear();
+    document.querySelectorAll('.import-color-pip').forEach(p => {
+      p.classList.remove('selected');
+      if (colorSet.has(p.dataset.c)) {
+        importState.colors.add(p.dataset.c);
+        p.classList.add('selected');
+      }
+    });
+
+    // Variant label: include variant number from fileName
+    const varNum = (fileName.match(/(\d+)_[A-Z0-9]+$/) || [])[1];
+    if (varNum) document.getElementById('import-variant-label').value = `Variant ${varNum}`;
+
+    status.textContent = `✓ ${deck.name} — ${mainBoard.length} cards loaded`;
+    rebuildOutput();
+  } catch(e) {
+    status.textContent = `⚠ Could not fetch ${fileName}: ${e.message}`;
+  }
 });
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
