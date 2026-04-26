@@ -74,7 +74,12 @@ main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
 .deck-grid::-webkit-scrollbar{height:4px}
 .deck-grid::-webkit-scrollbar-track{background:transparent}
 .deck-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.deck-card{flex:0 0 175px;width:175px}
+.deck-grid .deck-card{flex:0 0 175px;width:175px}
+/* Grid mode: wrap into responsive grid, cards fill naturally */
+.deck-grid.grid-mode{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));overflow-x:visible;padding-bottom:0}
+.deck-grid.grid-mode .deck-card{flex:none;width:100%}
+/* Set code badge on card */
+.deck-code-badge{font-size:.58rem;font-family:'Cinzel',serif;font-weight:700;letter-spacing:.06em;color:var(--text2);opacity:.7;float:right;margin-top:.05rem}
 
 /* ── Deck card ── */
 .deck-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;padding:.9rem 1rem;transition:border-color .2s,background .2s,transform .15s;position:relative;overflow:hidden;text-align:left;width:100%}
@@ -32017,8 +32022,11 @@ function renderGrid() {
   const showEdHead = state.edition === 'all' || groups.length > 1;
 
   for (const { edition, decks } of groups) {
-    if (showEdHead) html += `<section class="edition-section"><h2 class="edition-heading">${esc(edition.name)} <em style="font-weight:400;font-size:.85em;color:var(--text2)">(${edition.year})</em><span class="edition-count">${decks.length} theme${decks.length !== 1 ? 's' : ''}</span></h2><div class="deck-grid">`;
-    else html += `<section class="edition-section"><div class="deck-grid">`;
+    const isAllView = state.edition === 'all' || state.edition === 'tie-ins';
+    const gridClass = isAllView ? 'deck-grid grid-mode' : 'deck-grid';
+    const codeLabel = `<span class="deck-code-badge">${esc(edition.code || edition.id.toUpperCase())}</span>`;
+    if (showEdHead) html += `<section class="edition-section"><h2 class="edition-heading">${esc(edition.name)} ${codeLabel}<span class="edition-count">${decks.length} theme${decks.length !== 1 ? 's' : ''}</span></h2><div class="${gridClass}">`;
+    else html += `<section class="edition-section"><div class="${gridClass}">`;
 
     for (const { deck, searchResult } of decks) {
       if (state.showOwnedOnly) {
@@ -32051,7 +32059,7 @@ function renderGrid() {
         const matchHint = searchResult.type === 'card' && searchResult.matches.length > 0
           ? `<div class="card-match-hint">Contains: ${esc(searchResult.matches.slice(0,2).join(', '))}${searchResult.matches.length > 2 ? '…' : ''}</div>` : '';
         html += `<button class="deck-card${owned ? ' owned-card' : ''}" data-deck="${deck.id}" data-ed="${edition.id}" tabindex="0">
-          <div class="deck-name">${esc(deck.name)}</div>
+          <div class="deck-name">${esc(deck.name)}<span class="deck-code-badge">${esc(edition.code || edition.id.toUpperCase())}</span></div>
           ${deck.headliner ? `<div class="deck-headliner">${esc(deck.headliner)}</div>` : ''}
           ${matchHint}
           <div class="deck-footer">
