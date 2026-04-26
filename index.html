@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jumpstart Deck Browser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c16;
+    --bg2: #141428;
+    --bg3: #1c1c38;
+    --gold: #c9a84c;
+    --gold-dim: #7a6028;
+    --text: #e2ddd4;
+    --text2: #9e9ab0;
+    --border: rgba(201,168,76,0.2);
+    --border-hover: rgba(201,168,76,0.5);
+    --mana-w: #f5f0d4; --mana-w-bg: #4a4530; --mana-w-text: #c5b87a;
+    --mana-u: #3b82c4; --mana-u-bg: #1a2e4a; --mana-u-text: #7ab4e8;
+    --mana-b: #9b6ac7; --mana-b-bg: #28183e; --mana-b-text: #b090e0;
+    --mana-r: #d44c3c; --mana-r-bg: #42180f; --mana-r-text: #e88070;
+    --mana-g: #4ab870; --mana-g-bg: #0f3020; --mana-g-text: #70d890;
+    --mana-multi: #c9a84c; --mana-multi-bg: #352812; --mana-multi-text: #d4b870;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .site-header {
+    background: linear-gradient(180deg, #08081a 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 1.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .site-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 20px rgba(201,168,76,0.3);
+  }
+  .site-logo span { color: var(--text2); font-weight: 400; }
+  .header-search {
+    margin-left: auto;
+    position: relative;
+  }
+  .header-search input {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    padding: 0.45rem 0.85rem 0.45rem 2.2rem;
+    width: 220px;
+    transition: border-color 0.2s, width 0.3s;
+    outline: none;
+  }
+  .header-search input:focus {
+    border-color: var(--gold);
+    width: 280px;
+  }
+  .header-search input::placeholder { color: var(--text2); }
+  .search-icon {
+    position: absolute;
+    left: 0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text2);
+    pointer-events: none;
+    font-size: 0.9rem;
+  }
+
+  /* Edition tabs */
+  .edition-tabs {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 0;
+  }
+  .edition-tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text2);
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.6rem 1.1rem;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+    text-transform: uppercase;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* Color filter bar */
+  .filter-bar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: wrap;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-label {
+    color: var(--text2);
+    font-size: 0.8rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-right: 0.25rem;
+  }
+  .color-btn {
+    align-items: center;
+    border: 1.5px solid transparent;
+    border-radius: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    gap: 0.35rem;
+    letter-spacing: 0.04em;
+    padding: 0.28rem 0.7rem;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .color-btn .pip {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .color-btn.all { background: var(--bg3); border-color: var(--border-hover); color: var(--text); }
+  .color-btn.all.active { background: var(--gold); border-color: var(--gold); color: #1a1000; }
+  .color-btn[data-c="W"] { background: var(--mana-w-bg); border-color: transparent; color: var(--mana-w-text); }
+  .color-btn[data-c="W"].active { border-color: var(--mana-w); }
+  .color-btn[data-c="U"] { background: var(--mana-u-bg); border-color: transparent; color: var(--mana-u-text); }
+  .color-btn[data-c="U"].active { border-color: var(--mana-u); }
+  .color-btn[data-c="B"] { background: var(--mana-b-bg); border-color: transparent; color: var(--mana-b-text); }
+  .color-btn[data-c="B"].active { border-color: var(--mana-b); }
+  .color-btn[data-c="R"] { background: var(--mana-r-bg); border-color: transparent; color: var(--mana-r-text); }
+  .color-btn[data-c="R"].active { border-color: var(--mana-r); }
+  .color-btn[data-c="G"] { background: var(--mana-g-bg); border-color: transparent; color: var(--mana-g-text); }
+  .color-btn[data-c="G"].active { border-color: var(--mana-g); }
+  .color-btn[data-c="M"] { background: var(--mana-multi-bg); border-color: transparent; color: var(--mana-multi-text); }
+  .color-btn[data-c="M"].active { border-color: var(--mana-multi); }
+
+  .results-count {
+    margin-left: auto;
+    color: var(--text2);
+    font-size: 0.82rem;
+    white-space: nowrap;
+    font-family: 'Crimson Pro', serif;
+  }
+
+  /* Main grid */
+  main {
+    padding: 1.75rem 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .edition-section { margin-bottom: 2.5rem; }
+  .edition-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .edition-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .deck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.85rem;
+  }
+
+  /* Deck card */
+  .deck-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 1rem 1.1rem;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .deck-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .deck-card:hover {
+    border-color: var(--border-hover);
+    background: var(--bg3);
+    transform: translateY(-2px);
+  }
+  .deck-card:hover::before { opacity: 1; }
+  .deck-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .deck-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  .deck-headliner {
+    font-size: 0.82rem;
+    color: var(--text2);
+    font-style: italic;
+    margin-bottom: 0.6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .deck-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .color-pips {
+    display: flex;
+    gap: 4px;
+  }
+  .color-pip {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    flex-shrink: 0;
+  }
+  .pip-W { background: var(--mana-w); }
+  .pip-U { background: var(--mana-u); }
+  .pip-B { background: var(--mana-b); }
+  .pip-R { background: var(--mana-r); }
+  .pip-G { background: var(--mana-g); }
+  .variant-count {
+    font-size: 0.73rem;
+    color: var(--text2);
+    font-family: 'Cinzel', serif;
+  }
+  .has-list-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 10px;
+    background: rgba(201,168,76,0.12);
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.04em;
+  }
+  .no-list-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    color: var(--text2);
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.04em;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text2);
+  }
+  .empty-state .glyph {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+  .empty-state h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-overlay.open { display: flex; align-items: flex-end; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    width: 100%;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  @media (min-width: 768px) {
+    .modal-overlay { align-items: center; justify-content: center; padding: 1.5rem; }
+    .modal { border-radius: 14px; max-width: 980px; max-height: 88vh; }
+  }
+
+  .modal-header {
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    flex-shrink: 0;
+  }
+  .modal-header-info { flex: 1; }
+  .modal-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 0.25rem;
+  }
+  .modal-headliner {
+    color: var(--text2);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+  .modal-close {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.3rem 0.6rem;
+    transition: color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+  }
+  .modal-close:hover { color: var(--text); border-color: var(--border-hover); }
+
+  /* Variant tabs inside modal */
+  .variant-tabs {
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 1.5rem;
+    flex-shrink: 0;
+  }
+  .variant-tabs::-webkit-scrollbar { display: none; }
+  .variant-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text2);
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.65rem 0.9rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .variant-tab:hover { color: var(--text); }
+  .variant-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* Modal body */
+  .modal-body {
+    display: flex;
+    flex: 1;
+    gap: 0;
+    overflow: hidden;
+    flex-direction: column;
+  }
+  @media (min-width: 640px) {
+    .modal-body { flex-direction: row; }
+  }
+
+  /* Card list panel */
+  .card-list-panel {
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem;
+    width: 100%;
+  }
+  @media (min-width: 640px) {
+    .card-list-panel { width: 260px; }
+  }
+
+  .card-list-panel h4 {
+    color: var(--text2);
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .card-row {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.3rem 0;
+    border-radius: 4px;
+    transition: background 0.15s;
+    padding-left: 0.25rem;
+    margin-left: -0.25rem;
+  }
+  .card-row:hover { background: var(--bg3); }
+  .card-qty {
+    color: var(--text2);
+    font-size: 0.85rem;
+    min-width: 18px;
+    text-align: right;
+  }
+  .card-name {
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+  .card-row.land .card-name { color: var(--text2); font-style: italic; }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0.6rem 0;
+  }
+  .list-summary {
+    color: var(--text2);
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+  .no-list-notice {
+    background: var(--bg3);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: center;
+    color: var(--text2);
+    font-size: 0.9rem;
+  }
+  .no-list-notice a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .no-list-notice a:hover { text-decoration: underline; }
+
+  /* Card images panel */
+  .card-images-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem;
+  }
+  .card-images-panel h4 {
+    color: var(--text2);
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .card-images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.6rem;
+  }
+  .card-image-wrap {
+    position: relative;
+    cursor: pointer;
+  }
+  .card-image-wrap img {
+    border-radius: 7px;
+    display: block;
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    aspect-ratio: 5/7;
+    object-fit: cover;
+    background: var(--bg3);
+  }
+  .card-image-wrap:hover img {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    z-index: 2;
+  }
+  .card-image-qty {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.75);
+    border-radius: 50%;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-image-wrap.loading img {
+    opacity: 0.4;
+  }
+  .card-placeholder {
+    aspect-ratio: 5/7;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.5rem;
+    text-align: center;
+  }
+  .card-placeholder span {
+    color: var(--text2);
+    font-size: 0.7rem;
+    line-height: 1.2;
+  }
+  .loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--text2);
+    font-size: 0.9rem;
+    gap: 0.6rem;
+  }
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Scryfall attribution */
+  .scryfall-credit {
+    color: var(--text2);
+    font-size: 0.75rem;
+    padding: 0.5rem 1.5rem 1rem;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .scryfall-credit a { color: var(--gold); text-decoration: none; }
+  .scryfall-credit a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <div class="site-logo">Jumpstart <span>Deck Browser</span></div>
+    <div class="header-search">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search-input" placeholder="Search decks…" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+  <nav class="edition-tabs" role="tablist" aria-label="Edition filter">
+    <button class="tab active" role="tab" data-edition="all">All Editions</button>
+    <button class="tab" role="tab" data-edition="jmp">Jumpstart (2020)</button>
+    <button class="tab" role="tab" data-edition="j22">Jumpstart 2022</button>
+    <button class="tab" role="tab" data-edition="j21">Historic Horizons</button>
+  </nav>
+</header>
+
+<div class="filter-bar" role="toolbar" aria-label="Color filter">
+  <span class="filter-label">Color</span>
+  <button class="color-btn all active" data-c="all">All</button>
+  <button class="color-btn" data-c="W"><span class="pip" style="background:var(--mana-w)"></span>White</button>
+  <button class="color-btn" data-c="U"><span class="pip" style="background:var(--mana-u)"></span>Blue</button>
+  <button class="color-btn" data-c="B"><span class="pip" style="background:var(--mana-b)"></span>Black</button>
+  <button class="color-btn" data-c="R"><span class="pip" style="background:var(--mana-r)"></span>Red</button>
+  <button class="color-btn" data-c="G"><span class="pip" style="background:var(--mana-g)"></span>Green</button>
+  <button class="color-btn" data-c="M"><span class="pip" style="background:var(--mana-multi)"></span>Multicolor</button>
+  <span class="results-count" id="results-count"></span>
+</div>
+
+<main id="main-content" role="main"></main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="Deck detail">
+  <div class="modal" id="modal">
+    <div class="modal-header" id="modal-header"></div>
+    <div class="variant-tabs" id="variant-tabs" style="display:none"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="scryfall-credit">
+      <span>Card images via <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a></span>
+      <span id="modal-edition-label"></span>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+// ─── State ────────────────────────────────────────────────────────────────────
+let state = {
+  edition: 'all',
+  colors: new Set(),
+  search: '',
+  openDeckId: null,
+  openVariant: 0,
+  cardCache: {}
+};
+
+// ─── Mana color helpers ───────────────────────────────────────────────────────
+const COLOR_NAMES = { W:'White', U:'Blue', B:'Black', R:'Red', G:'Green' };
+const COLOR_PIP_CLASS = { W:'pip-W', U:'pip-U', B:'pip-B', R:'pip-R', G:'pip-G' };
+const BASIC_LAND = { W:'Plains', U:'Island', B:'Swamp', R:'Mountain', G:'Forest' };
+const BASIC_SCRYFALL = {
+  Plains: 'https://cards.scryfall.io/normal/front/b/5/b5b8c2e5-8cbf-4ba3-842d-9d0c93308c4f.jpg',
+  Island: 'https://cards.scryfall.io/normal/front/b/3/b3a6b9ba-c714-4f14-a7ae-cc3f8f70e00b.jpg',
+  Swamp: 'https://cards.scryfall.io/normal/front/e/5/e5cb0f38-d6b6-4d6c-aee3-84df2f413d66.jpg',
+  Mountain: 'https://cards.scryfall.io/normal/front/d/d/dd2b2e47-e5f1-4b87-bf4a-0c7b68c1a8cf.jpg',
+  Forest: 'https://cards.scryfall.io/normal/front/4/c/4c72da84-4ef8-4cc4-9e8e-d4dbf9b4b9f3.jpg',
+};
+
+function isMulticolor(deck) { return deck.colors.length > 1; }
+
+function colorMatchesDeck(deck, filterColors) {
+  if (!filterColors || filterColors.size === 0) return true;
+  if (filterColors.has('M')) {
+    if (isMulticolor(deck)) return true;
+  }
+  for (const c of filterColors) {
+    if (c !== 'M' && deck.colors.includes(c)) return true;
+  }
+  return false;
+}
+
+function hasCardList(deck) {
+  return deck.variants.some(v => v.cards && v.cards.length > 0);
+}
+
+// ─── Filter & render grid ─────────────────────────────────────────────────────
+function getFilteredDecks() {
+  const results = [];
+  for (const edition of DECK_DATA.editions) {
+    if (state.edition !== 'all' && edition.id !== state.edition) continue;
+    const filteredDecks = edition.decks.filter(deck => {
+      if (state.colors.size > 0 && !colorMatchesDeck(deck, state.colors)) return false;
+      if (state.search) {
+        const q = state.search.toLowerCase();
+        if (!deck.name.toLowerCase().includes(q) &&
+            !(deck.headliner && deck.headliner.toLowerCase().includes(q))) return false;
+      }
+      return true;
+    });
+    if (filteredDecks.length > 0) {
+      results.push({ edition, decks: filteredDecks });
+    }
+  }
+  return results;
+}
+
+function renderGrid() {
+  const main = document.getElementById('main-content');
+  const groups = getFilteredDecks();
+  const totalDecks = groups.reduce((s, g) => s + g.decks.length, 0);
+
+  document.getElementById('results-count').textContent =
+    totalDecks > 0 ? `${totalDecks} deck${totalDecks !== 1 ? 's' : ''}` : '';
+
+  if (totalDecks === 0) {
+    main.innerHTML = `
+      <div class="empty-state">
+        <div class="glyph">🔮</div>
+        <h3>No decks found</h3>
+        <p>Try adjusting your filters or search term.</p>
+      </div>`;
+    return;
+  }
+
+  let html = '';
+  const showEditionHeading = state.edition === 'all' || groups.length > 1;
+
+  for (const { edition, decks } of groups) {
+    if (showEditionHeading) {
+      html += `<section class="edition-section">
+        <h2 class="edition-heading">${edition.name} <em style="font-weight:400;font-size:0.85em;color:var(--text2)">(${edition.year})</em></h2>
+        <div class="deck-grid">`;
+    } else {
+      html += `<section class="edition-section"><div class="deck-grid">`;
+    }
+
+    for (const deck of decks) {
+      const pips = deck.colors.map(c =>
+        `<span class="color-pip ${COLOR_PIP_CLASS[c] || ''}" title="${COLOR_NAMES[c] || c}"></span>`
+      ).join('');
+      const varCount = deck.variants.length;
+      const badge = hasCardList(deck)
+        ? `<span class="has-list-badge">List ✓</span>`
+        : `<span class="no-list-badge">No list</span>`;
+
+      html += `
+        <button class="deck-card" data-deck="${deck.id}" data-edition="${edition.id}"
+          aria-label="View ${deck.name} deck" tabindex="0">
+          <div class="deck-name">${deck.name}</div>
+          ${deck.headliner ? `<div class="deck-headliner">${deck.headliner}</div>` : ''}
+          <div class="deck-footer">
+            <div class="color-pips">${pips}</div>
+            <div style="display:flex;align-items:center;gap:.4rem">
+              ${varCount > 1 ? `<span class="variant-count">${varCount} var.</span>` : ''}
+              ${badge}
+            </div>
+          </div>
+        </button>`;
+    }
+    html += `</div></section>`;
+  }
+
+  main.innerHTML = html;
+
+  main.querySelectorAll('.deck-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const deckId = btn.dataset.deck;
+      const editionId = btn.dataset.edition;
+      openDeck(deckId, editionId);
+    });
+  });
+}
+
+// ─── Modal ────────────────────────────────────────────────────────────────────
+function openDeck(deckId, editionId) {
+  const edition = DECK_DATA.editions.find(e => e.id === editionId);
+  const deck = edition && edition.decks.find(d => d.id === deckId);
+  if (!deck) return;
+
+  state.openDeckId = deckId;
+  state.openVariant = 0;
+
+  renderModal(deck, edition);
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modal-overlay').focus();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  state.openDeckId = null;
+}
+
+function renderModal(deck, edition) {
+  const vi = state.openVariant;
+  const variant = deck.variants[vi];
+  const pips = deck.colors.map(c =>
+    `<span class="color-pip ${COLOR_PIP_CLASS[c] || ''}" style="width:18px;height:18px" title="${COLOR_NAMES[c] || c}"></span>`
+  ).join('');
+
+  // Header
+  document.getElementById('modal-header').innerHTML = `
+    <div class="modal-header-info">
+      <div class="modal-title" style="display:flex;align-items:center;gap:.6rem">
+        ${deck.name}
+        <span style="display:flex;gap:4px">${pips}</span>
+      </div>
+      ${deck.headliner ? `<div class="modal-headliner">${deck.headliner}</div>` : ''}
+    </div>
+    <button class="modal-close" id="modal-close-btn" aria-label="Close">✕</button>`;
+
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+
+  // Variant tabs
+  const vtabs = document.getElementById('variant-tabs');
+  if (deck.variants.length > 1) {
+    vtabs.style.display = 'flex';
+    vtabs.innerHTML = deck.variants.map((v, i) =>
+      `<button class="variant-tab ${i === vi ? 'active' : ''}" data-vi="${i}">${v.label}</button>`
+    ).join('');
+    vtabs.querySelectorAll('.variant-tab').forEach(t => {
+      t.addEventListener('click', () => {
+        state.openVariant = parseInt(t.dataset.vi);
+        renderModal(deck, edition);
+      });
+    });
+  } else {
+    vtabs.style.display = 'none';
+  }
+
+  // Edition label
+  document.getElementById('modal-edition-label').textContent =
+    `${edition.name} · ${edition.year}`;
+
+  // Body
+  const bodyEl = document.getElementById('modal-body');
+  if (!variant.cards || variant.cards.length === 0) {
+    bodyEl.innerHTML = `
+      <div style="flex:1;padding:2rem;display:flex;align-items:center;justify-content:center">
+        <div class="no-list-notice" style="max-width:400px">
+          <p style="font-size:1rem;color:var(--text);margin-bottom:.5rem">No card list yet</p>
+          <p>This deck's card list hasn't been added yet. Want to help?
+          <a href="https://github.com/jumpstart-deck-browser/jumpstart-deck-browser/blob/main/data.js" target="_blank" rel="noopener">
+          Contribute on GitHub →</a></p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  // Separate lands from spells
+  const lands = variant.cards.filter(c => c.basic);
+  const spells = variant.cards.filter(c => !c.basic);
+
+  let listHtml = `<h4>Card List</h4>`;
+  if (spells.length > 0) {
+    listHtml += spells.map(c => `
+      <div class="card-row" data-card="${escHtml(c.name)}" tabindex="0" role="button" aria-label="Highlight ${c.name}">
+        <span class="card-qty">${c.qty}×</span>
+        <span class="card-name">${escHtml(c.name)}</span>
+      </div>`).join('');
+  }
+  if (lands.length > 0) {
+    if (spells.length > 0) listHtml += `<hr class="section-divider">`;
+    listHtml += lands.map(c => `
+      <div class="card-row land" data-card="${escHtml(c.name)}" tabindex="0" role="button" aria-label="Highlight ${c.name}">
+        <span class="card-qty">${c.qty}×</span>
+        <span class="card-name">${escHtml(c.name)}</span>
+      </div>`).join('');
+  }
+  const totalCards = variant.cards.reduce((s, c) => s + c.qty, 0);
+  listHtml += `<div class="list-summary">${totalCards} cards total</div>`;
+
+  bodyEl.innerHTML = `
+    <div class="card-list-panel" id="card-list-panel">${listHtml}</div>
+    <div class="card-images-panel" id="card-images-panel">
+      <h4>Card Images</h4>
+      <div class="loading-spinner"><div class="spinner"></div> Loading cards…</div>
+    </div>`;
+
+  // Card highlight interaction
+  let highlighted = null;
+  bodyEl.querySelectorAll('.card-row').forEach(row => {
+    row.addEventListener('click', () => {
+      if (highlighted) highlighted.style.background = '';
+      if (highlighted === row) { highlighted = null; return; }
+      row.style.background = 'rgba(201,168,76,0.12)';
+      highlighted = row;
+      const name = row.dataset.card;
+      highlightCardImage(name);
+    });
+  });
+
+  fetchAndRenderImages(deck, variant);
+}
+
+let lastFetchController = null;
+
+async function fetchAndRenderImages(deck, variant) {
+  const panel = document.getElementById('card-images-panel');
+  if (!panel) return;
+
+  if (lastFetchController) lastFetchController.abort();
+  lastFetchController = new AbortController();
+  const signal = lastFetchController.signal;
+
+  // Use cached data if available
+  const cacheKey = `${deck.id}-${state.openVariant}`;
+  if (state.cardCache[cacheKey]) {
+    renderImages(panel, variant, state.cardCache[cacheKey]);
+    return;
+  }
+
+  // Collect unique non-basic card names
+  const uniqueNames = [...new Set(
+    variant.cards.filter(c => !c.basic).map(c => c.name)
+  )];
+
+  if (uniqueNames.length === 0) {
+    renderImages(panel, variant, {});
+    return;
+  }
+
+  try {
+    const resp = await fetch('https://api.scryfall.com/cards/collection', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifiers: uniqueNames.map(n => ({ name: n })) }),
+      signal
+    });
+    if (!resp.ok) throw new Error('Scryfall error');
+    const data = await resp.json();
+    const imageMap = {};
+    for (const card of (data.data || [])) {
+      const img = card.image_uris
+        ? card.image_uris.normal
+        : (card.card_faces && card.card_faces[0].image_uris
+            ? card.card_faces[0].image_uris.normal
+            : null);
+      if (img) imageMap[card.name] = { img, url: card.scryfall_uri };
+    }
+    state.cardCache[cacheKey] = imageMap;
+    if (!signal.aborted) renderImages(panel, variant, imageMap);
+  } catch (e) {
+    if (!signal || !signal.aborted) {
+      renderImages(panel, variant, {});
+    }
+  }
+}
+
+function renderImages(panel, variant, imageMap) {
+  if (!panel || !panel.isConnected) return;
+  let html = `<h4>Card Images</h4><div class="card-images-grid">`;
+
+  // Spells first, then basics
+  const order = [
+    ...variant.cards.filter(c => !c.basic),
+    ...variant.cards.filter(c => c.basic)
+  ];
+
+  for (const card of order) {
+    const info = card.basic ? null : imageMap[card.name];
+    const imgSrc = card.basic
+      ? (BASIC_SCRYFALL[card.name] || '')
+      : (info ? info.img : '');
+    const linkUrl = card.basic ? '' : (info ? info.url : '');
+
+    const inner = imgSrc
+      ? `<img src="${escHtml(imgSrc)}" alt="${escHtml(card.name)}" loading="lazy"
+              onerror="this.parentElement.innerHTML='<div class=\\'card-placeholder\\'><span>${escHtml(card.name)}</span></div>'">`
+      : `<div class="card-placeholder"><span>${escHtml(card.name)}</span></div>`;
+
+    html += card.qty > 1
+      ? `<div class="card-image-wrap" data-img-card="${escHtml(card.name)}"
+              ${linkUrl ? `onclick="window.open('${escHtml(linkUrl)}','_blank')"` : ''}>
+            ${inner}
+            <span class="card-image-qty">${card.qty}</span>
+          </div>`
+      : `<div class="card-image-wrap" data-img-card="${escHtml(card.name)}"
+              ${linkUrl ? `onclick="window.open('${escHtml(linkUrl)}','_blank')"` : ''}>
+            ${inner}
+          </div>`;
+  }
+
+  html += `</div>`;
+  panel.innerHTML = html;
+}
+
+function highlightCardImage(name) {
+  const panel = document.getElementById('card-images-panel');
+  if (!panel) return;
+  panel.querySelectorAll('.card-image-wrap').forEach(el => {
+    el.style.outline = '';
+  });
+  const target = panel.querySelector(`[data-img-card="${CSS.escape(name)}"]`);
+  if (target) {
+    target.style.outline = '2px solid var(--gold)';
+    target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ─── Event listeners ──────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    state.edition = tab.dataset.edition;
+    renderGrid();
+  });
+});
+
+document.querySelectorAll('.color-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const c = btn.dataset.c;
+    if (c === 'all') {
+      state.colors.clear();
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    } else {
+      document.querySelector('.color-btn.all').classList.remove('active');
+      if (state.colors.has(c)) {
+        state.colors.delete(c);
+        btn.classList.remove('active');
+      } else {
+        state.colors.add(c);
+        btn.classList.add('active');
+      }
+      if (state.colors.size === 0) {
+        document.querySelector('.color-btn.all').classList.add('active');
+      }
+    }
+    renderGrid();
+  });
+});
+
+let searchTimer;
+document.getElementById('search-input').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.search = e.target.value.trim();
+    renderGrid();
+  }, 200);
+});
+
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === '/' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    document.getElementById('search-input').focus();
+  }
+});
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+renderGrid();
+</script>
+</body>
+</html>
