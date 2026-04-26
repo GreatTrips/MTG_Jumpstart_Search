@@ -19,7 +19,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 
 /* ── Header ── */
 .site-header{background:linear-gradient(180deg,#08081a 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
-.header-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;margin-bottom:1rem}
+.header-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;margin-bottom:.5rem}
 .site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap}
 .site-logo span{color:var(--text2);font-weight:400}
 .header-center{display:flex;align-items:center;justify-content:center}
@@ -29,6 +29,20 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .search-wrap input:focus{border-color:var(--gold);background:rgba(255,255,255,.1)}
 .search-wrap input::placeholder{color:var(--text2)}
 .search-icon{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;font-size:.95rem}
+/* ── Mobile header: stack search on its own row ── */
+@media(max-width:700px){
+  .header-top{grid-template-columns:auto auto;grid-template-rows:auto auto;row-gap:.6rem;margin-bottom:.5rem}
+  .site-logo{grid-column:1;grid-row:1}
+  .header-right{grid-column:2;grid-row:1;justify-content:flex-end}
+  .header-center{grid-column:1/-1;grid-row:2}
+  .search-wrap{max-width:100%}
+  .search-wrap input{font-size:16px;padding:.5rem 2.2rem}
+  .save-menu-btn span,.import-btn span{display:none}
+  .save-menu-btn{font-size:.65rem;padding:.35rem .55rem}
+  .import-btn{font-size:.65rem;padding:.35rem .55rem}
+  .edit-btn-header{font-size:.65rem;padding:.35rem .55rem}
+  .owned-btn{font-size:.65rem;padding:.35rem .55rem}
+}
 .search-mode-badge{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);font-size:.62rem;padding:.1rem .35rem;border-radius:4px;font-family:'Cinzel',serif;letter-spacing:.04em;pointer-events:none;background:var(--bg4);color:var(--gold)}
 
 /* owned-only button */
