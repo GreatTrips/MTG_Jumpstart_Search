@@ -4,608 +4,184 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jumpstart Deck Browser</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0c0c16;
-    --bg2: #141428;
-    --bg3: #1c1c38;
-    --gold: #c9a84c;
-    --gold-dim: #7a6028;
-    --text: #e2ddd4;
-    --text2: #9e9ab0;
-    --border: rgba(201,168,76,0.2);
-    --border-hover: rgba(201,168,76,0.5);
-    --mana-w: #f5f0d4; --mana-w-bg: #4a4530; --mana-w-text: #c5b87a;
-    --mana-u: #3b82c4; --mana-u-bg: #1a2e4a; --mana-u-text: #7ab4e8;
-    --mana-b: #9b6ac7; --mana-b-bg: #28183e; --mana-b-text: #b090e0;
-    --mana-r: #d44c3c; --mana-r-bg: #42180f; --mana-r-text: #e88070;
-    --mana-g: #4ab870; --mana-g-bg: #0f3020; --mana-g-text: #70d890;
-    --mana-multi: #c9a84c; --mana-multi-bg: #352812; --mana-multi-text: #d4b870;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Crimson Pro', Georgia, serif;
-    font-size: 17px;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
+:root {
+  --bg:#0c0c16; --bg2:#141428; --bg3:#1c1c38; --bg4:#22224a;
+  --gold:#c9a84c; --gold-dim:#7a6028; --gold-glow:rgba(201,168,76,0.15);
+  --text:#e2ddd4; --text2:#9e9ab0; --border:rgba(201,168,76,0.18); --border-hover:rgba(201,168,76,0.5);
+  --mana-w:#f5f0d4; --mana-u:#3b82c4; --mana-b:#9b6ac7; --mana-r:#d44c3c; --mana-g:#4ab870; --mana-multi:#c9a84c;
+  --own-color:#5cb85c; --own-glow:rgba(92,184,92,0.25);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,serif;font-size:17px;line-height:1.5;min-height:100vh}
 
-  /* Header */
-  .site-header {
-    background: linear-gradient(180deg, #08081a 0%, var(--bg) 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 1.5rem 1.5rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(12px);
-  }
-  .header-top {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
-  }
-  .site-logo {
-    font-family: 'Cinzel', serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: 0.04em;
-    text-shadow: 0 0 20px rgba(201,168,76,0.3);
-  }
-  .site-logo span { color: var(--text2); font-weight: 400; }
-  .header-search {
-    margin-left: auto;
-    position: relative;
-  }
-  .header-search input {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: 'Crimson Pro', serif;
-    font-size: 1rem;
-    padding: 0.45rem 0.85rem 0.45rem 2.2rem;
-    width: 220px;
-    transition: border-color 0.2s, width 0.3s;
-    outline: none;
-  }
-  .header-search input:focus {
-    border-color: var(--gold);
-    width: 280px;
-  }
-  .header-search input::placeholder { color: var(--text2); }
-  .search-icon {
-    position: absolute;
-    left: 0.65rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text2);
-    pointer-events: none;
-    font-size: 0.9rem;
-  }
+/* ── Header ── */
+.site-header{background:linear-gradient(180deg,#08081a 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.header-top{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
+.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3)}
+.site-logo span{color:var(--text2);font-weight:400}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:.6rem}
+.search-wrap{position:relative}
+.search-wrap input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Crimson Pro',serif;font-size:1rem;padding:.4rem .8rem .4rem 2rem;width:200px;transition:border-color .2s,width .3s;outline:none}
+.search-wrap input:focus{border-color:var(--gold);width:260px}
+.search-wrap input::placeholder{color:var(--text2)}
+.search-icon{position:absolute;left:.6rem;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;font-size:.9rem}
+.search-mode-badge{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);font-size:.62rem;padding:.1rem .35rem;border-radius:4px;font-family:'Cinzel',serif;letter-spacing:.04em;pointer-events:none;background:var(--bg4);color:var(--gold)}
 
-  /* Edition tabs */
-  .edition-tabs {
-    display: flex;
-    gap: 0.25rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 0;
-  }
-  .edition-tabs::-webkit-scrollbar { display: none; }
-  .tab {
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text2);
-    cursor: pointer;
-    font-family: 'Cinzel', serif;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    padding: 0.6rem 1.1rem;
-    white-space: nowrap;
-    transition: color 0.2s, border-color 0.2s;
-    text-transform: uppercase;
-  }
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+/* owned-only button */
+.owned-btn{align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;gap:.35rem;letter-spacing:.04em;padding:.4rem .8rem;transition:all .2s;white-space:nowrap}
+.owned-btn:hover{border-color:var(--own-color);color:var(--text)}
+.owned-btn.active{background:var(--own-glow);border-color:var(--own-color);color:var(--own-color)}
+.owned-btn .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
 
-  /* Color filter bar */
-  .filter-bar {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 1.5rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    flex-wrap: wrap;
-  }
-  .filter-bar::-webkit-scrollbar { display: none; }
-  .filter-label {
-    color: var(--text2);
-    font-size: 0.8rem;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    margin-right: 0.25rem;
-  }
-  .color-btn {
-    align-items: center;
-    border: 1.5px solid transparent;
-    border-radius: 20px;
-    cursor: pointer;
-    display: inline-flex;
-    font-family: 'Cinzel', serif;
-    font-size: 0.72rem;
-    font-weight: 600;
-    gap: 0.35rem;
-    letter-spacing: 0.04em;
-    padding: 0.28rem 0.7rem;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .color-btn .pip {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-  .color-btn.all { background: var(--bg3); border-color: var(--border-hover); color: var(--text); }
-  .color-btn.all.active { background: var(--gold); border-color: var(--gold); color: #1a1000; }
-  .color-btn[data-c="W"] { background: var(--mana-w-bg); border-color: transparent; color: var(--mana-w-text); }
-  .color-btn[data-c="W"].active { border-color: var(--mana-w); }
-  .color-btn[data-c="U"] { background: var(--mana-u-bg); border-color: transparent; color: var(--mana-u-text); }
-  .color-btn[data-c="U"].active { border-color: var(--mana-u); }
-  .color-btn[data-c="B"] { background: var(--mana-b-bg); border-color: transparent; color: var(--mana-b-text); }
-  .color-btn[data-c="B"].active { border-color: var(--mana-b); }
-  .color-btn[data-c="R"] { background: var(--mana-r-bg); border-color: transparent; color: var(--mana-r-text); }
-  .color-btn[data-c="R"].active { border-color: var(--mana-r); }
-  .color-btn[data-c="G"] { background: var(--mana-g-bg); border-color: transparent; color: var(--mana-g-text); }
-  .color-btn[data-c="G"].active { border-color: var(--mana-g); }
-  .color-btn[data-c="M"] { background: var(--mana-multi-bg); border-color: transparent; color: var(--mana-multi-text); }
-  .color-btn[data-c="M"].active { border-color: var(--mana-multi); }
+/* tabs */
+.edition-tabs{display:flex;gap:.15rem;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
+.edition-tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.76rem;font-weight:600;letter-spacing:.05em;padding:.55rem .9rem;white-space:nowrap;transition:color .2s,border-color .2s;text-transform:uppercase}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
 
-  .results-count {
-    margin-left: auto;
-    color: var(--text2);
-    font-size: 0.82rem;
-    white-space: nowrap;
-    font-family: 'Crimson Pro', serif;
-  }
+/* ── Filter bar ── */
+.filter-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.45rem;padding:.55rem 1.25rem;flex-wrap:wrap}
+.filter-label{color:var(--text2);font-size:.78rem;font-family:'Cinzel',serif;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.color-btn{align-items:center;border:1.5px solid transparent;border-radius:20px;cursor:pointer;display:inline-flex;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.25rem .65rem;transition:all .15s;white-space:nowrap}
+.color-btn .pip{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
+.color-btn.all{background:var(--bg3);border-color:var(--border-hover);color:var(--text)}
+.color-btn.all.active{background:var(--gold);border-color:var(--gold);color:#1a1000}
+.color-btn[data-c="W"]{background:rgba(245,240,212,.1);color:#c5b87a}
+.color-btn[data-c="W"].active{border-color:var(--mana-w)}
+.color-btn[data-c="U"]{background:rgba(59,130,196,.12);color:#7ab4e8}
+.color-btn[data-c="U"].active{border-color:var(--mana-u)}
+.color-btn[data-c="B"]{background:rgba(155,106,199,.12);color:#b090e0}
+.color-btn[data-c="B"].active{border-color:var(--mana-b)}
+.color-btn[data-c="R"]{background:rgba(212,76,60,.12);color:#e88070}
+.color-btn[data-c="R"].active{border-color:var(--mana-r)}
+.color-btn[data-c="G"]{background:rgba(74,184,112,.12);color:#70d890}
+.color-btn[data-c="G"].active{border-color:var(--mana-g)}
+.color-btn[data-c="M"]{background:rgba(201,168,76,.1);color:#d4b870}
+.color-btn[data-c="M"].active{border-color:var(--mana-multi)}
+.results-count{margin-left:auto;color:var(--text2);font-size:.8rem;white-space:nowrap;font-family:'Crimson Pro',serif}
 
-  /* Main grid */
-  main {
-    padding: 1.75rem 1.5rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-  .edition-section { margin-bottom: 2.5rem; }
-  .edition-heading {
-    font-family: 'Cinzel', serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--gold);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .edition-heading::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-  .deck-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.85rem;
-  }
+/* ── Grid ── */
+main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
+.edition-section{margin-bottom:2.5rem}
+.edition-heading{font-family:'Cinzel',serif;font-size:1rem;font-weight:600;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem;display:flex;align-items:center;gap:.65rem}
+.edition-heading::after{content:'';flex:1;height:1px;background:var(--border)}
+.deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.75rem}
 
-  /* Deck card */
-  .deck-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    cursor: pointer;
-    padding: 1rem 1.1rem;
-    transition: border-color 0.2s, background 0.2s, transform 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
-  .deck-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(201,168,76,0.04) 0%, transparent 60%);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .deck-card:hover {
-    border-color: var(--border-hover);
-    background: var(--bg3);
-    transform: translateY(-2px);
-  }
-  .deck-card:hover::before { opacity: 1; }
-  .deck-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-  .deck-name {
-    font-family: 'Cinzel', serif;
-    font-size: 0.92rem;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
-  }
-  .deck-headliner {
-    font-size: 0.82rem;
-    color: var(--text2);
-    font-style: italic;
-    margin-bottom: 0.6rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .deck-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 0.5rem;
-  }
-  .color-pips {
-    display: flex;
-    gap: 4px;
-  }
-  .color-pip {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(255,255,255,0.15);
-    flex-shrink: 0;
-  }
-  .pip-W { background: var(--mana-w); }
-  .pip-U { background: var(--mana-u); }
-  .pip-B { background: var(--mana-b); }
-  .pip-R { background: var(--mana-r); }
-  .pip-G { background: var(--mana-g); }
-  .variant-count {
-    font-size: 0.73rem;
-    color: var(--text2);
-    font-family: 'Cinzel', serif;
-  }
-  .has-list-badge {
-    font-size: 0.65rem;
-    padding: 0.15rem 0.45rem;
-    border-radius: 10px;
-    background: rgba(201,168,76,0.12);
-    color: var(--gold);
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.04em;
-  }
-  .no-list-badge {
-    font-size: 0.65rem;
-    padding: 0.15rem 0.45rem;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.06);
-    color: var(--text2);
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.04em;
-  }
+/* ── Deck card ── */
+.deck-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;padding:.9rem 1rem;transition:border-color .2s,background .2s,transform .15s;position:relative;overflow:hidden;text-align:left;width:100%}
+.deck-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.04) 0%,transparent 60%);pointer-events:none;opacity:0;transition:opacity .2s}
+.deck-card:hover{border-color:var(--border-hover);background:var(--bg3);transform:translateY(-2px)}
+.deck-card:hover::before{opacity:1}
+.deck-card.owned-card{border-color:rgba(92,184,92,.35);box-shadow:0 0 0 1px rgba(92,184,92,.12) inset}
+.deck-card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.deck-name{font-family:'Cinzel',serif;font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.35rem;line-height:1.2}
+.deck-headliner{font-size:.8rem;color:var(--text2);font-style:italic;margin-bottom:.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-match-hint{font-size:.72rem;color:var(--gold);font-style:italic;margin-bottom:.35rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.deck-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.4rem}
+.color-pips{display:flex;gap:3px}
+.color-pip{width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(255,255,255,.12);flex-shrink:0}
+.pip-W{background:var(--mana-w)}.pip-U{background:var(--mana-u)}.pip-B{background:var(--mana-b)}.pip-R{background:var(--mana-r)}.pip-G{background:var(--mana-g)}
+.deck-meta{display:flex;align-items:center;gap:.4rem}
 
-  /* Empty state */
-  .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--text2);
-  }
-  .empty-state .glyph {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    opacity: 0.5;
-  }
-  .empty-state h3 {
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-  }
+/* variant ownership dots */
+.var-dots{display:flex;gap:3px;align-items:center}
+.var-dot{width:8px;height:8px;border-radius:50%;border:1px solid var(--border-hover);cursor:pointer;flex-shrink:0;transition:background .2s}
+.var-dot.owned{background:var(--own-color);border-color:var(--own-color)}
+.var-dot.unowned{background:transparent}
 
-  /* Modal overlay */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 500;
-    background: rgba(0,0,0,0.75);
-    backdrop-filter: blur(4px);
-    animation: fadeIn 0.2s ease;
-  }
-  .modal-overlay.open { display: flex; align-items: flex-end; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.has-list-badge{font-size:.62rem;padding:.12rem .4rem;border-radius:10px;background:rgba(201,168,76,.1);color:var(--gold);font-family:'Cinzel',serif;letter-spacing:.04em}
+.no-list-badge{font-size:.62rem;padding:.12rem .4rem;border-radius:10px;background:rgba(255,255,255,.05);color:var(--text2);font-family:'Cinzel',serif}
 
-  .modal {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 16px 16px 0 0;
-    display: flex;
-    flex-direction: column;
-    max-height: 90vh;
-    width: 100%;
-    animation: slideUp 0.25s ease;
-  }
-  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--text2)}
+.empty-state .glyph{font-size:2.5rem;margin-bottom:1rem;opacity:.5}
+.empty-state h3{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--text);margin-bottom:.5rem}
 
-  @media (min-width: 768px) {
-    .modal-overlay { align-items: center; justify-content: center; padding: 1.5rem; }
-    .modal { border-radius: 14px; max-width: 980px; max-height: 88vh; }
-  }
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.78);backdrop-filter:blur(4px);animation:fadeIn .2s ease}
+.modal-overlay.open{display:flex;align-items:flex-end}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px 16px 0 0;display:flex;flex-direction:column;max-height:92vh;width:100%;animation:slideUp .22s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+@media(min-width:768px){
+  .modal-overlay{align-items:center;justify-content:center;padding:1.5rem}
+  .modal{border-radius:14px;max-width:1000px;max-height:88vh}
+}
+.modal-header{align-items:flex-start;border-bottom:1px solid var(--border);display:flex;gap:.75rem;padding:1.1rem 1.4rem;flex-shrink:0}
+.modal-header-info{flex:1;min-width:0}
+.modal-title{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);margin-bottom:.2rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.modal-headliner{color:var(--text2);font-style:italic;font-size:.9rem}
+.modal-close{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:1rem;padding:.25rem .55rem;transition:color .2s,border-color .2s;flex-shrink:0}
+.modal-close:hover{color:var(--text);border-color:var(--border-hover)}
 
-  .modal-header {
-    align-items: flex-start;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    gap: 1rem;
-    padding: 1.25rem 1.5rem;
-    flex-shrink: 0;
-  }
-  .modal-header-info { flex: 1; }
-  .modal-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--gold);
-    margin-bottom: 0.25rem;
-  }
-  .modal-headliner {
-    color: var(--text2);
-    font-style: italic;
-    font-size: 0.95rem;
-  }
-  .modal-close {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text2);
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0.3rem 0.6rem;
-    transition: color 0.2s, border-color 0.2s;
-    flex-shrink: 0;
-  }
-  .modal-close:hover { color: var(--text); border-color: var(--border-hover); }
+/* variant tabs row */
+.variant-row{border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 1.4rem;flex-shrink:0;justify-content:space-between}
+.variant-row::-webkit-scrollbar{display:none}
+.variant-tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.variant-tabs::-webkit-scrollbar{display:none}
+.variant-tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.73rem;font-weight:600;letter-spacing:.04em;padding:.6rem .8rem;text-transform:uppercase;white-space:nowrap;transition:color .2s,border-color .2s;display:flex;align-items:center;gap:.35rem}
+.variant-tab:hover{color:var(--text)}
+.variant-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.variant-tab .vtab-own-dot{width:7px;height:7px;border-radius:50%;border:1px solid currentColor;transition:background .2s;flex-shrink:0}
+.variant-tab.active .vtab-own-dot{border-color:var(--gold)}
+.variant-tab .vtab-own-dot.owned{background:var(--own-color);border-color:var(--own-color)}
 
-  /* Variant tabs inside modal */
-  .variant-tabs {
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    gap: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding: 0 1.5rem;
-    flex-shrink: 0;
-  }
-  .variant-tabs::-webkit-scrollbar { display: none; }
-  .variant-tab {
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text2);
-    cursor: pointer;
-    font-family: 'Cinzel', serif;
-    font-size: 0.76rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    padding: 0.65rem 0.9rem;
-    text-transform: uppercase;
-    white-space: nowrap;
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .variant-tab:hover { color: var(--text); }
-  .variant-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+/* own toggle button */
+.own-toggle-btn{flex-shrink:0;margin-left:.75rem;align-items:center;border:1px solid var(--border);border-radius:6px;cursor:pointer;display:inline-flex;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;gap:.35rem;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap}
+.own-toggle-btn.not-owned{background:none;color:var(--text2)}
+.own-toggle-btn.not-owned:hover{border-color:var(--own-color);color:var(--own-color)}
+.own-toggle-btn.is-owned{background:var(--own-glow);border-color:var(--own-color);color:var(--own-color)}
+.own-toggle-btn .own-check{font-size:.9rem}
 
-  /* Modal body */
-  .modal-body {
-    display: flex;
-    flex: 1;
-    gap: 0;
-    overflow: hidden;
-    flex-direction: column;
-  }
-  @media (min-width: 640px) {
-    .modal-body { flex-direction: row; }
-  }
+/* modal body */
+.modal-body{display:flex;flex:1;overflow:hidden;flex-direction:column}
+@media(min-width:640px){.modal-body{flex-direction:row}}
 
-  /* Card list panel */
-  .card-list-panel {
-    border-right: 1px solid var(--border);
-    flex-shrink: 0;
-    overflow-y: auto;
-    padding: 1.25rem 1.5rem;
-    width: 100%;
-  }
-  @media (min-width: 640px) {
-    .card-list-panel { width: 260px; }
-  }
+/* card list panel */
+.card-list-panel{border-right:1px solid var(--border);flex-shrink:0;overflow-y:auto;padding:1.1rem 1.25rem;width:100%;max-height:40vh}
+@media(min-width:640px){.card-list-panel{width:250px;max-height:none}}
+.card-list-panel h4{color:var(--text2);font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.65rem}
+.card-row{align-items:center;cursor:pointer;display:flex;gap:.55rem;padding:.25rem;border-radius:4px;transition:background .15s;margin:0 -.25rem}
+.card-row:hover,.card-row.highlighted{background:rgba(201,168,76,.1)}
+.card-qty{color:var(--text2);font-size:.82rem;min-width:16px;text-align:right;flex-shrink:0}
+.card-name-list{color:var(--text);font-size:.92rem}
+.card-row.land .card-name-list{color:var(--text2);font-style:italic}
+.section-divider{border:none;border-top:1px solid var(--border);margin:.55rem 0}
+.list-summary{color:var(--text2);font-size:.78rem;margin-top:.65rem;padding-top:.65rem;border-top:1px solid var(--border)}
+.rarity-badge{font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.05em;margin-left:auto;flex-shrink:0;padding:.05rem .28rem;border-radius:3px;opacity:.9}
+.rarity-c{color:#888;background:rgba(136,136,136,.12)}
+.rarity-u{color:#a8c4dc;background:rgba(168,196,220,.1)}
+.rarity-r{color:var(--gold);background:rgba(201,168,76,.1)}
+.rarity-m{color:#e5722e;background:rgba(229,114,46,.1)}
+.rarity-s{color:#b070d0;background:rgba(176,112,208,.1)}
+.tie-in-notice{background:rgba(201,168,76,.05);border:1px dashed var(--border);border-radius:6px;color:var(--text2);font-size:.8rem;padding:.55rem .75rem;margin-bottom:.5rem;font-style:italic}
 
-  .card-list-panel h4 {
-    color: var(--text2);
-    font-family: 'Cinzel', serif;
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-  .card-row {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    gap: 0.6rem;
-    padding: 0.3rem 0;
-    border-radius: 4px;
-    transition: background 0.15s;
-    padding-left: 0.25rem;
-    margin-left: -0.25rem;
-  }
-  .card-row:hover { background: var(--bg3); }
-  .card-qty {
-    color: var(--text2);
-    font-size: 0.85rem;
-    min-width: 18px;
-    text-align: right;
-  }
-  .card-name {
-    color: var(--text);
-    font-size: 0.95rem;
-  }
-  .card-row.land .card-name { color: var(--text2); font-style: italic; }
-  .section-divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 0.6rem 0;
-  }
-  .list-summary {
-    color: var(--text2);
-    font-size: 0.8rem;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--border);
-  }
-  .no-list-notice {
-    background: var(--bg3);
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-    padding: 1.25rem;
-    text-align: center;
-    color: var(--text2);
-    font-size: 0.9rem;
-  }
-  .no-list-notice a {
-    color: var(--gold);
-    text-decoration: none;
-  }
-  .no-list-notice a:hover { text-decoration: underline; }
+/* images panel */
+.card-images-panel{flex:1;overflow-y:auto;padding:1.1rem 1.25rem}
+.card-images-panel h4{color:var(--text2);font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.65rem}
+.card-images-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.5rem}
+.card-image-wrap{position:relative;cursor:pointer}
+.card-image-wrap img{border-radius:6px;display:block;width:100%;aspect-ratio:5/7;object-fit:cover;background:var(--bg3);transition:transform .2s,box-shadow .2s,outline .15s}
+.card-image-wrap:hover img{transform:translateY(-3px) scale(1.05);box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.card-image-wrap.highlighted img{outline:2px solid var(--gold);outline-offset:1px}
+.card-image-qty{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);border-radius:50%;color:var(--gold);font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;width:18px;height:18px;display:flex;align-items:center;justify-content:center}
+.card-placeholder{aspect-ratio:5/7;background:var(--bg3);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:.4rem;text-align:center}
+.card-placeholder span{color:var(--text2);font-size:.65rem;line-height:1.2}
+.loading-spinner{display:flex;align-items:center;justify-content:center;padding:2rem;color:var(--text2);font-size:.88rem;gap:.55rem}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.no-list-notice{flex:1;padding:2rem;display:flex;align-items:center;justify-content:center}
+.no-list-notice-inner{background:var(--bg3);border:1px dashed var(--border);border-radius:8px;padding:1.25rem;text-align:center;color:var(--text2);font-size:.88rem;max-width:360px}
+.no-list-notice-inner a{color:var(--gold);text-decoration:none}
+.no-list-notice-inner a:hover{text-decoration:underline}
 
-  /* Card images panel */
-  .card-images-panel {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1.25rem 1.5rem;
-  }
-  .card-images-panel h4 {
-    color: var(--text2);
-    font-family: 'Cinzel', serif;
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-  }
-  .card-images-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 0.6rem;
-  }
-  .card-image-wrap {
-    position: relative;
-    cursor: pointer;
-  }
-  .card-image-wrap img {
-    border-radius: 7px;
-    display: block;
-    transition: transform 0.2s, box-shadow 0.2s;
-    width: 100%;
-    aspect-ratio: 5/7;
-    object-fit: cover;
-    background: var(--bg3);
-  }
-  .card-image-wrap:hover img {
-    transform: translateY(-3px) scale(1.04);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-    z-index: 2;
-  }
-  .card-image-qty {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    background: rgba(0,0,0,0.75);
-    border-radius: 50%;
-    color: var(--gold);
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .card-image-wrap.loading img {
-    opacity: 0.4;
-  }
-  .card-placeholder {
-    aspect-ratio: 5/7;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding: 0.5rem;
-    text-align: center;
-  }
-  .card-placeholder span {
-    color: var(--text2);
-    font-size: 0.7rem;
-    line-height: 1.2;
-  }
-  .loading-spinner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    color: var(--text2);
-    font-size: 0.9rem;
-    gap: 0.6rem;
-  }
-  .spinner {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--border);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Scryfall attribution */
-  .scryfall-credit {
-    color: var(--text2);
-    font-size: 0.75rem;
-    padding: 0.5rem 1.5rem 1rem;
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .scryfall-credit a { color: var(--gold); text-decoration: none; }
-  .scryfall-credit a:hover { text-decoration: underline; }
+/* footer */
+.scryfall-credit{color:var(--text2);font-size:.72rem;padding:.45rem 1.4rem .75rem;border-top:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.scryfall-credit a{color:var(--gold);text-decoration:none}
 </style>
 </head>
 <body>
@@ -613,20 +189,29 @@
 <header class="site-header">
   <div class="header-top">
     <div class="site-logo">Jumpstart <span>Deck Browser</span></div>
-    <div class="header-search">
-      <span class="search-icon">⌕</span>
-      <input type="text" id="search-input" placeholder="Search decks…" autocomplete="off" spellcheck="false">
+    <div class="header-right">
+      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
+        <span class="dot"></span>My Collection
+      </button>
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="search-input" placeholder="Deck or card name…" autocomplete="off" spellcheck="false">
+        <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
+      </div>
     </div>
   </div>
-  <nav class="edition-tabs" role="tablist" aria-label="Edition filter">
-    <button class="tab active" role="tab" data-edition="all">All Editions</button>
-    <button class="tab" role="tab" data-edition="jmp">Jumpstart (2020)</button>
-    <button class="tab" role="tab" data-edition="j22">Jumpstart 2022</button>
-    <button class="tab" role="tab" data-edition="j21">Historic Horizons</button>
+  <nav class="edition-tabs" role="tablist">
+    <button class="tab active" data-edition="all">All Editions</button>
+    <button class="tab" data-edition="jmp">Jumpstart (2020)</button>
+    <button class="tab" data-edition="j22">Jumpstart 2022</button>
+    <button class="tab" data-edition="j21">Historic Horizons</button>
+    <button class="tab" data-edition="j25">Foundations (2024)</button>
+    <button class="tab" data-edition="atj">Avatar (2025)</button>
+    <button class="tab" data-edition="tie-ins">Set Tie-ins ↓</button>
   </nav>
 </header>
 
-<div class="filter-bar" role="toolbar" aria-label="Color filter">
+<div class="filter-bar" role="toolbar">
   <span class="filter-label">Color</span>
   <button class="color-btn all active" data-c="all">All</button>
   <button class="color-btn" data-c="W"><span class="pip" style="background:var(--mana-w)"></span>White</button>
@@ -634,17 +219,20 @@
   <button class="color-btn" data-c="B"><span class="pip" style="background:var(--mana-b)"></span>Black</button>
   <button class="color-btn" data-c="R"><span class="pip" style="background:var(--mana-r)"></span>Red</button>
   <button class="color-btn" data-c="G"><span class="pip" style="background:var(--mana-g)"></span>Green</button>
-  <button class="color-btn" data-c="M"><span class="pip" style="background:var(--mana-multi)"></span>Multicolor</button>
+  <button class="color-btn" data-c="M"><span class="pip" style="background:var(--mana-multi)"></span>Multi</button>
   <span class="results-count" id="results-count"></span>
 </div>
 
-<main id="main-content" role="main"></main>
+<main id="main-content"></main>
 
 <!-- Modal -->
-<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="Deck detail">
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal" id="modal">
     <div class="modal-header" id="modal-header"></div>
-    <div class="variant-tabs" id="variant-tabs" style="display:none"></div>
+    <div class="variant-row" id="variant-row" style="display:none">
+      <div class="variant-tabs" id="variant-tabs"></div>
+      <button class="own-toggle-btn not-owned" id="own-toggle-btn"></button>
+    </div>
     <div class="modal-body" id="modal-body"></div>
     <div class="scryfall-credit">
       <span>Card images via <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a></span>
@@ -655,21 +243,34 @@
 
 <script src="data.js"></script>
 <script>
-// ─── State ────────────────────────────────────────────────────────────────────
-let state = {
-  edition: 'all',
-  colors: new Set(),
-  search: '',
-  openDeckId: null,
-  openVariant: 0,
-  cardCache: {}
+// ─── OWNERSHIP (localStorage) ─────────────────────────────────────────────────
+function loadOwned() {
+  try { return new Set(JSON.parse(localStorage.getItem('jmp-owned') || '[]')); }
+  catch { return new Set(); }
+}
+function saveOwned() {
+  localStorage.setItem('jmp-owned', JSON.stringify([...state.owned]));
+}
+function ownedKey(deckId, vi) { return `${deckId}:${vi}`; }
+function isVariantOwned(deckId, vi) { return state.owned.has(ownedKey(deckId, vi)); }
+function isDeckOwned(deck) { return deck.variants.some((_, i) => isVariantOwned(deck.id, i)); }
+function toggleOwned(deckId, vi) {
+  const k = ownedKey(deckId, vi);
+  state.owned.has(k) ? state.owned.delete(k) : state.owned.add(k);
+  saveOwned();
+}
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+const state = {
+  edition: 'all', colors: new Set(), search: '',
+  openDeckId: null, openEditionId: null, openVariant: 0,
+  cardCache: {}, owned: loadOwned(), showOwnedOnly: false
 };
 
-// ─── Mana color helpers ───────────────────────────────────────────────────────
-const COLOR_NAMES = { W:'White', U:'Blue', B:'Black', R:'Red', G:'Green' };
-const COLOR_PIP_CLASS = { W:'pip-W', U:'pip-U', B:'pip-B', R:'pip-R', G:'pip-G' };
-const BASIC_LAND = { W:'Plains', U:'Island', B:'Swamp', R:'Mountain', G:'Forest' };
-const BASIC_SCRYFALL = {
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+const COLOR_PIP = { W:'pip-W', U:'pip-U', B:'pip-B', R:'pip-R', G:'pip-G' };
+const COLOR_NAME = { W:'White', U:'Blue', B:'Black', R:'Red', G:'Green' };
+const BASIC_IMG = {
   Plains: 'https://cards.scryfall.io/normal/front/b/5/b5b8c2e5-8cbf-4ba3-842d-9d0c93308c4f.jpg',
   Island: 'https://cards.scryfall.io/normal/front/b/3/b3a6b9ba-c714-4f14-a7ae-cc3f8f70e00b.jpg',
   Swamp: 'https://cards.scryfall.io/normal/front/e/5/e5cb0f38-d6b6-4d6c-aee3-84df2f413d66.jpg',
@@ -677,124 +278,119 @@ const BASIC_SCRYFALL = {
   Forest: 'https://cards.scryfall.io/normal/front/4/c/4c72da84-4ef8-4cc4-9e8e-d4dbf9b4b9f3.jpg',
 };
 
-function isMulticolor(deck) { return deck.colors.length > 1; }
-
-function colorMatchesDeck(deck, filterColors) {
-  if (!filterColors || filterColors.size === 0) return true;
-  if (filterColors.has('M')) {
-    if (isMulticolor(deck)) return true;
-  }
-  for (const c of filterColors) {
-    if (c !== 'M' && deck.colors.includes(c)) return true;
-  }
-  return false;
+function hasCardList(deck) { return deck.variants.some(v => v.cards && v.cards.length > 0); }
+function isMulti(deck) { return deck.colors.length > 1; }
+function colorMatch(deck, set) {
+  if (!set || set.size === 0) return true;
+  if (set.has('M') && isMulti(deck)) return true;
+  return deck.colors.some(c => set.has(c));
 }
 
-function hasCardList(deck) {
-  return deck.variants.some(v => v.cards && v.cards.length > 0);
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-// ─── Filter & render grid ─────────────────────────────────────────────────────
-function getFilteredDecks() {
-  const results = [];
-  for (const edition of DECK_DATA.editions) {
-    if (state.edition !== 'all' && edition.id !== state.edition) continue;
-    const filteredDecks = edition.decks.filter(deck => {
-      if (state.colors.size > 0 && !colorMatchesDeck(deck, state.colors)) return false;
-      if (state.search) {
-        const q = state.search.toLowerCase();
-        if (!deck.name.toLowerCase().includes(q) &&
-            !(deck.headliner && deck.headliner.toLowerCase().includes(q))) return false;
+// Search: check deck name, headliner, AND all card names in all variants
+function deckMatchesSearch(deck, q) {
+  if (!q) return { match: true, type: null, matches: [] };
+  const ql = q.toLowerCase();
+  if (deck.name.toLowerCase().includes(ql)) return { match: true, type: 'name', matches: [] };
+  if (deck.headliner && deck.headliner.toLowerCase().includes(ql)) return { match: true, type: 'name', matches: [] };
+  const cardMatches = [];
+  for (const v of deck.variants) {
+    for (const c of (v.cards || [])) {
+      if (!c.basic && c.name.toLowerCase().includes(ql) && !cardMatches.includes(c.name)) {
+        cardMatches.push(c.name);
       }
-      return true;
-    });
-    if (filteredDecks.length > 0) {
-      results.push({ edition, decks: filteredDecks });
     }
   }
-  return results;
+  if (cardMatches.length > 0) return { match: true, type: 'card', matches: cardMatches };
+  return { match: false, type: null, matches: [] };
+}
+
+// ─── RENDER GRID ──────────────────────────────────────────────────────────────
+const TIE_IN_IDS = new Set(['jdmu','jbro','jone','jmom','jltr','jltr2']);
+
+function getFilteredData() {
+  const groups = [];
+  let total = 0;
+  for (const ed of DECK_DATA.editions) {
+    const isTieIn = TIE_IN_IDS.has(ed.id);
+    if (state.edition === 'tie-ins' && !isTieIn) continue;
+    if (state.edition !== 'all' && state.edition !== 'tie-ins' && ed.id !== state.edition) continue;
+    if (state.edition === 'all' && isTieIn) continue; // hide tie-ins from "all" unless selected
+    const q = state.search;
+    const filteredDecks = [];
+    for (const deck of ed.decks) {
+      if (!colorMatch(deck, state.colors)) continue;
+      if (state.showOwnedOnly && !isDeckOwned(deck)) continue;
+      const sr = deckMatchesSearch(deck, q);
+      if (!sr.match) continue;
+      filteredDecks.push({ deck, searchResult: sr });
+    }
+    if (filteredDecks.length > 0) { groups.push({ edition: ed, decks: filteredDecks }); total += filteredDecks.length; }
+  }
+  return { groups, total };
 }
 
 function renderGrid() {
   const main = document.getElementById('main-content');
-  const groups = getFilteredDecks();
-  const totalDecks = groups.reduce((s, g) => s + g.decks.length, 0);
+  const { groups, total } = getFilteredData();
+  const badge = document.getElementById('search-mode-badge');
+  const isCardSearch = state.search && groups.some(g => g.decks.some(d => d.searchResult.type === 'card'));
+  badge.style.display = isCardSearch ? 'flex' : 'none';
+  document.getElementById('results-count').textContent = total > 0 ? `${total} deck${total !== 1 ? 's' : ''}` : '';
 
-  document.getElementById('results-count').textContent =
-    totalDecks > 0 ? `${totalDecks} deck${totalDecks !== 1 ? 's' : ''}` : '';
-
-  if (totalDecks === 0) {
-    main.innerHTML = `
-      <div class="empty-state">
-        <div class="glyph">🔮</div>
-        <h3>No decks found</h3>
-        <p>Try adjusting your filters or search term.</p>
-      </div>`;
+  if (total === 0) {
+    main.innerHTML = `<div class="empty-state"><div class="glyph">🔮</div><h3>No decks found</h3><p>Try adjusting your filters or search term.</p></div>`;
     return;
   }
 
   let html = '';
-  const showEditionHeading = state.edition === 'all' || groups.length > 1;
-
+  const showEdHead = state.edition === 'all' || groups.length > 1;
   for (const { edition, decks } of groups) {
-    if (showEditionHeading) {
-      html += `<section class="edition-section">
-        <h2 class="edition-heading">${edition.name} <em style="font-weight:400;font-size:0.85em;color:var(--text2)">(${edition.year})</em></h2>
-        <div class="deck-grid">`;
-    } else {
-      html += `<section class="edition-section"><div class="deck-grid">`;
-    }
+    if (showEdHead) html += `<section class="edition-section"><h2 class="edition-heading">${esc(edition.name)} <em style="font-weight:400;font-size:.85em;color:var(--text2)">(${edition.year})</em></h2><div class="deck-grid">`;
+    else html += `<section class="edition-section"><div class="deck-grid">`;
 
-    for (const deck of decks) {
-      const pips = deck.colors.map(c =>
-        `<span class="color-pip ${COLOR_PIP_CLASS[c] || ''}" title="${COLOR_NAMES[c] || c}"></span>`
-      ).join('');
-      const varCount = deck.variants.length;
-      const badge = hasCardList(deck)
-        ? `<span class="has-list-badge">List ✓</span>`
-        : `<span class="no-list-badge">No list</span>`;
+    for (const { deck, searchResult } of decks) {
+      const pips = deck.colors.map(c => `<span class="color-pip ${COLOR_PIP[c]||''}" title="${COLOR_NAME[c]||c}"></span>`).join('');
+      const owned = isDeckOwned(deck);
+      const dots = deck.variants.map((_, i) => `<span class="var-dot ${isVariantOwned(deck.id, i) ? 'owned' : 'unowned'}" title="Variant ${i+1}${isVariantOwned(deck.id,i)?' – Owned':''}"></span>`).join('');
+      const listBadge = hasCardList(deck) ? `<span class="has-list-badge">List ✓</span>` : `<span class="no-list-badge">No list</span>`;
+      const matchHint = searchResult.type === 'card' && searchResult.matches.length > 0
+        ? `<div class="card-match-hint">Contains: ${esc(searchResult.matches.slice(0,2).join(', '))}${searchResult.matches.length > 2 ? '…' : ''}</div>` : '';
 
-      html += `
-        <button class="deck-card" data-deck="${deck.id}" data-edition="${edition.id}"
-          aria-label="View ${deck.name} deck" tabindex="0">
-          <div class="deck-name">${deck.name}</div>
-          ${deck.headliner ? `<div class="deck-headliner">${deck.headliner}</div>` : ''}
-          <div class="deck-footer">
-            <div class="color-pips">${pips}</div>
-            <div style="display:flex;align-items:center;gap:.4rem">
-              ${varCount > 1 ? `<span class="variant-count">${varCount} var.</span>` : ''}
-              ${badge}
-            </div>
+      html += `<button class="deck-card${owned ? ' owned-card' : ''}" data-deck="${deck.id}" data-ed="${edition.id}" tabindex="0">
+        <div class="deck-name">${esc(deck.name)}</div>
+        ${deck.headliner ? `<div class="deck-headliner">${esc(deck.headliner)}</div>` : ''}
+        ${matchHint}
+        <div class="deck-footer">
+          <div class="color-pips">${pips}</div>
+          <div class="deck-meta">
+            ${deck.variants.length > 1 ? `<div class="var-dots">${dots}</div>` : (owned ? `<div class="var-dots">${dots}</div>` : '')}
+            ${listBadge}
           </div>
-        </button>`;
+        </div>
+      </button>`;
     }
     html += `</div></section>`;
   }
-
   main.innerHTML = html;
 
   main.querySelectorAll('.deck-card').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const deckId = btn.dataset.deck;
-      const editionId = btn.dataset.edition;
-      openDeck(deckId, editionId);
-    });
+    btn.addEventListener('click', () => openDeck(btn.dataset.deck, btn.dataset.ed));
   });
 }
 
-// ─── Modal ────────────────────────────────────────────────────────────────────
+// ─── MODAL ────────────────────────────────────────────────────────────────────
 function openDeck(deckId, editionId) {
-  const edition = DECK_DATA.editions.find(e => e.id === editionId);
-  const deck = edition && edition.decks.find(d => d.id === deckId);
+  const ed = DECK_DATA.editions.find(e => e.id === editionId);
+  const deck = ed && ed.decks.find(d => d.id === deckId);
   if (!deck) return;
-
-  state.openDeckId = deckId;
-  state.openVariant = 0;
-
-  renderModal(deck, edition);
+  state.openDeckId = deckId; state.openEditionId = editionId; state.openVariant = 0;
+  renderModal(deck, ed);
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  document.getElementById('modal-overlay').focus();
 }
 
 function closeModal() {
@@ -803,228 +399,184 @@ function closeModal() {
   state.openDeckId = null;
 }
 
-function renderModal(deck, edition) {
+function renderModal(deck, ed) {
   const vi = state.openVariant;
   const variant = deck.variants[vi];
-  const pips = deck.colors.map(c =>
-    `<span class="color-pip ${COLOR_PIP_CLASS[c] || ''}" style="width:18px;height:18px" title="${COLOR_NAMES[c] || c}"></span>`
-  ).join('');
+  const pips = deck.colors.map(c => `<span class="color-pip ${COLOR_PIP[c]||''}" style="width:17px;height:17px" title="${COLOR_NAME[c]||c}"></span>`).join('');
 
   // Header
   document.getElementById('modal-header').innerHTML = `
     <div class="modal-header-info">
-      <div class="modal-title" style="display:flex;align-items:center;gap:.6rem">
-        ${deck.name}
-        <span style="display:flex;gap:4px">${pips}</span>
-      </div>
-      ${deck.headliner ? `<div class="modal-headliner">${deck.headliner}</div>` : ''}
+      <div class="modal-title">${esc(deck.name)}<span style="display:flex;gap:3px">${pips}</span></div>
+      ${deck.headliner ? `<div class="modal-headliner">${esc(deck.headliner)}</div>` : ''}
     </div>
-    <button class="modal-close" id="modal-close-btn" aria-label="Close">✕</button>`;
-
+    <button class="modal-close" id="modal-close-btn">✕</button>`;
   document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  document.getElementById('modal-edition-label').textContent = `${ed.name} · ${ed.year}`;
 
-  // Variant tabs
+  // Variant row
+  const varRow = document.getElementById('variant-row');
   const vtabs = document.getElementById('variant-tabs');
   if (deck.variants.length > 1) {
-    vtabs.style.display = 'flex';
-    vtabs.innerHTML = deck.variants.map((v, i) =>
-      `<button class="variant-tab ${i === vi ? 'active' : ''}" data-vi="${i}">${v.label}</button>`
-    ).join('');
+    varRow.style.display = 'flex';
+    vtabs.innerHTML = deck.variants.map((v, i) => {
+      const owned = isVariantOwned(deck.id, i);
+      return `<button class="variant-tab${i === vi ? ' active' : ''}" data-vi="${i}">
+        <span class="vtab-own-dot${owned ? ' owned' : ''}"></span>${esc(v.label)}
+      </button>`;
+    }).join('');
     vtabs.querySelectorAll('.variant-tab').forEach(t => {
-      t.addEventListener('click', () => {
-        state.openVariant = parseInt(t.dataset.vi);
-        renderModal(deck, edition);
-      });
+      t.addEventListener('click', () => { state.openVariant = parseInt(t.dataset.vi); renderModal(deck, ed); });
     });
   } else {
-    vtabs.style.display = 'none';
+    varRow.style.display = deck.variants.length === 1 ? 'flex' : 'none';
+    vtabs.innerHTML = '';
   }
 
-  // Edition label
-  document.getElementById('modal-edition-label').textContent =
-    `${edition.name} · ${edition.year}`;
+  // Own toggle button
+  const ownBtn = document.getElementById('own-toggle-btn');
+  const ownedNow = isVariantOwned(deck.id, vi);
+  ownBtn.className = `own-toggle-btn ${ownedNow ? 'is-owned' : 'not-owned'}`;
+  ownBtn.innerHTML = ownedNow
+    ? `<span class="own-check">✓</span> Owned`
+    : `<span class="own-check">○</span> Mark Owned`;
+  ownBtn.onclick = () => {
+    toggleOwned(deck.id, vi);
+    renderModal(deck, ed);
+    renderGrid();
+  };
 
   // Body
-  const bodyEl = document.getElementById('modal-body');
+  const body = document.getElementById('modal-body');
   if (!variant.cards || variant.cards.length === 0) {
-    bodyEl.innerHTML = `
-      <div style="flex:1;padding:2rem;display:flex;align-items:center;justify-content:center">
-        <div class="no-list-notice" style="max-width:400px">
-          <p style="font-size:1rem;color:var(--text);margin-bottom:.5rem">No card list yet</p>
-          <p>This deck's card list hasn't been added yet. Want to help?
-          <a href="https://github.com/jumpstart-deck-browser/jumpstart-deck-browser/blob/main/data.js" target="_blank" rel="noopener">
-          Contribute on GitHub →</a></p>
-        </div>
-      </div>`;
+    body.innerHTML = `<div class="no-list-notice"><div class="no-list-notice-inner">
+      <p style="font-size:1rem;color:var(--text);margin-bottom:.5rem">No card list yet</p>
+      <p>Help add it on <a href="https://github.com/your-repo/jumpstart-browser" target="_blank" rel="noopener">GitHub →</a></p>
+    </div></div>`;
     return;
   }
 
-  // Separate lands from spells
   const lands = variant.cards.filter(c => c.basic);
   const spells = variant.cards.filter(c => !c.basic);
+  const total = variant.cards.reduce((s, c) => s + c.qty, 0);
 
-  let listHtml = `<h4>Card List</h4>`;
-  if (spells.length > 0) {
-    listHtml += spells.map(c => `
-      <div class="card-row" data-card="${escHtml(c.name)}" tabindex="0" role="button" aria-label="Highlight ${c.name}">
-        <span class="card-qty">${c.qty}×</span>
-        <span class="card-name">${escHtml(c.name)}</span>
-      </div>`).join('');
-  }
-  if (lands.length > 0) {
-    if (spells.length > 0) listHtml += `<hr class="section-divider">`;
-    listHtml += lands.map(c => `
-      <div class="card-row land" data-card="${escHtml(c.name)}" tabindex="0" role="button" aria-label="Highlight ${c.name}">
-        <span class="card-qty">${c.qty}×</span>
-        <span class="card-name">${escHtml(c.name)}</span>
-      </div>`).join('');
-  }
-  const totalCards = variant.cards.reduce((s, c) => s + c.qty, 0);
-  listHtml += `<div class="list-summary">${totalCards} cards total</div>`;
+  // Tie-in edition notice (random rare slot)
+  const edObj = DECK_DATA.editions.find(e => e.id === state.openEditionId);
+  const tieInNote = edObj?.note ? `<div class="tie-in-notice">⚠ ${esc(edObj.note)}</div>` : '';
 
-  bodyEl.innerHTML = `
+  let listHtml = `${tieInNote}<h4>Card List (${total})</h4>`;
+  spells.forEach(c => { listHtml += `<div class="card-row" data-card="${esc(c.name)}"><span class="card-qty">${c.qty}×</span><span class="card-name-list">${esc(c.name)}</span></div>`; });
+  if (lands.length) {
+    listHtml += `<hr class="section-divider">`;
+    lands.forEach(c => { listHtml += `<div class="card-row land" data-card="${esc(c.name)}"><span class="card-qty">${c.qty}×</span><span class="card-name-list">${esc(c.name)}</span></div>`; });
+  }
+  listHtml += `<div class="list-summary">${total} cards · ${spells.length} spells · ${lands.reduce((s,c)=>s+c.qty,0)} lands</div>`;
+
+  body.innerHTML = `
     <div class="card-list-panel" id="card-list-panel">${listHtml}</div>
-    <div class="card-images-panel" id="card-images-panel">
-      <h4>Card Images</h4>
-      <div class="loading-spinner"><div class="spinner"></div> Loading cards…</div>
-    </div>`;
+    <div class="card-images-panel" id="card-images-panel"><h4>Card Images</h4><div class="loading-spinner"><div class="spinner"></div>Loading…</div></div>`;
 
-  // Card highlight interaction
+  // Highlight on click
   let highlighted = null;
-  bodyEl.querySelectorAll('.card-row').forEach(row => {
+  body.querySelectorAll('.card-row').forEach(row => {
     row.addEventListener('click', () => {
-      if (highlighted) highlighted.style.background = '';
+      if (highlighted) highlighted.classList.remove('highlighted');
       if (highlighted === row) { highlighted = null; return; }
-      row.style.background = 'rgba(201,168,76,0.12)';
-      highlighted = row;
-      const name = row.dataset.card;
-      highlightCardImage(name);
+      row.classList.add('highlighted'); highlighted = row;
+      highlightImg(row.dataset.card);
     });
   });
 
-  fetchAndRenderImages(deck, variant);
+  fetchImages(deck, variant);
 }
 
-let lastFetchController = null;
-
-async function fetchAndRenderImages(deck, variant) {
+let fetchCtrl = null;
+async function fetchImages(deck, variant) {
   const panel = document.getElementById('card-images-panel');
   if (!panel) return;
+  if (fetchCtrl) fetchCtrl.abort();
+  fetchCtrl = new AbortController();
+  const signal = fetchCtrl.signal;
 
-  if (lastFetchController) lastFetchController.abort();
-  lastFetchController = new AbortController();
-  const signal = lastFetchController.signal;
+  const key = `${deck.id}:${state.openVariant}`;
+  if (state.cardCache[key]) { renderImages(panel, variant, state.cardCache[key]); return; }
 
-  // Use cached data if available
-  const cacheKey = `${deck.id}-${state.openVariant}`;
-  if (state.cardCache[cacheKey]) {
-    renderImages(panel, variant, state.cardCache[cacheKey]);
-    return;
-  }
-
-  // Collect unique non-basic card names
-  const uniqueNames = [...new Set(
-    variant.cards.filter(c => !c.basic).map(c => c.name)
-  )];
-
-  if (uniqueNames.length === 0) {
-    renderImages(panel, variant, {});
-    return;
-  }
+  const names = [...new Set(variant.cards.filter(c => !c.basic).map(c => c.name))];
+  if (!names.length) { renderImages(panel, variant, {}); return; }
 
   try {
-    const resp = await fetch('https://api.scryfall.com/cards/collection', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ identifiers: uniqueNames.map(n => ({ name: n })) }),
-      signal
+    const r = await fetch('https://api.scryfall.com/cards/collection', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ identifiers: names.map(n => ({ name: n })) }), signal
     });
-    if (!resp.ok) throw new Error('Scryfall error');
-    const data = await resp.json();
-    const imageMap = {};
-    for (const card of (data.data || [])) {
-      const img = card.image_uris
-        ? card.image_uris.normal
-        : (card.card_faces && card.card_faces[0].image_uris
-            ? card.card_faces[0].image_uris.normal
-            : null);
-      if (img) imageMap[card.name] = { img, url: card.scryfall_uri };
+    if (!r.ok) throw new Error();
+    const d = await r.json();
+    const map = {};
+    for (const card of (d.data || [])) {
+      const img = card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal || null;
+      if (img) map[card.name] = { img, url: card.scryfall_uri, rarity: card.rarity || 'common' };
     }
-    state.cardCache[cacheKey] = imageMap;
-    if (!signal.aborted) renderImages(panel, variant, imageMap);
-  } catch (e) {
-    if (!signal || !signal.aborted) {
-      renderImages(panel, variant, {});
-    }
+    state.cardCache[key] = map;
+    if (!signal.aborted) renderImages(panel, variant, map);
+  } catch(e) {
+    if (!signal?.aborted) renderImages(panel, variant, {});
   }
 }
 
-function renderImages(panel, variant, imageMap) {
+const RARITY_ABBR = { common:'C', uncommon:'U', rare:'R', mythic:'M', special:'S', bonus:'S' };
+const RARITY_CLS  = { common:'rarity-c', uncommon:'rarity-u', rare:'rarity-r', mythic:'rarity-m', special:'rarity-s', bonus:'rarity-s' };
+
+function renderImages(panel, variant, map) {
   if (!panel || !panel.isConnected) return;
+  const order = [...variant.cards.filter(c => !c.basic), ...variant.cards.filter(c => c.basic)];
   let html = `<h4>Card Images</h4><div class="card-images-grid">`;
-
-  // Spells first, then basics
-  const order = [
-    ...variant.cards.filter(c => !c.basic),
-    ...variant.cards.filter(c => c.basic)
-  ];
-
   for (const card of order) {
-    const info = card.basic ? null : imageMap[card.name];
-    const imgSrc = card.basic
-      ? (BASIC_SCRYFALL[card.name] || '')
-      : (info ? info.img : '');
-    const linkUrl = card.basic ? '' : (info ? info.url : '');
-
-    const inner = imgSrc
-      ? `<img src="${escHtml(imgSrc)}" alt="${escHtml(card.name)}" loading="lazy"
-              onerror="this.parentElement.innerHTML='<div class=\\'card-placeholder\\'><span>${escHtml(card.name)}</span></div>'">`
-      : `<div class="card-placeholder"><span>${escHtml(card.name)}</span></div>`;
-
-    html += card.qty > 1
-      ? `<div class="card-image-wrap" data-img-card="${escHtml(card.name)}"
-              ${linkUrl ? `onclick="window.open('${escHtml(linkUrl)}','_blank')"` : ''}>
-            ${inner}
-            <span class="card-image-qty">${card.qty}</span>
-          </div>`
-      : `<div class="card-image-wrap" data-img-card="${escHtml(card.name)}"
-              ${linkUrl ? `onclick="window.open('${escHtml(linkUrl)}','_blank')"` : ''}>
-            ${inner}
-          </div>`;
+    const info = card.basic ? null : map[card.name];
+    const src = card.basic ? (BASIC_IMG[card.name] || '') : (info?.img || '');
+    const url = info?.url || '';
+    const inner = src
+      ? `<img src="${esc(src)}" alt="${esc(card.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'card-placeholder\\'><span>${esc(card.name)}</span></div>'">`
+      : `<div class="card-placeholder"><span>${esc(card.name)}</span></div>`;
+    html += `<div class="card-image-wrap" data-img-card="${esc(card.name)}" ${url ? `onclick="window.open('${esc(url)}','_blank')"` : ''}>
+      ${inner}${card.qty > 1 ? `<span class="card-image-qty">${card.qty}</span>` : ''}
+    </div>`;
   }
-
   html += `</div>`;
   panel.innerHTML = html;
-}
 
-function highlightCardImage(name) {
-  const panel = document.getElementById('card-images-panel');
-  if (!panel) return;
-  panel.querySelectorAll('.card-image-wrap').forEach(el => {
-    el.style.outline = '';
-  });
-  const target = panel.querySelector(`[data-img-card="${CSS.escape(name)}"]`);
-  if (target) {
-    target.style.outline = '2px solid var(--gold)';
-    target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  // Update card list rarities now that we have Scryfall data
+  const listPanel = document.getElementById('card-list-panel');
+  if (listPanel) {
+    listPanel.querySelectorAll('.card-row[data-card]').forEach(row => {
+      const name = row.dataset.card;
+      const info = map[name];
+      if (info?.rarity) {
+        const existing = row.querySelector('.rarity-badge');
+        if (existing) existing.remove();
+        const badge = document.createElement('span');
+        badge.className = `rarity-badge ${RARITY_CLS[info.rarity] || 'rarity-c'}`;
+        badge.textContent = RARITY_ABBR[info.rarity] || info.rarity[0].toUpperCase();
+        badge.title = info.rarity.charAt(0).toUpperCase() + info.rarity.slice(1);
+        row.appendChild(badge);
+      }
+    });
   }
 }
 
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+function highlightImg(name) {
+  const panel = document.getElementById('card-images-panel');
+  if (!panel) return;
+  panel.querySelectorAll('.card-image-wrap').forEach(el => el.classList.remove('highlighted'));
+  const t = panel.querySelector(`[data-img-card="${CSS.escape(name)}"]`);
+  if (t) { t.classList.add('highlighted'); t.scrollIntoView({ block:'nearest', behavior:'smooth' }); }
 }
 
-// ─── Event listeners ──────────────────────────────────────────────────────────
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    state.edition = tab.dataset.edition;
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    state.edition = t.dataset.edition;
     renderGrid();
   });
 });
@@ -1038,16 +590,9 @@ document.querySelectorAll('.color-btn').forEach(btn => {
       btn.classList.add('active');
     } else {
       document.querySelector('.color-btn.all').classList.remove('active');
-      if (state.colors.has(c)) {
-        state.colors.delete(c);
-        btn.classList.remove('active');
-      } else {
-        state.colors.add(c);
-        btn.classList.add('active');
-      }
-      if (state.colors.size === 0) {
-        document.querySelector('.color-btn.all').classList.add('active');
-      }
+      state.colors.has(c) ? state.colors.delete(c) : state.colors.add(c);
+      btn.classList.toggle('active', state.colors.has(c));
+      if (state.colors.size === 0) document.querySelector('.color-btn.all').classList.add('active');
     }
     renderGrid();
   });
@@ -1056,10 +601,13 @@ document.querySelectorAll('.color-btn').forEach(btn => {
 let searchTimer;
 document.getElementById('search-input').addEventListener('input', e => {
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    state.search = e.target.value.trim();
-    renderGrid();
-  }, 200);
+  searchTimer = setTimeout(() => { state.search = e.target.value.trim(); renderGrid(); }, 180);
+});
+
+document.getElementById('owned-only-btn').addEventListener('click', () => {
+  state.showOwnedOnly = !state.showOwnedOnly;
+  document.getElementById('owned-only-btn').classList.toggle('active', state.showOwnedOnly);
+  renderGrid();
 });
 
 document.getElementById('modal-overlay').addEventListener('click', e => {
@@ -1069,12 +617,11 @@ document.getElementById('modal-overlay').addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
   if (e.key === '/' && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
-    e.preventDefault();
-    document.getElementById('search-input').focus();
+    e.preventDefault(); document.getElementById('search-input').focus();
   }
 });
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 renderGrid();
 </script>
 </body>
