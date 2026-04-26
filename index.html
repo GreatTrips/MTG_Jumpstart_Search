@@ -192,10 +192,9 @@ main{padding:1.5rem .5rem 1.5rem 1.25rem;max-width:1400px;margin:0 auto;display:
 .scryfall-credit a{color:var(--gold);text-decoration:none}
 
 /* ── Variant cards (My Collection mode) ── */
-.variant-card{border-color:rgba(92,184,92,.35) !important;box-shadow:0 0 0 1px rgba(92,184,92,.1) inset}
-.variant-card .deck-name{font-size:.72rem;color:var(--text2);font-family:'Crimson Pro',serif;font-weight:400;margin-bottom:.1rem;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.variant-card .variant-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:.38rem;line-height:1.2}
-.variant-card .edition-badge{font-size:.62rem;padding:.12rem .4rem;border-radius:10px;background:rgba(92,184,92,.1);color:var(--own-color);font-family:'Cinzel',serif;letter-spacing:.04em;display:inline-block;margin-bottom:.38rem}
+/* variant-card uses same styling as deck-card — just shown one per owned variant */
+.variant-card{border-color:rgba(92,184,92,.35);box-shadow:0 0 0 1px rgba(92,184,92,.1) inset}
+.variant-card .variant-label{font-size:.72rem;color:var(--own-color);font-family:'Cinzel',serif;font-weight:600;letter-spacing:.04em;margin-bottom:.2rem;opacity:.85}
 .owned-check-mark{font-size:.75rem;color:var(--own-color)}
 
 /* ── Import tool ── */
@@ -29982,7 +29981,24 @@ function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
 let liveData = (() => {
   try {
     const saved = localStorage.getItem('jmp-live-data');
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const loaded = JSON.parse(saved);
+      // Merge any editions present in DECK_DATA but missing from localStorage
+      // (e.g. J21 added after a taw rebuild that didn't include it)
+      const loadedIds = new Set(loaded.editions.map(e => e.id));
+      for (const ed of DECK_DATA.editions) {
+        if (!loadedIds.has(ed.id)) {
+          // Insert in correct position based on DECK_DATA order
+          const idx = DECK_DATA.editions.indexOf(ed);
+          const insertBefore = loaded.editions.findIndex(le =>
+            DECK_DATA.editions.indexOf(DECK_DATA.editions.find(de => de.id === le.id)) > idx
+          );
+          if (insertBefore === -1) loaded.editions.push(deepClone(ed));
+          else loaded.editions.splice(insertBefore, 0, deepClone(ed));
+        }
+      }
+      return loaded;
+    }
   } catch(e) {}
   return deepClone(DECK_DATA);
 })();
@@ -30183,8 +30199,9 @@ function renderGrid() {
           const hasCards = v.cards && v.cards.length > 0;
           const showVariantLabel = deck.variants.length > 1;
           html += `<button class="deck-card variant-card owned-card" data-deck="${deck.id}" data-ed="${edition.id}" data-vi="${vi}" tabindex="0">
-            ${showVariantLabel ? `<div class="deck-name">${esc(deck.name)}</div><div class="variant-title">${esc(v.label)}</div>` : `<div class="variant-title" style="font-size:.88rem">${esc(deck.name)}</div>`}
-            <div style="margin-bottom:.4rem"><span class="edition-badge">${esc(edition.code || edition.id.toUpperCase())}</span></div>
+            <div class="variant-label">${esc(v.label)}</div>
+            <div class="deck-name">${esc(deck.name)}</div>
+            ${deck.headliner ? `<div class="deck-headliner">${esc(deck.headliner)}</div>` : ''}
             <div class="deck-footer">
               <div class="color-pips">${pips}</div>
               <div class="deck-meta">
