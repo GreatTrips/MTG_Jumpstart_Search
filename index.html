@@ -65,19 +65,16 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .results-count{margin-left:auto;color:var(--text2);font-size:.8rem;white-space:nowrap;font-family:'Crimson Pro',serif}
 
 /* ── Grid ── */
-main{padding:1.5rem .5rem 1.5rem 1.25rem;max-width:1400px;margin:0 auto;display:flex;gap:.5rem;align-items:flex-start}
-#main-content{flex:1;min-width:0}
-.letter-sidebar{display:flex;flex-direction:column;align-items:center;gap:1px;position:sticky;top:150px;flex-shrink:0;padding:.25rem 0;user-select:none}
-.letter-btn{align-items:center;background:none;border:none;border-radius:4px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.62rem;font-weight:600;height:18px;justify-content:center;letter-spacing:.03em;padding:0;transition:color .12s,background .12s;width:22px}
-.letter-btn:hover,.letter-btn.hovered{background:rgba(201,168,76,.15);color:var(--gold)}
-.letter-btn.locked{background:rgba(201,168,76,.22);color:var(--gold);outline:1px solid rgba(201,168,76,.5)}
-.letter-btn.empty{color:var(--bg3);cursor:default;pointer-events:none}
-.letter-btn.clear-btn{color:var(--text2);font-size:.55rem;height:16px;margin-top:3px;border:1px solid var(--border);border-radius:3px;width:22px}
-.letter-btn.clear-btn:hover{border-color:var(--border-hover);color:var(--text)}
+main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
 .edition-section{margin-bottom:2.5rem}
-.edition-heading{font-family:'Cinzel',serif;font-size:1rem;font-weight:600;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem;display:flex;align-items:center;gap:.65rem}
+.edition-heading{font-family:'Cinzel',serif;font-size:1rem;font-weight:600;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.65rem;display:flex;align-items:center;gap:.65rem}
+.edition-count{color:var(--text2);font-family:'Crimson Pro',serif;font-size:.82rem;font-weight:400;text-transform:none;letter-spacing:0}
 .edition-heading::after{content:'';flex:1;height:1px;background:var(--border)}
-.deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.75rem}
+.deck-grid{display:flex;flex-wrap:nowrap;gap:.65rem;overflow-x:auto;padding-bottom:.5rem;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.deck-grid::-webkit-scrollbar{height:4px}
+.deck-grid::-webkit-scrollbar-track{background:transparent}
+.deck-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.deck-card{flex:0 0 175px;width:175px}
 
 /* ── Deck card ── */
 .deck-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;padding:.9rem 1rem;transition:border-color .2s,background .2s,transform .15s;position:relative;overflow:hidden;text-align:left;width:100%}
@@ -192,17 +189,18 @@ main{padding:1.5rem .5rem 1.5rem 1.25rem;max-width:1400px;margin:0 auto;display:
 .scryfall-credit a{color:var(--gold);text-decoration:none}
 
 /* ── Variant cards (My Collection mode) ── */
-/* variant-card uses same styling as deck-card — just shown one per owned variant */
-.variant-card{border-color:rgba(92,184,92,.35);box-shadow:0 0 0 1px rgba(92,184,92,.1) inset}
-.variant-card .variant-label{font-size:.72rem;color:var(--own-color);font-family:'Cinzel',serif;font-weight:600;letter-spacing:.04em;margin-bottom:.2rem;opacity:.85}
+.variant-card{border-color:rgba(92,184,92,.35) !important;box-shadow:0 0 0 1px rgba(92,184,92,.1) inset}
+.variant-card .deck-name{font-size:.72rem;color:var(--text2);font-family:'Crimson Pro',serif;font-weight:400;margin-bottom:.1rem;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.variant-card .variant-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:.38rem;line-height:1.2}
+.variant-card .edition-badge{font-size:.62rem;padding:.12rem .4rem;border-radius:10px;background:rgba(92,184,92,.1);color:var(--own-color);font-family:'Cinzel',serif;letter-spacing:.04em;display:inline-block;margin-bottom:.38rem}
 .owned-check-mark{font-size:.75rem;color:var(--own-color)}
 
 /* ── Import tool ── */
 .import-btn{align-items:center;background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.4rem .75rem;transition:all .2s;white-space:nowrap}
 .import-btn:hover{border-color:var(--border-hover);color:var(--text)}
 .import-modal{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.82);backdrop-filter:blur(4px)}
-.import-modal.open{display:flex;align-items:center;justify-content:center;padding:1rem}
-.import-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;max-width:760px;width:100%;height:min(640px,88vh);overflow:hidden}
+.import-modal.open{display:flex;align-items:flex-start;justify-content:center;padding:.75rem;overflow-y:auto}
+.import-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;max-width:940px;width:100%;overflow:hidden;margin:auto}
 .import-header{border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.3rem;flex-shrink:0}
 .import-header h2{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1}
 /* MTGJSON fetch bar */
@@ -218,12 +216,11 @@ main{padding:1.5rem .5rem 1.5rem 1.25rem;max-width:1400px;margin:0 auto;display:
 .fetch-search:focus{border-color:var(--gold)}
 .fetch-search::placeholder{color:var(--text2)}
 /* main body grid */
-.import-body{display:grid;grid-template-columns:230px 1fr;flex:1;min-height:0;overflow:hidden;height:0}
-@media(max-width:600px){.import-body{grid-template-columns:1fr;overflow-y:auto}}
-.import-col{display:flex;flex-direction:column;padding:.8rem 1rem;overflow-y:auto;min-height:0}
-.import-col:first-child{border-right:1px solid var(--border)}
+.import-body{display:grid;grid-template-columns:260px 1fr 1fr;flex:1;gap:0}
+@media(max-width:780px){.import-body{grid-template-columns:1fr}}
+.import-col{display:flex;flex-direction:column;padding:.9rem 1.1rem;border-right:1px solid var(--border);overflow-y:auto;max-height:calc(92vh - 200px)}
 .import-col:last-child{border-right:none}
-
+@media(max-width:780px){.import-col{border-right:none;border-bottom:1px solid var(--border);max-height:none}}
 .import-col-head{font-family:'Cinzel',serif;font-size:.68rem;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.7rem;flex-shrink:0}
 /* form fields */
 .import-field{margin-bottom:.7rem}
@@ -247,10 +244,10 @@ main{padding:1.5rem .5rem 1.5rem 1.25rem;max-width:1400px;margin:0 auto;display:
 .import-color-pip[data-c="R"]{background:var(--mana-r)}.import-color-pip[data-c="R"].selected{border-color:#f09080}
 .import-color-pip[data-c="G"]{background:var(--mana-g)}.import-color-pip[data-c="G"].selected{border-color:#80e8a0}
 /* textarea + output */
-.import-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.88rem;line-height:1.5;height:160px;min-height:100px;outline:none;padding:.55rem .7rem;resize:none;transition:border-color .2s;width:100%}
+.import-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);flex:1;font-family:'Crimson Pro',serif;font-size:.88rem;line-height:1.5;min-height:180px;outline:none;padding:.6rem .8rem;resize:vertical;transition:border-color .2s;width:100%}
 .import-textarea:focus{border-color:var(--gold)}
 .import-textarea::placeholder{color:var(--text2);font-size:.82rem}
-.import-output{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Courier New',monospace;font-size:.7rem;line-height:1.5;height:160px;min-height:80px;overflow-y:auto;padding:.55rem .7rem;white-space:pre;user-select:all;margin-top:.6rem}
+.import-output{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);flex:1;font-family:'Courier New',monospace;font-size:.72rem;line-height:1.55;min-height:180px;overflow-y:auto;padding:.6rem .8rem;white-space:pre;user-select:all}
 .import-stats{background:rgba(92,184,92,.06);border:1px solid rgba(92,184,92,.2);border-radius:5px;color:var(--text2);font-size:.76rem;margin-top:.45rem;padding:.35rem .6rem}
 .import-hint{color:var(--text2);font-size:.75rem;margin-top:.4rem;line-height:1.4}
 /* actions */
@@ -399,7 +396,6 @@ body.edit-mode .add-deck-btn{display:flex}
   <button class="add-deck-btn" id="add-deck-btn">＋ Add New Deck</button>
 </div>
 
-<div class="letter-sidebar" id="letter-sidebar"></div>
 <main id="main-content"></main>
 
 <!-- Modal -->
@@ -505,22 +501,34 @@ body.edit-mode .add-deck-btn{display:flex}
         <div class="import-hint">All fields optional — only filled fields appear in output. Variant label defaults to deck name if blank.</div>
       </div>
 
-      <!-- Col 2: Paste + Output stacked -->
+      <!-- Col 2: Paste area -->
       <div class="import-col">
         <div class="import-col-head">Paste Card List</div>
         <textarea class="import-textarea" id="import-input" placeholder="Paste any standard decklist:
 
 1 Warden of Evos Isle
 1 Empyrean Eagle
+1 Concordia Pegasus
 9 Plains
 1 Thriving Heath
 
-Works with Wizards.com, Scryfall,
-Moxfield, or plain card names."></textarea>
-        <div class="import-hint">Basic / Thriving / channel lands auto-tagged <code style="color:var(--gold)">basic:true</code>.</div>
+Works with:
+• Wizards.com decklists
+• Scryfall / Moxfield export
+• Plain card names (qty 1 assumed)
+• MTGJSON auto-fill above"></textarea>
+        <div class="import-hint">Basic lands, Thriving lands, and channel lands (e.g. Forgotten Cave) are auto-tagged <code style="color:var(--gold)">basic:true</code>.</div>
+      </div>
 
-        <div class="import-col-head" style="margin-top:.75rem">Output</div>
-        <pre class="import-output" id="import-output">// Paste cards above to generate output.</pre>
+      <!-- Col 3: Output -->
+      <div class="import-col">
+        <div class="import-col-head">data.js Output</div>
+        <pre class="import-output" id="import-output">// Fill in metadata + paste a card list
+// to generate the data.js snippet.
+//
+// Output will be a complete deck entry
+// (New Deck mode) or a variant object
+// (Add Variant mode) — ready to paste.</pre>
         <div class="import-stats" id="import-stats" style="display:none"></div>
         <div class="import-hint" id="import-paste-hint" style="display:none"></div>
       </div>
@@ -10513,113 +10521,192 @@ const DECK_DATA = {
       "name": "Historic Horizons",
       "year": 2021,
       "code": "J21",
-      "note": "MTG Arena exclusive — not in taw source. Use Import List to add card lists.",
+      "note": "MTG Arena exclusive. No basic lands in packs — Arena provides them automatically.",
       "decks": [
         {
           "id": "j21-abovetheclouds",
           "name": "Above the Clouds",
-          "headliner": "Inniaz, the Gale Force",
           "colors": [
             "U"
           ],
+          "headliner": "Spectral Sailor",
           "variants": [
             {
               "label": "Above the Clouds",
-              "cards": []
+              "cards": [
+                {
+                  "name": "Spectral Sailor",
+                  "qty": 1
+                },
+                {
+                  "name": "Kitesail Corsair",
+                  "qty": 1
+                },
+                {
+                  "name": "Waterkin Shaman",
+                  "qty": 1
+                },
+                {
+                  "name": "Ghost-Lit Drifter",
+                  "qty": 1
+                },
+                {
+                  "name": "Bounty of the Deep",
+                  "qty": 1
+                },
+                {
+                  "name": "Tide Skimmer",
+                  "qty": 1
+                },
+                {
+                  "name": "Aeromoeba",
+                  "qty": 1
+                },
+                {
+                  "name": "Wonder",
+                  "qty": 1
+                },
+                {
+                  "name": "Roaming Ghostlight",
+                  "qty": 1
+                },
+                {
+                  "name": "Recalibrate",
+                  "qty": 1
+                },
+                {
+                  "name": "Capture Sphere",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-angels",
-          "name": "Angels",
-          "headliner": "Emeria's Call // Emeria, Shattered Skyclave",
-          "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Angels",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-archaeology",
-          "name": "Archaeology",
-          "headliner": "Scholar of the Lost Trove",
+          "id": "j21-animated",
+          "name": "Animated",
           "colors": [
             "U"
           ],
+          "headliner": "Rise and Shine",
           "variants": [
             {
-              "label": "Archaeology",
-              "cards": []
+              "label": "Animated",
+              "cards": [
+                {
+                  "name": "Floodhound",
+                  "qty": 1
+                },
+                {
+                  "name": "Witching Well",
+                  "qty": 1
+                },
+                {
+                  "name": "Burdened Aerialist",
+                  "qty": 1
+                },
+                {
+                  "name": "Hard Evidence",
+                  "qty": 1
+                },
+                {
+                  "name": "Resculpt",
+                  "qty": 1
+                },
+                {
+                  "name": "Animating Faerie",
+                  "qty": 1
+                },
+                {
+                  "name": "Skilled Animator",
+                  "qty": 1
+                },
+                {
+                  "name": "Rise and Shine",
+                  "qty": 1
+                },
+                {
+                  "name": "Giant's Amulet",
+                  "qty": 1
+                },
+                {
+                  "name": "Icy Manipulator",
+                  "qty": 1
+                },
+                {
+                  "name": "Ethereal Grasp",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-bob",
-          "name": "B.O.B.",
-          "headliner": "Bag of Boulders",
-          "colors": [
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "B.O.B.",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-basri",
-          "name": "Basri",
-          "headliner": "Basri Ket",
-          "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Basri",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-cats",
-          "name": "Cats",
-          "headliner": "Feline Sovereign",
+          "id": "j21-bears",
+          "name": "Bears",
           "colors": [
             "G"
           ],
+          "headliner": "Ayula, Queen Among Bears",
           "variants": [
             {
-              "label": "Cats",
-              "cards": []
+              "label": "Bears",
+              "cards": [
+                {
+                  "name": "Mother Bear",
+                  "qty": 1
+                },
+                {
+                  "name": "Grizzly Bears",
+                  "qty": 1
+                },
+                {
+                  "name": "Vivien's Grizzly",
+                  "qty": 1
+                },
+                {
+                  "name": "Bloodline Pretender",
+                  "qty": 1
+                },
+                {
+                  "name": "Faceless Agent",
+                  "qty": 1
+                },
+                {
+                  "name": "Professor of Zoomancy",
+                  "qty": 1
+                },
+                {
+                  "name": "Littjara Glade-Warden",
+                  "qty": 1
+                },
+                {
+                  "name": "Webweaver Changeling",
+                  "qty": 1
+                },
+                {
+                  "name": "Incremental Growth",
+                  "qty": 1
+                },
+                {
+                  "name": "Ayula, Queen Among Bears",
+                  "qty": 1
+                },
+                {
+                  "name": "Skyshroud Ambush",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-chandra",
-          "name": "Chandra",
-          "headliner": "Chandra, Heart of Fire",
-          "colors": [
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Chandra",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-collected",
+          "id": "j21-plague2",
           "name": "Collected",
-          "headliner": "Collected Company",
           "colors": [
             "G"
           ],
+          "headliner": "Collected Company",
           "variants": [
             {
               "label": "Collected",
@@ -10628,329 +10715,1322 @@ const DECK_DATA = {
           ]
         },
         {
-          "id": "j21-devilish",
-          "name": "Devilish",
-          "headliner": "Zurzoth, Chaos Rider",
+          "id": "j21-cycling",
+          "name": "Cycling",
           "colors": [
-            "R"
+            "W"
           ],
+          "headliner": "Flourishing Fox",
           "variants": [
             {
-              "label": "Devilish",
-              "cards": []
+              "label": "Cycling",
+              "cards": [
+                {
+                  "name": "Flourishing Fox",
+                  "qty": 1
+                },
+                {
+                  "name": "Drannith Healer",
+                  "qty": 1
+                },
+                {
+                  "name": "Snare Tactician",
+                  "qty": 1
+                },
+                {
+                  "name": "Leonin Sanctifier",
+                  "qty": 1
+                },
+                {
+                  "name": "Oketra's Attendant",
+                  "qty": 1
+                },
+                {
+                  "name": "Imposing Vantasaur",
+                  "qty": 1
+                },
+                {
+                  "name": "Valiant Rescuer",
+                  "qty": 1
+                },
+                {
+                  "name": "Wingsteed Trainer",
+                  "qty": 1
+                },
+                {
+                  "name": "Benalish Partisan",
+                  "qty": 1
+                },
+                {
+                  "name": "Pacifism",
+                  "qty": 1
+                },
+                {
+                  "name": "Forsake the Worldly",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-dinosaurs",
-          "name": "Dinosaurs",
-          "headliner": "Ghalta, Primal Hunger",
-          "colors": [
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Dinosaurs",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-discarding",
-          "name": "Discarding",
-          "headliner": "Tinybones, Trinket Thief",
+          "id": "j21-davriel",
+          "name": "Davriel",
           "colors": [
             "B"
           ],
+          "headliner": "Davriel, Soul Broker",
           "variants": [
             {
-              "label": "Discarding",
-              "cards": []
+              "label": "Davriel",
+              "cards": [
+                {
+                  "name": "Drainpipe Vermin",
+                  "qty": 1
+                },
+                {
+                  "name": "Plaguecrafter's Familiar",
+                  "qty": 1
+                },
+                {
+                  "name": "Black Cat",
+                  "qty": 1
+                },
+                {
+                  "name": "Manor Guardian",
+                  "qty": 1
+                },
+                {
+                  "name": "Fell Specter",
+                  "qty": 1
+                },
+                {
+                  "name": "Goremand",
+                  "qty": 1
+                },
+                {
+                  "name": "Reaper of Night",
+                  "qty": 1
+                },
+                {
+                  "name": "Murder",
+                  "qty": 1
+                },
+                {
+                  "name": "Davriel, Rogue Shadowmage",
+                  "qty": 1
+                },
+                {
+                  "name": "Davriel's Withering",
+                  "qty": 1
+                },
+                {
+                  "name": "Davriel, Soul Broker",
+                  "qty": 1
+                },
+                {
+                  "name": "Pelakka Predation",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-doctor",
-          "name": "Doctor",
-          "headliner": "Speaker of the Heavens",
+          "id": "j21-delirium",
+          "name": "Delirium",
           "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Doctor",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-dogs",
-          "name": "Dogs",
-          "headliner": "Isamaru, Hound of Konda",
-          "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Dogs",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-dragons",
-          "name": "Dragons",
-          "headliner": "Velomachus Lorehold",
-          "colors": [
+            "U",
             "R"
           ],
+          "headliner": "Dragon's Rage Channeler",
           "variants": [
             {
-              "label": "Dragons",
-              "cards": []
+              "label": "Delirium",
+              "cards": [
+                {
+                  "name": "Foul Watcher",
+                  "qty": 1
+                },
+                {
+                  "name": "Raving Visionary",
+                  "qty": 1
+                },
+                {
+                  "name": "Scuttletide",
+                  "qty": 1
+                },
+                {
+                  "name": "Gouged Zealot",
+                  "qty": 1
+                },
+                {
+                  "name": "Unholy Heat",
+                  "qty": 1
+                },
+                {
+                  "name": "Dragon's Rage Channeler",
+                  "qty": 1
+                },
+                {
+                  "name": "Bloodbraid Marauder",
+                  "qty": 1
+                },
+                {
+                  "name": "Prophetic Titan",
+                  "qty": 1
+                },
+                {
+                  "name": "Thrill of Possibility",
+                  "qty": 1
+                },
+                {
+                  "name": "Sarkhan's Scorn",
+                  "qty": 1
+                },
+                {
+                  "name": "Chromatic Sphere",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-elves",
-          "name": "Elves",
-          "headliner": "Elvish Warmaster",
+          "id": "j21-enchanted",
+          "name": "Enchanted",
+          "colors": [
+            "W",
+            "G"
+          ],
+          "headliner": "Sythis, Harvest's Hand",
+          "variants": [
+            {
+              "label": "Enchanted",
+              "cards": [
+                {
+                  "name": "Squirrel Sanctuary",
+                  "qty": 1
+                },
+                {
+                  "name": "Setessan Skirmisher",
+                  "qty": 1
+                },
+                {
+                  "name": "Destiny Spinner",
+                  "qty": 1
+                },
+                {
+                  "name": "Omen of the Sun",
+                  "qty": 1
+                },
+                {
+                  "name": "Veteran Charger",
+                  "qty": 1
+                },
+                {
+                  "name": "Lagonna-Band Storyteller",
+                  "qty": 1
+                },
+                {
+                  "name": "Captivating Unicorn",
+                  "qty": 1
+                },
+                {
+                  "name": "Fall of the Imposter",
+                  "qty": 1
+                },
+                {
+                  "name": "Reprobation",
+                  "qty": 1
+                },
+                {
+                  "name": "Captured by Lagacs",
+                  "qty": 1
+                },
+                {
+                  "name": "Sythis, Harvest's Hand",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-energy",
+          "name": "Energy",
           "colors": [
             "G"
           ],
+          "headliner": "Bristling Hydra",
           "variants": [
             {
-              "label": "Elves",
-              "cards": []
+              "label": "Energy",
+              "cards": [
+                {
+                  "name": "Longtusk Stalker",
+                  "qty": 1
+                },
+                {
+                  "name": "Servant of the Conduit",
+                  "qty": 1
+                },
+                {
+                  "name": "Sage of Shaila's Claim",
+                  "qty": 1
+                },
+                {
+                  "name": "Thriving Rhino",
+                  "qty": 1
+                },
+                {
+                  "name": "Veteran Charger",
+                  "qty": 1
+                },
+                {
+                  "name": "Peema Aether-Seer",
+                  "qty": 1
+                },
+                {
+                  "name": "Urban Daggertooth",
+                  "qty": 1
+                },
+                {
+                  "name": "Wren's Run Hydra",
+                  "qty": 1
+                },
+                {
+                  "name": "Courage in Crisis",
+                  "qty": 1
+                },
+                {
+                  "name": "Pool of Vigorous Growth",
+                  "qty": 1
+                },
+                {
+                  "name": "Smell Fear",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-enchantments",
-          "name": "Enchantments",
-          "headliner": "Sythis, Harvest's Hand",
+          "id": "j21-evolving",
+          "name": "Evolving",
+          "colors": [
+            "U",
+            "G"
+          ],
+          "headliner": "Simic Ascendancy",
+          "variants": [
+            {
+              "label": "Evolving",
+              "cards": [
+                {
+                  "name": "Sauroform Hybrid",
+                  "qty": 1
+                },
+                {
+                  "name": "Shambleshark",
+                  "qty": 1
+                },
+                {
+                  "name": "Mentor of Evos Isle",
+                  "qty": 1
+                },
+                {
+                  "name": "Elusive Krasis",
+                  "qty": 1
+                },
+                {
+                  "name": "Urban Daggertooth",
+                  "qty": 1
+                },
+                {
+                  "name": "Sharktocrab",
+                  "qty": 1
+                },
+                {
+                  "name": "Adaptive Snapjaw",
+                  "qty": 1
+                },
+                {
+                  "name": "Wren's Run Hydra",
+                  "qty": 1
+                },
+                {
+                  "name": "Simic Ascendancy",
+                  "qty": 1
+                },
+                {
+                  "name": "Smell Fear",
+                  "qty": 1
+                },
+                {
+                  "name": "Bred for the Hunt",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-flickering",
+          "name": "Flickering",
           "colors": [
             "W",
             "U"
           ],
+          "headliner": "Restoration Angel",
           "variants": [
             {
-              "label": "Enchantments",
-              "cards": []
+              "label": "Flickering",
+              "cards": [
+                {
+                  "name": "Restoration Angel",
+                  "qty": 1
+                },
+                {
+                  "name": "Soulherder",
+                  "qty": 1
+                },
+                {
+                  "name": "Vesperlark",
+                  "qty": 1
+                },
+                {
+                  "name": "Specimen Collector",
+                  "qty": 1
+                },
+                {
+                  "name": "Leonin Sanctifier",
+                  "qty": 1
+                },
+                {
+                  "name": "Irregular Cohort",
+                  "qty": 1
+                },
+                {
+                  "name": "Faerie Seer",
+                  "qty": 1
+                },
+                {
+                  "name": "Monoskelion",
+                  "qty": 1
+                },
+                {
+                  "name": "Baffling Defenses",
+                  "qty": 1
+                },
+                {
+                  "name": "Cloudshift",
+                  "qty": 1
+                },
+                {
+                  "name": "Pacifism",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-featheredfriends",
-          "name": "Feathered Friends",
-          "headliner": "Steel-Plume Marshal",
+          "id": "j21-freyalise",
+          "name": "Freyalise",
           "colors": [
-            "W"
+            "G"
           ],
+          "headliner": "Freyalise, Skyshroud Partisan",
           "variants": [
             {
-              "label": "Feathered Friends",
-              "cards": []
+              "label": "Freyalise",
+              "cards": [
+                {
+                  "name": "Llanowar Elves",
+                  "qty": 1
+                },
+                {
+                  "name": "Skyshroud Lookout",
+                  "qty": 1
+                },
+                {
+                  "name": "Paradise Druid",
+                  "qty": 1
+                },
+                {
+                  "name": "Faceless Agent",
+                  "qty": 1
+                },
+                {
+                  "name": "Ghirapur Guide",
+                  "qty": 1
+                },
+                {
+                  "name": "Wildheart Invoker",
+                  "qty": 1
+                },
+                {
+                  "name": "Elderleaf Mentor",
+                  "qty": 1
+                },
+                {
+                  "name": "Grizzled Outrider",
+                  "qty": 1
+                },
+                {
+                  "name": "Song of Freyalise",
+                  "qty": 1
+                },
+                {
+                  "name": "Skyshroud Ambush",
+                  "qty": 1
+                },
+                {
+                  "name": "Freyalise, Skyshroud Partisan",
+                  "qty": 1
+                },
+                {
+                  "name": "Arbor Armament",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-goblinfodd",
+          "name": "Goblin Fodder",
+          "colors": [
+            "B",
+            "R"
+          ],
+          "headliner": "Pashalik Mons",
+          "variants": [
+            {
+              "label": "Goblin Fodder",
+              "cards": [
+                {
+                  "name": "Pashalik Mons",
+                  "qty": 1
+                },
+                {
+                  "name": "Sling-Gang Lieutenant",
+                  "qty": 1
+                },
+                {
+                  "name": "Goblin Rally",
+                  "qty": 1
+                },
+                {
+                  "name": "Reckless Ringleader",
+                  "qty": 1
+                },
+                {
+                  "name": "Munitions Expert",
+                  "qty": 1
+                },
+                {
+                  "name": "Krenko's Command",
+                  "qty": 1
+                },
+                {
+                  "name": "Warteye Witch",
+                  "qty": 1
+                },
+                {
+                  "name": "Mob",
+                  "qty": 1
+                },
+                {
+                  "name": "Raise the Draugr",
+                  "qty": 1
+                },
+                {
+                  "name": "Sure Strike",
+                  "qty": 1
+                },
+                {
+                  "name": "Goatnap",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
           "id": "j21-goblins",
           "name": "Goblins",
-          "headliner": "Goblin Anarchomancer",
           "colors": [
             "R"
           ],
+          "headliner": "Goblin Dark-Dwellers",
           "variants": [
             {
               "label": "Goblins",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-gods",
-          "name": "Gods",
-          "headliner": "Purphoros, Bronze-Blooded",
-          "colors": [
-            "W",
-            "U",
-            "B",
-            "R",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Gods",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-heavilyarmored",
-          "name": "Heavily Armored",
-          "headliner": "Colossus Hammer",
-          "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Heavily Armored",
-              "cards": []
+              "cards": [
+                {
+                  "name": "Reckless Ringleader",
+                  "qty": 1
+                },
+                {
+                  "name": "Fissure Wizard",
+                  "qty": 1
+                },
+                {
+                  "name": "Dragon Fodder",
+                  "qty": 1
+                },
+                {
+                  "name": "Krenko's Command",
+                  "qty": 1
+                },
+                {
+                  "name": "Gempalm Incinerator",
+                  "qty": 1
+                },
+                {
+                  "name": "Hordeling Outburst",
+                  "qty": 1
+                },
+                {
+                  "name": "Battle-Rattle Shaman",
+                  "qty": 1
+                },
+                {
+                  "name": "Battle Squadron",
+                  "qty": 1
+                },
+                {
+                  "name": "Sarkhan's Scorn",
+                  "qty": 1
+                },
+                {
+                  "name": "Goblin Oriflamme",
+                  "qty": 1
+                },
+                {
+                  "name": "Goblin Dark-Dwellers",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
           "id": "j21-humans",
           "name": "Humans",
-          "headliner": "Champion of the Parish",
           "colors": [
             "W"
           ],
+          "headliner": "Thalia's Lieutenant",
           "variants": [
             {
               "label": "Humans",
-              "cards": []
+              "cards": [
+                {
+                  "name": "Anointed Chorister",
+                  "qty": 1
+                },
+                {
+                  "name": "Thalia's Lieutenant",
+                  "qty": 1
+                },
+                {
+                  "name": "Zhalfirin Decoy",
+                  "qty": 1
+                },
+                {
+                  "name": "Faceless Agent",
+                  "qty": 1
+                },
+                {
+                  "name": "Steadfast Sentry",
+                  "qty": 1
+                },
+                {
+                  "name": "Dueling Coach",
+                  "qty": 1
+                },
+                {
+                  "name": "Wingsteed Trainer",
+                  "qty": 1
+                },
+                {
+                  "name": "Disciple of the Sun",
+                  "qty": 1
+                },
+                {
+                  "name": "Battlefield Promotion",
+                  "qty": 1
+                },
+                {
+                  "name": "Fight as One",
+                  "qty": 1
+                },
+                {
+                  "name": "Bonds of Faith",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-lands",
-          "name": "Lands",
-          "headliner": "Valakut Exploration",
+          "id": "j21-inthemachine",
+          "name": "In the Machine",
           "colors": [
-            "G"
+            "W",
+            "U"
           ],
+          "headliner": "Nettlecyst",
           "variants": [
             {
-              "label": "Lands",
-              "cards": []
+              "label": "In the Machine",
+              "cards": [
+                {
+                  "name": "Arcbound Mouser",
+                  "qty": 1
+                },
+                {
+                  "name": "Fairgrounds Patrol",
+                  "qty": 1
+                },
+                {
+                  "name": "Barbed Spike",
+                  "qty": 1
+                },
+                {
+                  "name": "Chrome Courier",
+                  "qty": 1
+                },
+                {
+                  "name": "Steelfin Whale",
+                  "qty": 1
+                },
+                {
+                  "name": "Etherium Spinner",
+                  "qty": 1
+                },
+                {
+                  "name": "Nettlecyst",
+                  "qty": 1
+                },
+                {
+                  "name": "Glass Casket",
+                  "qty": 1
+                },
+                {
+                  "name": "Icy Manipulator",
+                  "qty": 1
+                },
+                {
+                  "name": "Baffling Defenses",
+                  "qty": 1
+                },
+                {
+                  "name": "Filigree Attendant",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-junkyard",
+          "name": "Junkyard",
+          "colors": [
+            "R"
+          ],
+          "headliner": "Goblin Engineer",
+          "variants": [
+            {
+              "label": "Junkyard",
+              "cards": [
+                {
+                  "name": "Sparring Construct",
+                  "qty": 1
+                },
+                {
+                  "name": "Ravenous Intruder",
+                  "qty": 1
+                },
+                {
+                  "name": "Myr Sire",
+                  "qty": 1
+                },
+                {
+                  "name": "Breya's Apprentice",
+                  "qty": 1
+                },
+                {
+                  "name": "Destructive Digger",
+                  "qty": 1
+                },
+                {
+                  "name": "Treasure Keeper",
+                  "qty": 1
+                },
+                {
+                  "name": "Slag Strider",
+                  "qty": 1
+                },
+                {
+                  "name": "Kuldotha Flamefiend",
+                  "qty": 1
+                },
+                {
+                  "name": "Lightning Spear",
+                  "qty": 1
+                },
+                {
+                  "name": "Ichor Wellspring",
+                  "qty": 1
+                },
+                {
+                  "name": "Sarkhan's Scorn",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-kiora",
+          "name": "Kiora",
+          "colors": [
+            "U"
+          ],
+          "headliner": "Kiora, the Tide's Fury",
+          "variants": [
+            {
+              "label": "Kiora",
+              "cards": [
+                {
+                  "name": "Shoreline Scout",
+                  "qty": 1
+                },
+                {
+                  "name": "Sigiled Starfish",
+                  "qty": 1
+                },
+                {
+                  "name": "Coralhelm Guide",
+                  "qty": 1
+                },
+                {
+                  "name": "Man-o'-War",
+                  "qty": 1
+                },
+                {
+                  "name": "Mentor of Evos Isle",
+                  "qty": 1
+                },
+                {
+                  "name": "Waterknot",
+                  "qty": 1
+                },
+                {
+                  "name": "Oneirophage",
+                  "qty": 1
+                },
+                {
+                  "name": "Tolarian Kraken",
+                  "qty": 1
+                },
+                {
+                  "name": "Kiora, the Tide's Fury",
+                  "qty": 1
+                },
+                {
+                  "name": "Tightening Coils",
+                  "qty": 1
+                },
+                {
+                  "name": "Bounty of the Deep",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
           "id": "j21-legion",
           "name": "Legion",
-          "headliner": "Linden, the Steadfast Queen",
           "colors": [
             "W"
           ],
+          "headliner": "Ranger-Captain of Eos",
           "variants": [
             {
               "label": "Legion",
-              "cards": []
+              "cards": [
+                {
+                  "name": "Thraben Inspector",
+                  "qty": 1
+                },
+                {
+                  "name": "Selfless Savior",
+                  "qty": 1
+                },
+                {
+                  "name": "Anointed Chorister",
+                  "qty": 1
+                },
+                {
+                  "name": "Healer's Hawk",
+                  "qty": 1
+                },
+                {
+                  "name": "Law-Rune Enforcer",
+                  "qty": 1
+                },
+                {
+                  "name": "Lumbering Lightshield",
+                  "qty": 1
+                },
+                {
+                  "name": "Ranger-Captain of Eos",
+                  "qty": 1
+                },
+                {
+                  "name": "Thraben Watcher",
+                  "qty": 1
+                },
+                {
+                  "name": "Abiding Grace",
+                  "qty": 1
+                },
+                {
+                  "name": "Conclave Tribunal",
+                  "qty": 1
+                },
+                {
+                  "name": "Stirring Address",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-lightning",
-          "name": "Lightning",
-          "headliner": "Thermo-Alchemist",
+          "id": "j21-lostandfound",
+          "name": "Lost and Found",
           "colors": [
-            "R"
+            "U",
+            "B"
           ],
+          "headliner": "Necrogoyf",
           "variants": [
             {
-              "label": "Lightning",
-              "cards": []
+              "label": "Lost and Found",
+              "cards": [
+                {
+                  "name": "Necrogoyf",
+                  "qty": 1
+                },
+                {
+                  "name": "Cabal Initiate",
+                  "qty": 1
+                },
+                {
+                  "name": "Lazotep Chancellor",
+                  "qty": 1
+                },
+                {
+                  "name": "Gilt-Blade Prowler",
+                  "qty": 1
+                },
+                {
+                  "name": "Hell Mongrel",
+                  "qty": 1
+                },
+                {
+                  "name": "Raving Visionary",
+                  "qty": 1
+                },
+                {
+                  "name": "Necromancer's Familiar",
+                  "qty": 1
+                },
+                {
+                  "name": "Rousing Read",
+                  "qty": 1
+                },
+                {
+                  "name": "Bone Shards",
+                  "qty": 1
+                },
+                {
+                  "name": "Recalibrate",
+                  "qty": 1
+                },
+                {
+                  "name": "Rain of Revelation",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-madness",
+          "name": "Madness",
+          "colors": [
+            "B",
+            "R"
+          ],
+          "headliner": "Chainer, Nightmare Adept",
+          "variants": [
+            {
+              "label": "Madness",
+              "cards": [
+                {
+                  "name": "Cabal Initiate",
+                  "qty": 1
+                },
+                {
+                  "name": "Skophos Reaver",
+                  "qty": 1
+                },
+                {
+                  "name": "Macabre Waltz",
+                  "qty": 1
+                },
+                {
+                  "name": "Terminal Agony",
+                  "qty": 1
+                },
+                {
+                  "name": "Revolutionist",
+                  "qty": 1
+                },
+                {
+                  "name": "Hell Mongrel",
+                  "qty": 1
+                },
+                {
+                  "name": "Chainer, Nightmare Adept",
+                  "qty": 1
+                },
+                {
+                  "name": "Blazing Rootwalla",
+                  "qty": 1
+                },
+                {
+                  "name": "Rakdos Headliner",
+                  "qty": 1
+                },
+                {
+                  "name": "Static Discharge",
+                  "qty": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-manyfaced",
+          "name": "Many Faced",
+          "colors": [
+            "W",
+            "B"
+          ],
+          "headliner": "King of the Pride",
+          "variants": [
+            {
+              "label": "Many Faced",
+              "cards": [
+                {
+                  "name": "Imposter of the Sixth Pride",
+                  "qty": 1
+                },
+                {
+                  "name": "Irregular Cohort",
+                  "qty": 1
+                },
+                {
+                  "name": "King of the Pride",
+                  "qty": 1
+                },
+                {
+                  "name": "Graveshifter",
+                  "qty": 1
+                },
+                {
+                  "name": "Venomous Changeling",
+                  "qty": 1
+                },
+                {
+                  "name": "Changeling Outcast",
+                  "qty": 1
+                },
+                {
+                  "name": "Etchings of the Chosen",
+                  "qty": 1
+                },
+                {
+                  "name": "Thwart the Grave",
+                  "qty": 1
+                },
+                {
+                  "name": "Davriel's Withering",
+                  "qty": 1
+                },
+                {
+                  "name": "Blade Splicer",
+                  "qty": 1
+                },
+                {
+                  "name": "Deadly Alliance",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
           "id": "j21-merfolk",
           "name": "Merfolk",
-          "headliner": "Svyelun of Sea and Sky",
           "colors": [
             "U"
           ],
+          "headliner": "Svyelun of Sea and Sky",
           "variants": [
             {
               "label": "Merfolk",
-              "cards": []
+              "cards": [
+                {
+                  "name": "Shoreline Scout",
+                  "qty": 1
+                },
+                {
+                  "name": "Raving Visionary",
+                  "qty": 1
+                },
+                {
+                  "name": "Shaper Apprentice",
+                  "qty": 1
+                },
+                {
+                  "name": "Faceless Agent",
+                  "qty": 1
+                },
+                {
+                  "name": "Merrow Reejerey",
+                  "qty": 1
+                },
+                {
+                  "name": "Expedition Diviner",
+                  "qty": 1
+                },
+                {
+                  "name": "Merfolk Falconer",
+                  "qty": 1
+                },
+                {
+                  "name": "Svyelun of Sea and Sky",
+                  "qty": 1
+                },
+                {
+                  "name": "Phantasmal Form",
+                  "qty": 1
+                },
+                {
+                  "name": "Ethereal Grasp",
+                  "qty": 1
+                },
+                {
+                  "name": "Into the Roil",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-minions",
-          "name": "Minions",
-          "headliner": "Kels, Fight Fixer",
-          "colors": [
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Minions",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-minotaurs",
-          "name": "Minotaurs",
-          "headliner": "Sethron, Hurloon General",
-          "colors": [
-            "B",
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Minotaurs",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-modified",
-          "name": "Modified",
-          "headliner": "Hamza, Guardian of Arashin",
-          "colors": [
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Modified",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-muyanling",
-          "name": "Mu Yanling",
-          "headliner": "Mu Yanling, Sky Dancer",
-          "colors": [
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Mu Yanling",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-party",
-          "name": "Party",
-          "headliner": "Tazri, Stalwart Survivor",
+          "id": "j21-modular",
+          "name": "Modular",
           "colors": [
             "W",
-            "U",
-            "B",
-            "R"
+            "U"
           ],
+          "headliner": "Zabaz, the Glimmerwasp",
           "variants": [
             {
-              "label": "Party",
-              "cards": []
+              "label": "Modular",
+              "cards": [
+                {
+                  "name": "Arcbound Mouser",
+                  "qty": 1
+                },
+                {
+                  "name": "Arcbound Prototype",
+                  "qty": 1
+                },
+                {
+                  "name": "Battlefield Promotion",
+                  "qty": 1
+                },
+                {
+                  "name": "Steadfast Sentry",
+                  "qty": 1
+                },
+                {
+                  "name": "Arcbound Slasher",
+                  "qty": 1
+                },
+                {
+                  "name": "Dueling Coach",
+                  "qty": 1
+                },
+                {
+                  "name": "Arcbound Shikari",
+                  "qty": 1
+                },
+                {
+                  "name": "Zabaz, the Glimmerwasp",
+                  "qty": 1
+                },
+                {
+                  "name": "Static Discharge",
+                  "qty": 2
+                },
+                {
+                  "name": "Destructive Digger",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-ninjas",
+          "name": "Ninjas",
+          "colors": [
+            "U",
+            "B"
+          ],
+          "headliner": "Ingenious Infiltrator",
+          "variants": [
+            {
+              "label": "Ninjas",
+              "cards": [
+                {
+                  "name": "Faerie Seer",
+                  "qty": 1
+                },
+                {
+                  "name": "Passwall Adept",
+                  "qty": 1
+                },
+                {
+                  "name": "Plaguecrafter's Familiar",
+                  "qty": 1
+                },
+                {
+                  "name": "Throatseeker",
+                  "qty": 1
+                },
+                {
+                  "name": "Venomous Changeling",
+                  "qty": 1
+                },
+                {
+                  "name": "Moonblade Shinobi",
+                  "qty": 1
+                },
+                {
+                  "name": "Ingenious Infiltrator",
+                  "qty": 1
+                },
+                {
+                  "name": "Mist-Syndicate Naga",
+                  "qty": 1
+                },
+                {
+                  "name": "Choking Tethers",
+                  "qty": 1
+                },
+                {
+                  "name": "Feed the Serpent",
+                  "qty": 1
+                },
+                {
+                  "name": "Sudden Edict",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-onthedraw",
+          "name": "On the Draw",
+          "colors": [
+            "U",
+            "R"
+          ],
+          "headliner": "Seasoned Pyromancer",
+          "variants": [
+            {
+              "label": "On the Draw",
+              "cards": [
+                {
+                  "name": "Faerie Vandal",
+                  "qty": 1
+                },
+                {
+                  "name": "Pondering Mage",
+                  "qty": 1
+                },
+                {
+                  "name": "Oneirophage",
+                  "qty": 1
+                },
+                {
+                  "name": "Scour all Possibilities",
+                  "qty": 1
+                },
+                {
+                  "name": "Fists of Flame",
+                  "qty": 1
+                },
+                {
+                  "name": "Seasoned Pyromancer",
+                  "qty": 1
+                },
+                {
+                  "name": "Thundering Djinn",
+                  "qty": 1
+                },
+                {
+                  "name": "Spinehorn Minotaur",
+                  "qty": 1
+                },
+                {
+                  "name": "Bloodhaze Wolverine",
+                  "qty": 1
+                },
+                {
+                  "name": "Snap",
+                  "qty": 1
+                },
+                {
+                  "name": "Sarkhan's Scorn",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
           "id": "j21-phyrexian",
           "name": "Phyrexian",
-          "headliner": "Glistener Elf",
           "colors": [
             "B"
           ],
+          "headliner": "Glistener Elf",
           "variants": [
             {
               "label": "Phyrexian",
@@ -10959,52 +12039,127 @@ const DECK_DATA = {
           ]
         },
         {
-          "id": "j21-pirates",
-          "name": "Pirates",
-          "headliner": "Corsair Captain",
+          "id": "j21-plague",
+          "name": "Plague",
           "colors": [
-            "U"
+            "B"
           ],
+          "headliner": "Yawgmoth, Thran Physician",
           "variants": [
             {
-              "label": "Pirates",
-              "cards": []
+              "label": "Plague",
+              "cards": [
+                {
+                  "name": "Shambling Goblin",
+                  "qty": 1
+                },
+                {
+                  "name": "Plaguecrafter's Familiar",
+                  "qty": 1
+                },
+                {
+                  "name": "Plague Wight",
+                  "qty": 1
+                },
+                {
+                  "name": "Manor Guardian",
+                  "qty": 1
+                },
+                {
+                  "name": "Plaguecrafter",
+                  "qty": 1
+                },
+                {
+                  "name": "Boneyard Aberration",
+                  "qty": 1
+                },
+                {
+                  "name": "First-Sphere Gargantua",
+                  "qty": 1
+                },
+                {
+                  "name": "Archfiend of Sorrows",
+                  "qty": 1
+                },
+                {
+                  "name": "Ob Nixilis's Cruelty",
+                  "qty": 1
+                },
+                {
+                  "name": "Yawgmoth, Thran Physician",
+                  "qty": 1
+                },
+                {
+                  "name": "Davriel's Withering",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-plusone",
-          "name": "Plus One",
-          "headliner": "Conclave Mentor",
+          "id": "j21-pumpeddup",
+          "name": "Pumped Up",
           "colors": [
             "W",
             "G"
           ],
+          "headliner": "Rishkar, Peema Renegade",
           "variants": [
             {
-              "label": "Plus One",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-predatory",
-          "name": "Predatory",
-          "headliner": "Selvala, Heart of the Wilds",
-          "colors": [
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Predatory",
-              "cards": []
+              "label": "Pumped Up",
+              "cards": [
+                {
+                  "name": "Rishkar, Peema Renegade",
+                  "qty": 1
+                },
+                {
+                  "name": "Good-Fortune Unicorn",
+                  "qty": 1
+                },
+                {
+                  "name": "Herd Baloth",
+                  "qty": 1
+                },
+                {
+                  "name": "Arcus Acolyte",
+                  "qty": 1
+                },
+                {
+                  "name": "Wildwood Scourge",
+                  "qty": 1
+                },
+                {
+                  "name": "Knight of Autumn",
+                  "qty": 1
+                },
+                {
+                  "name": "Pollenbright Druid",
+                  "qty": 1
+                },
+                {
+                  "name": "Leonin Sanctifier",
+                  "qty": 1
+                },
+                {
+                  "name": "Wild Onslaught",
+                  "qty": 1
+                },
+                {
+                  "name": "Hunter's Edge",
+                  "qty": 1
+                },
+                {
+                  "name": "Captured by Lagacs",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
           "id": "j21-rainbow",
           "name": "Rainbow",
-          "headliner": "Rienne, Angel of Rebirth",
           "colors": [
             "W",
             "U",
@@ -11012,6 +12167,7 @@ const DECK_DATA = {
             "R",
             "G"
           ],
+          "headliner": "Rienne, Angel of Rebirth",
           "variants": [
             {
               "label": "Rainbow",
@@ -11020,38 +12176,474 @@ const DECK_DATA = {
           ]
         },
         {
-          "id": "j21-reanimated",
-          "name": "Reanimated",
-          "headliner": "Ghoulcaller Gisa",
+          "id": "j21-rats",
+          "name": "Rats",
           "colors": [
             "B"
           ],
+          "headliner": "Marrow-Gnawer",
+          "variants": [
+            {
+              "label": "Rats",
+              "cards": [
+                {
+                  "name": "Drainpipe Vermin",
+                  "qty": 1
+                },
+                {
+                  "name": "Plaguecrafter's Familiar",
+                  "qty": 1
+                },
+                {
+                  "name": "Rat Colony",
+                  "qty": 2
+                },
+                {
+                  "name": "Faceless Agent",
+                  "qty": 1
+                },
+                {
+                  "name": "Graveshifter",
+                  "qty": 1
+                },
+                {
+                  "name": "Boneyard Aberration",
+                  "qty": 1
+                },
+                {
+                  "name": "Marrow-Gnawer",
+                  "qty": 1
+                },
+                {
+                  "name": "Raise the Draugr",
+                  "qty": 1
+                },
+                {
+                  "name": "Feed the Swarm",
+                  "qty": 1
+                },
+                {
+                  "name": "Mob",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-reanimated",
+          "name": "Reanimated",
+          "colors": [
+            "W",
+            "B"
+          ],
+          "headliner": "Priest of Fell Rites",
           "variants": [
             {
               "label": "Reanimated",
-              "cards": []
+              "cards": [
+                {
+                  "name": "Baffling Defenses",
+                  "qty": 1
+                },
+                {
+                  "name": "Late to Dinner",
+                  "qty": 1
+                },
+                {
+                  "name": "Young Necromancer",
+                  "qty": 1
+                },
+                {
+                  "name": "Archfiend of Sorrows",
+                  "qty": 1
+                },
+                {
+                  "name": "Priest of Fell Rites",
+                  "qty": 1
+                },
+                {
+                  "name": "Graceful Restoration",
+                  "qty": 1
+                },
+                {
+                  "name": "Breathless Knight",
+                  "qty": 1
+                },
+                {
+                  "name": "Void Beckoner",
+                  "qty": 1
+                },
+                {
+                  "name": "Miasmic Mummy",
+                  "qty": 1
+                },
+                {
+                  "name": "Bone Shards",
+                  "qty": 1
+                },
+                {
+                  "name": "Imposing Vantasaur",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-rogues",
-          "name": "Rogues",
-          "headliner": "Anowon, the Ruin Thief",
+          "id": "j21-relentless",
+          "name": "Relentless",
           "colors": [
-            "U",
-            "B"
+            "B",
+            "G"
           ],
+          "headliner": "Altar of the Goyf",
           "variants": [
             {
-              "label": "Rogues",
+              "label": "Relentless",
+              "cards": [
+                {
+                  "name": "Excavating Anurid",
+                  "qty": 1
+                },
+                {
+                  "name": "Mother Bear",
+                  "qty": 1
+                },
+                {
+                  "name": "Rotwidow Pack",
+                  "qty": 1
+                },
+                {
+                  "name": "Ransack the Lab",
+                  "qty": 1
+                },
+                {
+                  "name": "Winding Way",
+                  "qty": 1
+                },
+                {
+                  "name": "Feed the Serpent",
+                  "qty": 1
+                },
+                {
+                  "name": "Jungle Creeper",
+                  "qty": 1
+                },
+                {
+                  "name": "Cabal Initiate",
+                  "qty": 1
+                },
+                {
+                  "name": "Pool of Vigorous Growth",
+                  "qty": 1
+                },
+                {
+                  "name": "Timeless Witness",
+                  "qty": 1
+                },
+                {
+                  "name": "Altar of the Goyf",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-rhonas",
+          "name": "Rhonas",
+          "colors": [
+            "G"
+          ],
+          "headliner": "Rhonas's Last Stand",
+          "variants": [
+            {
+              "label": "Rhonas",
               "cards": []
             }
           ]
         },
         {
-          "id": "j21-slivers",
-          "name": "Slivers",
-          "headliner": "The First Sliver",
+          "id": "j21-sarkhan",
+          "name": "Sarkhan",
+          "colors": [
+            "R"
+          ],
+          "headliner": "Sarkhan, Wanderer to Shiv",
+          "variants": [
+            {
+              "label": "Sarkhan",
+              "cards": [
+                {
+                  "name": "Dragon Fodder",
+                  "qty": 1
+                },
+                {
+                  "name": "Kargan Dragonrider",
+                  "qty": 1
+                },
+                {
+                  "name": "Bogardan Dragonheart",
+                  "qty": 1
+                },
+                {
+                  "name": "Dragon Egg",
+                  "qty": 1
+                },
+                {
+                  "name": "Scion of Shiv",
+                  "qty": 1
+                },
+                {
+                  "name": "Rapacious Dragon",
+                  "qty": 1
+                },
+                {
+                  "name": "Volcanic Dragon",
+                  "qty": 1
+                },
+                {
+                  "name": "Hellkite Punisher",
+                  "qty": 1
+                },
+                {
+                  "name": "Sarkhan's Scorn",
+                  "qty": 1
+                },
+                {
+                  "name": "Sarkhan, Wanderer to Shiv",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-scorchedearth",
+          "name": "Scorched Earth",
+          "colors": [
+            "R",
+            "G"
+          ],
+          "headliner": "Murasa Behemoth",
+          "variants": [
+            {
+              "label": "Scorched Earth",
+              "cards": [
+                {
+                  "name": "Ruination Rioter",
+                  "qty": 1
+                },
+                {
+                  "name": "Territorial Kavu",
+                  "qty": 1
+                },
+                {
+                  "name": "Springbloom Druid",
+                  "qty": 1
+                },
+                {
+                  "name": "Igneous Elemental",
+                  "qty": 1
+                },
+                {
+                  "name": "Excavating Anurid",
+                  "qty": 1
+                },
+                {
+                  "name": "Murasa Behemoth",
+                  "qty": 1
+                },
+                {
+                  "name": "Throes of Chaos",
+                  "qty": 1
+                },
+                {
+                  "name": "Sarkhan's Scorn",
+                  "qty": 1
+                },
+                {
+                  "name": "Harrow",
+                  "qty": 1
+                },
+                {
+                  "name": "Fast // Furious",
+                  "qty": 1
+                },
+                {
+                  "name": "Timeless Witness",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-serrasrealm",
+          "name": "Serra's Realm",
+          "colors": [
+            "W"
+          ],
+          "headliner": "Serra, the Benevolent",
+          "variants": [
+            {
+              "label": "Serra's Realm",
+              "cards": [
+                {
+                  "name": "Segovian Angel",
+                  "qty": 1
+                },
+                {
+                  "name": "Youthful Valkyrie",
+                  "qty": 1
+                },
+                {
+                  "name": "Leonin Sanctifier",
+                  "qty": 1
+                },
+                {
+                  "name": "Angelheart Protector",
+                  "qty": 1
+                },
+                {
+                  "name": "Stalwart Valkyrie",
+                  "qty": 1
+                },
+                {
+                  "name": "Serra Angel",
+                  "qty": 1
+                },
+                {
+                  "name": "Soul of Migration",
+                  "qty": 1
+                },
+                {
+                  "name": "Pacifism",
+                  "qty": 1
+                },
+                {
+                  "name": "Valkyrie's Sword",
+                  "qty": 1
+                },
+                {
+                  "name": "On Serra's Wings",
+                  "qty": 1
+                },
+                {
+                  "name": "Serra, the Benevolent",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-shamans",
+          "name": "Shamans",
+          "colors": [
+            "R"
+          ],
+          "headliner": "Harmonic Prodigy",
+          "variants": [
+            {
+              "label": "Shamans",
+              "cards": [
+                {
+                  "name": "Lightning Visionary",
+                  "qty": 1
+                },
+                {
+                  "name": "Thermo-Alchemist",
+                  "qty": 1
+                },
+                {
+                  "name": "Storm Caller",
+                  "qty": 1
+                },
+                {
+                  "name": "Rage Forger",
+                  "qty": 1
+                },
+                {
+                  "name": "Living Lightning",
+                  "qty": 1
+                },
+                {
+                  "name": "Battle-Rattle Shaman",
+                  "qty": 1
+                },
+                {
+                  "name": "Harmonic Prodigy",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-sliverass",
+          "name": "Sliver Assault",
+          "colors": [
+            "W",
+            "R"
+          ],
+          "headliner": "Lavabelly Sliver",
+          "variants": [
+            {
+              "label": "Sliver Assault",
+              "cards": [
+                {
+                  "name": "Bladeback Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Cleaving Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Cloudshredder Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Enduring Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "First Sliver's Chosen",
+                  "qty": 1
+                },
+                {
+                  "name": "Hollowhead Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Lancer Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Lavabelly Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Pacifism",
+                  "qty": 1
+                },
+                {
+                  "name": "Rip Apart",
+                  "qty": 1
+                },
+                {
+                  "name": "Baffling Defenses",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-sliverhive",
+          "name": "Sliver Hive",
           "colors": [
             "W",
             "U",
@@ -11059,50 +12651,108 @@ const DECK_DATA = {
             "R",
             "G"
           ],
+          "headliner": "The First Sliver",
           "variants": [
             {
-              "label": "Slivers",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-smashing",
-          "name": "Smashing",
-          "headliner": "Moraug, Fury of Akoum",
-          "colors": [
-            "R",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Smashing",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-spellcasting",
-          "name": "Spellcasting",
-          "headliner": "Dualcaster Mage",
-          "colors": [
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Spellcasting",
-              "cards": []
+              "label": "Sliver Hive",
+              "cards": [
+                {
+                  "name": "Manaweft Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Diffusion Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Dregscape Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Hollowhead Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Faceless Agent",
+                  "qty": 1
+                },
+                {
+                  "name": "Cleaving Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "First Sliver's Chosen",
+                  "qty": 1
+                },
+                {
+                  "name": "Heartless Act",
+                  "qty": 1
+                },
+                {
+                  "name": "Raise the Draugr",
+                  "qty": 1
+                },
+                {
+                  "name": "Prophetic Prism",
+                  "qty": 1
+                },
+                {
+                  "name": "The First Sliver",
+                  "qty": 1
+                },
+                {
+                  "name": "Sliver Hive",
+                  "qty": 1
+                },
+                {
+                  "name": "Evolving Wilds",
+                  "qty": 1
+                },
+                {
+                  "name": "Unknown Shores",
+                  "qty": 1
+                },
+                {
+                  "name": "Rupture Spire",
+                  "qty": 1
+                },
+                {
+                  "name": "Plains",
+                  "qty": 1,
+                  "basic": true
+                },
+                {
+                  "name": "Island",
+                  "qty": 1,
+                  "basic": true
+                },
+                {
+                  "name": "Swamp",
+                  "qty": 1,
+                  "basic": true
+                },
+                {
+                  "name": "Mountain",
+                  "qty": 1,
+                  "basic": true
+                },
+                {
+                  "name": "Forest",
+                  "qty": 1,
+                  "basic": true
+                }
+              ]
             }
           ]
         },
         {
           "id": "j21-spirits",
           "name": "Spirits",
-          "headliner": "Katilda, Dawnhart Prime",
           "colors": [
-            "W",
-            "U"
+            "U",
+            "W"
           ],
+          "headliner": "Katilda, Dawnhart Prime",
           "variants": [
             {
               "label": "Spirits",
@@ -11111,71 +12761,254 @@ const DECK_DATA = {
           ]
         },
         {
-          "id": "j21-spooky",
-          "name": "Spooky",
-          "headliner": "Dreadhorde Butcher",
+          "id": "j21-squirrels",
+          "name": "Squirrels",
           "colors": [
-            "B"
+            "B",
+            "G"
           ],
+          "headliner": "Chatterfang, Squirrel General",
           "variants": [
             {
-              "label": "Spooky",
-              "cards": []
+              "label": "Squirrels",
+              "cards": [
+                {
+                  "name": "Squirrel Sovereign",
+                  "qty": 1
+                },
+                {
+                  "name": "Ravenous Squirrel",
+                  "qty": 1
+                },
+                {
+                  "name": "Faceless Agent",
+                  "qty": 1
+                },
+                {
+                  "name": "Nested Shambler",
+                  "qty": 1
+                },
+                {
+                  "name": "Scurry Oak",
+                  "qty": 1
+                },
+                {
+                  "name": "Chatterfang, Squirrel General",
+                  "qty": 1
+                },
+                {
+                  "name": "Drey Keeper",
+                  "qty": 1
+                },
+                {
+                  "name": "Webweaver Changeling",
+                  "qty": 1
+                },
+                {
+                  "name": "Might of the Masses",
+                  "qty": 1
+                },
+                {
+                  "name": "Bone Shards",
+                  "qty": 1
+                },
+                {
+                  "name": "Mob",
+                  "qty": 1
+                }
+              ]
             }
           ]
         },
         {
-          "id": "j21-treehugging",
-          "name": "Tree Hugging",
-          "headliner": "Selvala, Heart of the Wilds",
+          "id": "j21-storm",
+          "name": "Storm",
+          "colors": [
+            "R",
+            "G"
+          ],
+          "headliner": "Goblin Anarchomancer",
+          "variants": [
+            {
+              "label": "Storm",
+              "cards": [
+                {
+                  "name": "Goblin Anarchomancer",
+                  "qty": 1
+                },
+                {
+                  "name": "Chatterstorm",
+                  "qty": 1
+                },
+                {
+                  "name": "Faithless Salvaging",
+                  "qty": 1
+                },
+                {
+                  "name": "Captain Ripley Vance",
+                  "qty": 1
+                },
+                {
+                  "name": "Trumpeting Herd",
+                  "qty": 1
+                },
+                {
+                  "name": "Hunting Pack",
+                  "qty": 1
+                },
+                {
+                  "name": "Dragonsguard Elite",
+                  "qty": 1
+                },
+                {
+                  "name": "Sarkhan's Scorn",
+                  "qty": 1
+                },
+                {
+                  "name": "Prey's Vengeance",
+                  "qty": 1
+                },
+                {
+                  "name": "Strike it Rich",
+                  "qty": 1
+                },
+                {
+                  "name": "Spreading Insurrection",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-teyo",
+          "name": "Teyo",
+          "colors": [
+            "W"
+          ],
+          "headliner": "Teyo, Aegis Adept",
+          "variants": [
+            {
+              "label": "Teyo",
+              "cards": [
+                {
+                  "name": "Thraben Inspector",
+                  "qty": 1
+                },
+                {
+                  "name": "Lumbering Lightshield",
+                  "qty": 1
+                },
+                {
+                  "name": "Kor Skyfisher",
+                  "qty": 1
+                },
+                {
+                  "name": "Roc Egg",
+                  "qty": 1
+                },
+                {
+                  "name": "Teyo, the Shieldmage",
+                  "qty": 1
+                },
+                {
+                  "name": "Wingsteed Trainer",
+                  "qty": 1
+                },
+                {
+                  "name": "Scour the Desert",
+                  "qty": 1
+                },
+                {
+                  "name": "Wall of One Thousand Cuts",
+                  "qty": 1
+                },
+                {
+                  "name": "Teyo, Aegis Adept",
+                  "qty": 1
+                },
+                {
+                  "name": "Pacifism",
+                  "qty": 1
+                },
+                {
+                  "name": "Baffling Defenses",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-tinkerer",
+          "name": "Tinkerer",
+          "colors": [
+            "U",
+            "G"
+          ],
+          "headliner": "Lonis, Cryptozoologist",
+          "variants": [
+            {
+              "label": "Tinkerer",
+              "cards": [
+                {
+                  "name": "Mother Bear",
+                  "qty": 1
+                },
+                {
+                  "name": "Lonis, Cryptozoologist",
+                  "qty": 1
+                },
+                {
+                  "name": "Hard Evidence",
+                  "qty": 1
+                },
+                {
+                  "name": "So Shiny",
+                  "qty": 1
+                },
+                {
+                  "name": "Specimen Collector",
+                  "qty": 1
+                },
+                {
+                  "name": "Junk Winder",
+                  "qty": 1
+                },
+                {
+                  "name": "Glimmer Bairn",
+                  "qty": 1
+                },
+                {
+                  "name": "Wavesifter",
+                  "qty": 1
+                },
+                {
+                  "name": "Funnel-Web Recluse",
+                  "qty": 1
+                },
+                {
+                  "name": "Tireless Provisioner",
+                  "qty": 1
+                },
+                {
+                  "name": "Sanctuary Raptor",
+                  "qty": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "j21-wolves",
+          "name": "Wolves",
           "colors": [
             "G"
           ],
+          "headliner": "Tovolar, Dire Overlord",
           "variants": [
             {
-              "label": "Tree Hugging",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-underthesea",
-          "name": "Under the Sea",
-          "headliner": "Anemospout",
-          "colors": [
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Under the Sea",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-vampires",
-          "name": "Vampires",
-          "headliner": "Sorin the Mirthless",
-          "colors": [
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Vampires",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-witchcraft",
-          "name": "Witchcraft",
-          "headliner": "Davriel, Rogue Shadowmage",
-          "colors": [
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Witchcraft",
+              "label": "Wolves",
               "cards": []
             }
           ]
@@ -29983,15 +31816,13 @@ let liveData = (() => {
     const saved = localStorage.getItem('jmp-live-data');
     if (saved) {
       const loaded = JSON.parse(saved);
-      // Merge any editions present in DECK_DATA but missing from localStorage
-      // (e.g. J21 added after a taw rebuild that didn't include it)
+      // Merge any editions in DECK_DATA not in localStorage (e.g. J21 after taw rebuild)
       const loadedIds = new Set(loaded.editions.map(e => e.id));
       for (const ed of DECK_DATA.editions) {
         if (!loadedIds.has(ed.id)) {
-          // Insert in correct position based on DECK_DATA order
           const idx = DECK_DATA.editions.indexOf(ed);
           const insertBefore = loaded.editions.findIndex(le =>
-            DECK_DATA.editions.indexOf(DECK_DATA.editions.find(de => de.id === le.id)) > idx
+            DECK_DATA.editions.findIndex(de => de.id === le.id) > idx
           );
           if (insertBefore === -1) loaded.editions.push(deepClone(ed));
           else loaded.editions.splice(insertBefore, 0, deepClone(ed));
@@ -30186,7 +32017,7 @@ function renderGrid() {
   const showEdHead = state.edition === 'all' || groups.length > 1;
 
   for (const { edition, decks } of groups) {
-    if (showEdHead) html += `<section class="edition-section"><h2 class="edition-heading">${esc(edition.name)} <em style="font-weight:400;font-size:.85em;color:var(--text2)">(${edition.year})</em></h2><div class="deck-grid">`;
+    if (showEdHead) html += `<section class="edition-section"><h2 class="edition-heading">${esc(edition.name)} <em style="font-weight:400;font-size:.85em;color:var(--text2)">(${edition.year})</em><span class="edition-count">${decks.length} theme${decks.length !== 1 ? 's' : ''}</span></h2><div class="deck-grid">`;
     else html += `<section class="edition-section"><div class="deck-grid">`;
 
     for (const { deck, searchResult } of decks) {
@@ -30199,9 +32030,8 @@ function renderGrid() {
           const hasCards = v.cards && v.cards.length > 0;
           const showVariantLabel = deck.variants.length > 1;
           html += `<button class="deck-card variant-card owned-card" data-deck="${deck.id}" data-ed="${edition.id}" data-vi="${vi}" tabindex="0">
-            <div class="variant-label">${esc(v.label)}</div>
-            <div class="deck-name">${esc(deck.name)}</div>
-            ${deck.headliner ? `<div class="deck-headliner">${esc(deck.headliner)}</div>` : ''}
+            ${showVariantLabel ? `<div class="deck-name">${esc(deck.name)}</div><div class="variant-title">${esc(v.label)}</div>` : `<div class="variant-title" style="font-size:.88rem">${esc(deck.name)}</div>`}
+            <div style="margin-bottom:.4rem"><span class="edition-badge">${esc(edition.code || edition.id.toUpperCase())}</span></div>
             <div class="deck-footer">
               <div class="color-pips">${pips}</div>
               <div class="deck-meta">
@@ -31506,64 +33336,6 @@ async function bulkImportFromMtgjson() {
 }
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// ─── LETTER SIDEBAR ──────────────────────────────────────────────────────────
-const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
-
-function getAvailableLetters() {
-  const prev = state.letterFilter; state.letterFilter = null;
-  const { groups } = getFilteredData(); state.letterFilter = prev;
-  const avail = new Set();
-  for (const { decks } of groups)
-    for (const { deck } of decks) {
-      const f = deck.name.charAt(0).toUpperCase();
-      avail.add(/[A-Z]/.test(f) ? f : '#');
-    }
-  return avail;
-}
-
-function renderLetterSidebar() {
-  const sidebar = document.getElementById('letter-sidebar');
-  if (!sidebar) return;
-  const avail = getAvailableLetters();
-  let html = '';
-  for (const letter of LETTERS) {
-    const isEmpty  = !avail.has(letter);
-    const isActive = state.letterFilter === letter;
-    const cls = ['letter-btn',
-      isEmpty ? 'empty' : '',
-      isActive && state.letterLocked  ? 'locked' : '',
-      isActive && !state.letterLocked ? 'hovered' : ''
-    ].filter(Boolean).join(' ');
-    html += `<button class="${cls}" data-letter="${letter}">${letter}</button>`;
-  }
-  if (state.letterLocked)
-    html += `<button class="letter-btn clear-btn" id="letter-clear-btn" title="Clear">✕</button>`;
-  sidebar.innerHTML = html;
-
-  sidebar.querySelectorAll('.letter-btn:not(.clear-btn)').forEach(btn => {
-    btn.addEventListener('mouseenter', () => {
-      if (btn.classList.contains('empty')) return;
-      state.letterFilter = btn.dataset.letter; renderGrid();
-    });
-    btn.addEventListener('click', () => {
-      if (btn.classList.contains('empty')) return;
-      const l = btn.dataset.letter;
-      if (state.letterLocked && state.letterFilter === l) {
-        state.letterFilter = null; state.letterLocked = false;
-      } else { state.letterFilter = l; state.letterLocked = true; }
-      renderGrid();
-    });
-  });
-  sidebar.addEventListener('mouseleave', () => {
-    if (!state.letterLocked) { state.letterFilter = null; renderGrid(); }
-  });
-  const cb = document.getElementById('letter-clear-btn');
-  if (cb) cb.addEventListener('click', () => {
-    state.letterFilter = null; state.letterLocked = false; renderGrid();
-  });
-}
-
 renderTabs();
 renderGrid();
 </script>
