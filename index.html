@@ -400,7 +400,7 @@ body.edit-mode .add-deck-btn{display:flex}
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
         <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false">
-        <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
+        <span class="search-mode-badge" id="search-mode-badge" style="display: none;">CARD</span>
       </div>
     </div>
     <div class="header-right">
@@ -477,14 +477,14 @@ body.edit-mode .add-deck-btn{display:flex}
             </div>
           </div>
           </button><button class="deck-edit-btn" data-edit-deck="jmp-archaeology" data-edit-ed="jmp" title="Edit deck">✏</button>
-        <button class="deck-card owned-card" data-deck="jmp-basri" data-ed="jmp" tabindex="0">
+        <button class="deck-card" data-deck="jmp-basri" data-ed="jmp" tabindex="0">
           <div class="deck-name">Basri<span class="deck-code-badge">JMP</span></div>
           <div class="deck-headliner">Basri Ket</div>
           
           <div class="deck-footer">
             <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
             <div class="deck-meta">
-              <div class="var-dots"><span class="var-dot owned" title="Basri – Owned"></span></div>
+              
               <span class="has-list-badge">List ✓</span>
             </div>
           </div>
@@ -3082,7 +3082,7 @@ body.edit-mode .add-deck-btn{display:flex}
     <button class="modal-close" id="modal-close-btn">✕</button></div>
     <div class="variant-row" id="variant-row" style="display: flex;">
       <div class="variant-tabs" id="variant-tabs"></div>
-      <button class="own-toggle-btn is-owned" id="own-toggle-btn"><span class="own-check">✓</span> Owned</button>
+      <button class="own-toggle-btn not-owned" id="own-toggle-btn"><span class="own-check">○</span> Mark Owned</button>
     </div>
     <div class="modal-body" id="modal-body">
     <div class="card-list-panel" id="card-list-panel"><h4>Card List (20)</h4><div class="card-row" data-card="Basri Ket"><span class="card-qty">1×</span><span class="card-name-list">Basri Ket</span><span class="rarity-badge rarity-m" title="Mythic">M</span></div><div class="card-row" data-card="Concordia Pegasus"><span class="card-qty">1×</span><span class="card-name-list">Concordia Pegasus</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Knight of the Tusk"><span class="card-qty">1×</span><span class="card-name-list">Knight of the Tusk</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Basri's Lieutenant"><span class="card-qty">1×</span><span class="card-name-list">Basri's Lieutenant</span><span class="rarity-badge rarity-r" title="Rare">R</span></div><div class="card-row" data-card="Tempered Veteran"><span class="card-qty">1×</span><span class="card-name-list">Tempered Veteran</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Siege Striker"><span class="card-qty">1×</span><span class="card-name-list">Siege Striker</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Staunch Shieldmate"><span class="card-qty">1×</span><span class="card-name-list">Staunch Shieldmate</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Basri's Acolyte"><span class="card-qty">1×</span><span class="card-name-list">Basri's Acolyte</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Basri's Solidarity"><span class="card-qty">1×</span><span class="card-name-list">Basri's Solidarity</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Legion's Judgment"><span class="card-qty">1×</span><span class="card-name-list">Legion's Judgment</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Feat of Resistance"><span class="card-qty">1×</span><span class="card-name-list">Feat of Resistance</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Faith's Fetters"><span class="card-qty">1×</span><span class="card-name-list">Faith's Fetters</span><span class="rarity-badge rarity-c" title="Common">C</span></div><hr class="section-divider"><div class="card-row land" data-card="Thriving Heath"><span class="card-qty">1×</span><span class="card-name-list">Thriving Heath</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">2×</span><span class="card-name-list">Plains</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">2×</span><span class="card-name-list">Plains</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">2×</span><span class="card-name-list">Plains</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">1×</span><span class="card-name-list">Plains</span></div><div class="list-summary">20 cards · 12 spells · 8 lands</div></div>
@@ -37167,7 +37167,7 @@ const DECK_DATA = {
 };
 // DECK_DATA_END — do not remove this comment — do not remove this comment
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
-const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0","jmp-basri:0"];
+const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0"];
 // OWNED_DATA_END — do not remove this comment — do not remove this comment
 </script>
 <script>
