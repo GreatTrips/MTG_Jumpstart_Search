@@ -34842,7 +34842,7 @@ function renderGrid() {
       ? `<div class="empty-state"><div class="glyph">📦</div><h3>No owned decks yet</h3><p>Open any deck and click <strong>Mark Owned</strong> on a variant to add it to your collection.</p></div>`
       : `<div class="empty-state"><div class="glyph">🔮</div><h3>No decks found</h3><p>Try adjusting your filters or search term.</p></div>`;
     main.innerHTML = msg;
-    document.getElementById('results-count')?.textContent = '';
+    document.getElementById('results-count').textContent = '';
     return;
   }
 
@@ -34909,7 +34909,7 @@ function renderGrid() {
   const countLabel = state.showOwnedOnly
     ? `${cardCount} owned variant${cardCount !== 1 ? 's' : ''}`
     : `${cardCount} deck${cardCount !== 1 ? 's' : ''}`;
-  document.getElementById('results-count')?.textContent = countLabel;
+  document.getElementById('results-count').textContent = countLabel;
 
   main.innerHTML = html;
   main.querySelectorAll('.deck-card').forEach(btn => {
@@ -34948,14 +34948,14 @@ function renderModal(deck, ed) {
   const pips = deck.colors.map(c => `<span class="color-pip ${COLOR_PIP[c]||''}" style="width:17px;height:17px" title="${COLOR_NAME[c]||c}"></span>`).join('');
 
   // Header
-  document.getElementById('modal-header')?.innerHTML = `
+  document.getElementById('modal-header').innerHTML = `
     <div class="modal-header-info">
       <div class="modal-title">${esc(deck.name)}<span style="display:flex;gap:3px">${pips}</span></div>
       ${deck.headliner ? `<div class="modal-headliner">${esc(deck.headliner)}</div>` : ''}
     </div>
     <button class="modal-close" id="modal-close-btn">✕</button>`;
   document.getElementById('modal-close-btn')?.addEventListener('click', closeModal);
-  document.getElementById('modal-edition-label')?.textContent = `${ed.name} · ${ed.year}`;
+  document.getElementById('modal-edition-label').textContent = `${ed.name} · ${ed.year}`;
 
   // Variant row
   const varRow = document.getElementById('variant-row');
@@ -35003,13 +35003,13 @@ function renderModal(deck, ed) {
       const q = getOwnedQty(deck.id, vi);
       if (q <= 1) { toggleOwned(deck.id, vi); renderModal(deck, ed); renderGrid(); return; }
       setOwnedQty(deck.id, vi, q - 1);
-      document.getElementById('qty-val')?.textContent = q - 1;
+      document.getElementById('qty-val').textContent = q - 1;
       renderGrid();
     };
     document.getElementById('qty-plus').onclick = () => {
       const q = getOwnedQty(deck.id, vi);
       setOwnedQty(deck.id, vi, q + 1);
-      document.getElementById('qty-val')?.textContent = q + 1;
+      document.getElementById('qty-val').textContent = q + 1;
       renderGrid();
     };
   } else { qtyRow.style.display = 'none'; qtyRow.innerHTML = ''; }
@@ -35332,7 +35332,7 @@ document.getElementById('existing-deck-select')?.addEventListener('change', func
   const ed = liveData.editions.find(e => e.id === edId);
   const deck = ed && ed.decks.find(d => d.id === deckId);
   if (deck) {
-    document.getElementById('import-variant-label')?.value = '';
+    document.getElementById('import-variant-label').value = '';
     document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
   }
   rebuildOutput();
@@ -35489,11 +35489,11 @@ function openImport(prefill = null) {
     const deck = ed && ed.decks.find(d => d.id === prefill.deckId);
     if (deck) {
       document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
-      document.getElementById('import-actions-msg')?.textContent = `Adding variant to: ${deck.name}`;
+      document.getElementById('import-actions-msg').textContent = `Adding variant to: ${deck.name}`;
     }
   } else {
     setImportMode('new');
-    document.getElementById('import-actions-msg')?.textContent = '';
+    document.getElementById('import-actions-msg').textContent = '';
   }
 
   rebuildOutput();
@@ -35506,12 +35506,12 @@ function closeImport() {
   document.getElementById('import-modal')?.classList.remove('open');
   document.body.style.overflow = '';
   // reset
-  document.getElementById('import-input')?.value = '';
-  document.getElementById('import-deck-name')?.value = '';
-  document.getElementById('import-headliner')?.value = '';
-  document.getElementById('import-variant-label')?.value = '';
-  document.getElementById('import-edition-select')?.value = '';
-  document.getElementById('import-edition-custom')?.value = '';
+  document.getElementById('import-input').value = '';
+  document.getElementById('import-deck-name').value = '';
+  document.getElementById('import-headliner').value = '';
+  document.getElementById('import-variant-label').value = '';
+  document.getElementById('import-edition-select').value = '';
+  document.getElementById('import-edition-custom').value = '';
   importState.colors.clear();
   document.querySelectorAll('.import-color-pip').forEach(p => p.classList.remove('selected'));
   document.getElementById('import-edition-custom-field')?.style.display = 'none';
@@ -35615,7 +35615,7 @@ document.getElementById('mtgjson-deck-select')?.addEventListener('change', async
 
     // Auto-fill metadata fields
     const rawName = deck.name || fileName.replace(/_[A-Z0-9]+$/, '').replace(/\d+$/, '').replace(/([A-Z])/g, ' $1').trim();
-    document.getElementById('import-deck-name')?.value = rawName;
+    document.getElementById('import-deck-name').value = rawName;
 
     // Build card list from mainBoard
     const mainBoard = deck.mainBoard || [];
@@ -35625,7 +35625,7 @@ document.getElementById('mtgjson-deck-select')?.addEventListener('change', async
     for (const c of [...spells, ...lands]) {
       listText += `${c.count} ${c.name}\n`;
     }
-    document.getElementById('import-input')?.value = listText.trim();
+    document.getElementById('import-input').value = listText.trim();
 
     // Try to detect colors from card colors
     const colorSet = new Set();
@@ -35643,7 +35643,7 @@ document.getElementById('mtgjson-deck-select')?.addEventListener('change', async
 
     // Variant label: include variant number from fileName
     const varNum = (fileName.match(/(\d+)_[A-Z0-9]+$/) || [])[1];
-    if (varNum) document.getElementById('import-variant-label')?.value = `Variant ${varNum}`;
+    if (varNum) document.getElementById('import-variant-label').value = `Variant ${varNum}`;
 
     status.textContent = `✓ ${deck.name} — ${mainBoard.length} cards loaded`;
     rebuildOutput();
@@ -35766,7 +35766,7 @@ document.getElementById('collection-banner-clear')?.addEventListener('click', ()
   state.colors.clear();
   state.letterFilter = null;
   state.letterLocked = false;
-  document.getElementById('search-input')?.value = '';
+  document.getElementById('search-input').value = '';
   document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
   renderGrid();
@@ -35786,7 +35786,7 @@ document.getElementById('phone-edit-toggle')?.addEventListener('click', () => {
 
 document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
   if (editMode) { exitEditMode(); return; }
-  document.getElementById('pw-input')?.value = '';
+  document.getElementById('pw-input').value = '';
   document.getElementById('pw-error')?.style.display = 'none';
   document.getElementById('pw-modal')?.classList.add('open');
   setTimeout(() => document.getElementById('pw-input').focus(), 60);
@@ -35796,7 +35796,7 @@ document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal
 document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
   const val = document.getElementById('pw-input')?.value;
   if (val === EDIT_PASSWORD) { closePwModal(); enterEditMode(); }
-  else { document.getElementById('pw-error')?.style.display = 'block'; document.getElementById('pw-input')?.value = ''; document.getElementById('pw-input').focus(); }
+  else { document.getElementById('pw-error')?.style.display = 'block'; document.getElementById('pw-input').value = ''; document.getElementById('pw-input').focus(); }
 });
 document.getElementById('pw-input')?.addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('pw-confirm-btn').click();
@@ -36087,9 +36087,9 @@ let editingVariants = []; // [{label, cards}]
 
 function openEditDeckModal(deckId, editionId) {
   const isNew = !deckId;
-  document.getElementById('edit-deck-modal-title')?.textContent = isNew ? '＋ New Deck' : 'Edit Deck';
-  document.getElementById('edit-deck-id')?.value = deckId || '';
-  document.getElementById('edit-edition-id')?.value = editionId || '';
+  document.getElementById('edit-deck-modal-title').textContent = isNew ? '＋ New Deck' : 'Edit Deck';
+  document.getElementById('edit-deck-id').value = deckId || '';
+  document.getElementById('edit-edition-id').value = editionId || '';
 
   // Populate edition dropdown
   const edSel = document.getElementById('edit-edition-select');
@@ -36107,8 +36107,8 @@ function openEditDeckModal(deckId, editionId) {
   if (!isNew) {
     const { deck, edition } = findDeck(deckId) || {};
     if (!deck) return;
-    document.getElementById('edit-deck-name')?.value = deck.name || '';
-    document.getElementById('edit-deck-headliner')?.value = deck.headliner || '';
+    document.getElementById('edit-deck-name').value = deck.name || '';
+    document.getElementById('edit-deck-headliner').value = deck.headliner || '';
     edSel.value = edition.id;
     for (const c of (deck.colors || [])) {
       editingColors.add(c);
@@ -36116,8 +36116,8 @@ function openEditDeckModal(deckId, editionId) {
     }
     editingVariants = deepClone(deck.variants || []);
   } else {
-    document.getElementById('edit-deck-name')?.value = '';
-    document.getElementById('edit-deck-headliner')?.value = '';
+    document.getElementById('edit-deck-name').value = '';
+    document.getElementById('edit-deck-headliner').value = '';
     edSel.value = '';
     editingVariants = [{ label: 'Variant 1', cards: [] }];
   }
@@ -36172,8 +36172,8 @@ function editVariantCards(vi) {
   closeEditDeckModal();
   openImport({ _editVariant: true, vi, variantLabel: variant.label });
   setTimeout(() => {
-    document.getElementById('import-input')?.value = cardText;
-    document.getElementById('import-variant-label')?.value = variant.label;
+    document.getElementById('import-input').value = cardText;
+    document.getElementById('import-variant-label').value = variant.label;
     rebuildOutput();
     // Add "Apply Cards" button
     const actMsg = document.getElementById('import-actions-msg');
@@ -36260,12 +36260,12 @@ document.getElementById('edit-delete-deck-btn')?.addEventListener('click', () =>
 
 // ─── GITHUB PUSH ──────────────────────────────────────────────────────────────
 function openGhModal() {
-  document.getElementById('gh-owner')?.value = localStorage.getItem('gh-owner') || '';
-  document.getElementById('gh-repo')?.value  = localStorage.getItem('gh-repo')  || '';
-  document.getElementById('gh-path')?.value  = localStorage.getItem('gh-path')  || 'data.js';
-  document.getElementById('gh-token')?.value = localStorage.getItem('gh-token') || '';
+  document.getElementById('gh-owner').value = localStorage.getItem('gh-owner') || '';
+  document.getElementById('gh-repo').value = localStorage.getItem('gh-repo')  || '';
+  document.getElementById('gh-path').value = localStorage.getItem('gh-path')  || 'data.js';
+  document.getElementById('gh-token').value = localStorage.getItem('gh-token') || '';
   document.getElementById('gh-push-status').className = 'gh-push-status';
-  document.getElementById('gh-push-status')?.textContent = '';
+  document.getElementById('gh-push-status').textContent = '';
   document.getElementById('gh-modal')?.classList.add('open');
   document.getElementById('save-dropdown')?.classList.remove('open');
 }
@@ -36386,8 +36386,8 @@ document.getElementById('import-add-btn')?.addEventListener('click', () => {
   saveLiveData();
   renderGrid();
   // Reset card list and variant label but keep metadata for quick re-use
-  document.getElementById('import-input')?.value = '';
-  document.getElementById('import-variant-label')?.value = '';
+  document.getElementById('import-input').value = '';
+  document.getElementById('import-variant-label').value = '';
   rebuildOutput();
 });
 
