@@ -3264,71 +3264,93 @@ Moxfield, or plain card names."></textarea>
       <h3>Marking Your Collection</h3>
       <ol>
         <li>Click any deck card to open it</li>
-        <li>Select the variant tab you own (e.g. <code>Unearthed 1</code>)</li>
-        <li>Click <strong>Mark Owned</strong> — the dot next to that variant turns green</li>
-        <li>Repeat for each variant you own</li>
+        <li>If the deck has multiple variants, select the variant tab you own (e.g. <code>Unearthed 1</code>)</li>
+        <li>Click <strong>Mark Owned</strong> — it turns green and the dot on that variant lights up</li>
+        <li>A <strong>Qty</strong> counter appears: tap <code>＋</code> if you own duplicate copies, <code>−</code> to reduce (hitting − at 1 un-marks it)</li>
+        <li>Repeat for every variant you own across all sets</li>
       </ol>
-      <div class="note-box">Your collection is saved automatically in your browser. Click <strong>My Collection</strong> in the header to see only your owned decks.</div>
+      <div class="note-box">Everything saves automatically in your browser. On mobile the app opens directly in <strong>My Collection</strong> view. On desktop it opens in the full unfiltered view — click <strong>My Collection</strong> in the header to switch.</div>
 
-      <h3>Saving &amp; Publishing Changes</h3>
-      <p>After marking your collection (or making any edits), save to GitHub so all devices stay in sync:</p>
+      <h3>My Collection View</h3>
+      <p>When My Collection is active, two tabs appear below the banner:</p>
+      <ul>
+        <li><strong>🃏 Decks</strong> — shows one tile per owned variant. Variants you own more than one copy of display a <code>×2</code> / <code>×3</code> badge.</li>
+        <li><strong>📊 Summary</strong> — a breakdown table per release showing unique variants, duplicates, and total copies grouped by color (White / Blue / Black / Red / Green / Multi). A grand total at the bottom counts across your entire collection.</li>
+      </ul>
+      <div class="note-box">The green banner at the top reads "Filtered to My Collection — click here to clear all filters." Clicking it (or clicking <strong>Jumpstart Deck Browser</strong> in the header) returns you to the full unfiltered view.</div>
+
+      <h3>Saving &amp; Syncing — The Golden Rule</h3>
+      <p>Your collection lives in your browser's local storage. To share it with other devices you must bake it into the file and push it to GitHub. <strong>Always follow this sequence:</strong></p>
+      <div class="device-tag">💻 On your laptop</div>
       <ol>
-        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code></li>
-        <li>Go to <strong>github.com/greattrips/MTG_Jumpstart_Search</strong></li>
-        <li>Click <code>index.html</code> → pencil icon (Edit) → <code>···</code> → <strong>Upload file</strong></li>
-        <li>Upload the downloaded file → click <strong>Commit changes</strong></li>
-        <li>Wait ~60 seconds for the site to rebuild</li>
+        <li>Mark/update your collection as needed</li>
+        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code> — this bakes your collection into the file</li>
+        <li>Either: upload the downloaded file to GitHub manually (repo → <code>index.html</code> → pencil → <code>···</code> → Upload file → Commit)</li>
+        <li>Or: use <code>💾 Save ▾</code> → <code>⬆ Push to GitHub…</code> for one-click publishing (see setup below)</li>
+        <li>Wait ~60 seconds for GitHub Pages to rebuild</li>
       </ol>
-      <div class="note-box"><strong>Why download first?</strong> The download bakes your collection into the file. Just pushing a file without downloading first won't include your ownership marks.</div>
+      <div class="note-box"><strong>Why download first?</strong> The Download step is what transfers your browser's localStorage collection into the file. Skipping it and uploading an old file will push an empty or stale collection. Always download immediately before pushing.</div>
 
-      <h3>Syncing to Another Device (Phone, Tablet, etc.)</h3>
-      <div class="device-tag">📱 Phone / Tablet</div>
+      <h3>Syncing to Your Phone / Tablet</h3>
+      <div class="device-tag phone">📱 After pushing from laptop</div>
       <ol>
         <li>Open Chrome → go to <code>greattrips.github.io/MTG_Jumpstart_Search/</code></li>
-        <li>Hard refresh: tap <strong>⋮ → Reload</strong> (Android) or pull down (iPhone)</li>
-        <li>Your collection loads automatically from the file — no login needed</li>
+        <li>Hard refresh: tap <strong>⋮ → Reload</strong> (Android) or pull down to refresh (iPhone)</li>
+        <li>Your collection appears automatically — the phone reads it from the embedded file</li>
       </ol>
-      <div class="note-box">If your phone had the page open before, you <em>must</em> hard refresh — otherwise it shows the old cached version.</div>
+      <p>If the page looks stale after refreshing, use <code>💾 Save ▾</code> → <code>🔄 Force resync from website</code>. This fetches the live GitHub file directly, bypassing Chrome's cache, and replaces your local collection with whatever is on GitHub. It will warn you if the remote file has 0 owned variants (meaning the laptop hasn't pushed yet).</p>
+      <div class="note-box"><strong>Important:</strong> Force resync <em>overwrites</em> your local collection. Only use it when you know GitHub has the version you want.</div>
 
-      <h3>Syncing Changes Made on Mobile Back to Laptop</h3>
-      <p>If multiple people mark their collection on different devices:</p>
-      <div class="device-tag phone">📱 On the phone / other device</div>
+      <h3>Multiple People / Multiple Devices</h3>
+      <p>If more than one person marks their collection on different devices and you need to combine them:</p>
+      <div class="device-tag phone">📱 On each phone / other device</div>
       <ol>
-        <li>If your phone has <em>newer</em> data you want to keep: <code>💾 Save ▾</code> → <code>⬇ Download index.html</code> → email to the merge person</li>
-        <li>If you just want to pull the latest from GitHub and discard phone changes: <code>💾 Save ▾</code> → <code>🔄 Force resync from website</code> — this overwrites local with whatever is on GitHub</li>
+        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code></li>
+        <li>Email or share that file to the person doing the merge (the laptop owner)</li>
       </ol>
       <div class="device-tag">💻 On the laptop (merge person)</div>
       <ol>
-        <li>Open the downloaded file from the phone in your browser</li>
+        <li>Open the downloaded file from the phone in your browser (double-click the file)</li>
         <li>Click <code>💾 Save ▾</code> → <code>📲 Sync collection from file</code></li>
-        <li>Confirm the merge — it combines both collections, never removes anything</li>
-        <li>Then do the normal Download → Upload to GitHub flow above</li>
+        <li>Confirm — it adds the phone's marks to your laptop's collection without removing anything</li>
+        <li>Repeat for each person's file if merging more than two devices</li>
+        <li>Then do the full Download → Push sequence above to publish the merged result</li>
       </ol>
+      <div class="note-box">After the merge is pushed, each phone should do a <strong>Force resync from website</strong> to pick up the combined collection.</div>
 
-      <h3>Setting Up GitHub Push (One-time, Laptop Only)</h3>
-      <p>Instead of manually uploading to GitHub each time, you can set up a one-click push:</p>
+      <h3>Getting Code Updates from Claude</h3>
+      <p>When new features are added, Claude generates a new <code>index.html</code> with <code>OWNED_DATA = []</code> (no collection). To avoid losing your collection:</p>
       <ol>
-        <li>Go to <strong>github.com</strong> → Profile → Settings → Developer settings → <strong>Fine-grained tokens</strong> → Generate new token</li>
-        <li>Name it anything, set expiry, choose <strong>Only select repositories</strong> → <code>MTG_Jumpstart_Search</code></li>
-        <li>Under Permissions → Repository permissions → <strong>Contents: Read and write</strong> → Generate</li>
-        <li><strong>Copy the token immediately</strong> — it starts with <code>github_pat_...</code> and is only shown once</li>
-        <li>Back in the app: <code>💾 Save ▾</code> → <code>⬆ Push to GitHub…</code></li>
-        <li>Fill in: Owner = <code>greattrips</code>, Repo = <code>MTG_Jumpstart_Search</code>, Path = <code>index.html</code>, Token = your token</li>
-        <li>Click <strong>Push</strong> — from now on this is a one-click operation</li>
+        <li>Download the new file from Claude</li>
+        <li>Open it locally in your browser</li>
+        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code> <em>again</em> — this re-bakes your localStorage collection into the new file</li>
+        <li>Push or upload that second download to GitHub</li>
       </ol>
-      <div class="note-box"><strong>Security note:</strong> The token is stored only in your laptop's browser — it is never written into the HTML file that gets pushed to GitHub.</div>
+      <div class="note-box">The extra Download step in the middle is essential — it transfers your existing collection into the new code file.</div>
+
+      <h3>Setting Up One-Click GitHub Push (Laptop Only)</h3>
+      <ol>
+        <li>Go to <strong>github.com</strong> → Profile photo → Settings → Developer settings → <strong>Fine-grained tokens</strong> → Generate new token</li>
+        <li>Name it (e.g. <code>MTG Jumpstart Browser</code>), set expiry, choose <strong>Only select repositories</strong> → <code>MTG_Jumpstart_Search</code></li>
+        <li>Under Permissions → Repository permissions → <strong>Contents: Read and write</strong> → Generate token</li>
+        <li><strong>Copy the token immediately</strong> — starts with <code>github_pat_...</code>, only shown once</li>
+        <li>In the app: <code>💾 Save ▾</code> → <code>⬆ Push to GitHub…</code> → fill in Owner = <code>greattrips</code>, Repo = <code>MTG_Jumpstart_Search</code>, Path = <code>index.html</code>, Token = your token → <strong>Push</strong></li>
+        <li>Settings are remembered — future pushes are one click</li>
+      </ol>
+      <div class="note-box"><strong>Security:</strong> The token is stored only in your laptop's browser localStorage. It is never written into the HTML file that gets pushed to GitHub, so it stays private.</div>
 
       <h3>Resetting &amp; Rebuilding Data</h3>
       <ul>
-        <li><strong>⟳ Wipe &amp; Rebuild from Source</strong> — fetches the latest deck lists from the taw/magic-preconstructed-decks-data repository. Use this when new Jumpstart sets are released. Your collection is preserved.</li>
-        <li><strong>↺ Reset all data &amp; settings</strong> — wipes everything including ownership. Only use this if something is badly broken.</li>
+        <li><strong>⟳ Wipe &amp; Rebuild from Source</strong> — fetches the latest deck lists from the taw/magic-preconstructed-decks-data repository. Use this when new Jumpstart sets are released. Your collection and quantities are preserved.</li>
+        <li><strong>↺ Reset all data &amp; settings</strong> — wipes everything including ownership and quantities. Only use this if something is badly broken.</li>
       </ul>
 
-      <h3>Tips</h3>
+      <h3>Tips &amp; Shortcuts</h3>
       <ul>
-        <li>Click <strong>Jumpstart Deck Browser</strong> in the header at any time to reset all filters</li>
-        <li>The A–Z sidebar on the left filters by the first letter of the deck name — hover on desktop, tap to lock on mobile</li>
-        <li>Searching works across all editions including Set Tie-ins — you don't need to select a tab first</li>
+        <li>Click <strong>Jumpstart Deck Browser</strong> in the header to reset all filters and exit edit mode</li>
+        <li>The <strong>A–Z sidebar</strong> on the left edge filters by deck name initial — hover to preview on desktop, tap to lock on mobile</li>
+        <li>Search works across all editions including Set Tie-ins — no need to select a tab first</li>
+        <li>The <strong>color filter bar</strong> works alongside search and letter filter simultaneously</li>
         <li>Edit mode password is <code>jumpstart</code></li>
       </ul>
 
@@ -37176,7 +37198,7 @@ const DECK_DATA = {
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
 const OWNED_DATA = [];
 const OWNED_QTY = [];
-const OWNED_VERSION = "1777259673113";
+const OWNED_VERSION = "1777259904492";
 // OWNED_DATA_END — do not remove this comment — do not remove this comment
 </script>
 <script>
