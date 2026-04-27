@@ -86,6 +86,30 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .collection-banner{background:rgba(92,184,92,.08);border-bottom:1px solid rgba(92,184,92,.25);color:#7dd87d;font-family:'Crimson Pro',serif;font-size:.88rem;padding:.45rem 1.25rem;display:none;align-items:center;gap:.4rem}
 .collection-banner.visible{display:flex}
 .collection-banner-link{color:var(--own-color);cursor:pointer;font-weight:600;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit}
+.qty-row{display:flex;align-items:center;gap:.5rem;margin-left:.75rem}
+.qty-label{font-family:'Cinzel',serif;font-size:.68rem;color:var(--text2);letter-spacing:.05em;text-transform:uppercase}
+.qty-btn{background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);cursor:pointer;font-size:.9rem;font-weight:700;height:26px;line-height:1;padding:0;transition:all .15s;width:26px}
+.qty-btn:hover{border-color:var(--gold);color:var(--gold)}
+.qty-val{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--own-color);min-width:22px;text-align:center}
+.qty-badge{background:rgba(92,184,92,.15);border:1px solid rgba(92,184,92,.3);border-radius:10px;color:var(--own-color);font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;padding:.08rem .35rem;margin-left:.25rem}
+.summary-tabs{display:none;gap:.5rem;padding:.5rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.summary-tabs.visible{display:flex}
+.summary-tab-btn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.68rem;font-weight:600;letter-spacing:.05em;padding:.28rem .7rem;transition:all .15s}
+.summary-tab-btn.active{background:rgba(92,184,92,.1);border-color:var(--own-color);color:var(--own-color)}
+.summary-panel{padding:1rem 1.25rem;display:none}
+.summary-panel.visible{display:block}
+.summary-edition{margin-bottom:1.5rem}
+.summary-edition-name{font-family:'Cinzel',serif;font-size:.85rem;color:var(--gold);font-weight:700;letter-spacing:.06em;margin-bottom:.6rem}
+.summary-table{width:100%;border-collapse:collapse;font-family:'Crimson Pro',serif;font-size:.9rem}
+.summary-table th{border-bottom:1px solid var(--border);color:var(--text2);font-family:'Cinzel',serif;font-size:.63rem;letter-spacing:.07em;padding:.3rem .5rem;text-align:left;text-transform:uppercase}
+.summary-table td{border-bottom:1px solid rgba(255,255,255,.04);padding:.32rem .5rem;color:var(--text)}
+.summary-table tr:last-child td{border-bottom:none}
+.summary-table .total-row td{border-top:1px solid var(--border);color:var(--gold);font-weight:600;padding-top:.45rem}
+.summary-pip{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle}
+.summary-grand{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:.75rem 1rem;margin-top:1.2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center}
+.summary-grand-item{font-family:'Cinzel',serif}
+.summary-grand-val{font-size:1.4rem;font-weight:700;color:var(--gold);display:block}
+.summary-grand-label{font-size:.62rem;color:var(--text2);letter-spacing:.06em;text-transform:uppercase}
 .filter-label{color:var(--text2);font-size:.78rem;font-family:'Cinzel',serif;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
 .color-btn{align-items:center;border:1.5px solid transparent;border-radius:20px;cursor:pointer;display:inline-flex;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.25rem .65rem;transition:all .15s;white-space:nowrap}
 .color-btn .pip{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
@@ -456,6 +480,11 @@ body.edit-mode .add-deck-btn{display:flex}
   <span>📦 Filtered to My Collection</span>
   <button class="collection-banner-link" id="collection-banner-clear">Click here to clear all filters</button>
 </div>
+<div class="summary-tabs" id="summary-tabs">
+  <button class="summary-tab-btn active" id="summary-decks-btn">🃏 Decks</button>
+  <button class="summary-tab-btn" id="summary-stats-btn">📊 Summary</button>
+</div>
+<div class="summary-panel" id="summary-panel"></div>
 <main id="main-content"></main>
 
 <!-- Modal -->
@@ -34522,6 +34551,7 @@ const DECK_DATA = {
 // DECK_DATA_END — do not remove this comment
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
 const OWNED_DATA = [];
+const OWNED_QTY = [];
 const OWNED_VERSION = "0";
 // OWNED_DATA_END — do not remove this comment
 </script>
@@ -34596,12 +34626,40 @@ function loadOwned() {
 function saveOwned() {
   localStorage.setItem('jmp-owned', JSON.stringify([...state.owned]));
 }
+function loadOwnedQty() {
+  try {
+    const saved = localStorage.getItem('jmp-owned-qty');
+    if (saved) return new Map(JSON.parse(saved));
+    if (typeof OWNED_QTY !== 'undefined' && OWNED_QTY.length > 0) {
+      localStorage.setItem('jmp-owned-qty', JSON.stringify(OWNED_QTY));
+      return new Map(OWNED_QTY);
+    }
+    return new Map();
+  } catch { return new Map(); }
+}
+function saveOwnedQty() {
+  localStorage.setItem('jmp-owned-qty', JSON.stringify([...state.ownedQty]));
+}
+function getOwnedQty(deckId, vi) { return state.ownedQty.get(ownedKey(deckId, vi)) || 1; }
+function setOwnedQty(deckId, vi, qty) {
+  const k = ownedKey(deckId, vi);
+  if (qty <= 0) state.ownedQty.delete(k); else state.ownedQty.set(k, qty);
+  saveOwnedQty();
+}
 function ownedKey(deckId, vi) { return `${deckId}:${vi}`; }
 function isVariantOwned(deckId, vi) { return state.owned.has(ownedKey(deckId, vi)); }
 function isDeckOwned(deck) { return deck.variants.some((_, i) => isVariantOwned(deck.id, i)); }
 function toggleOwned(deckId, vi) {
   const k = ownedKey(deckId, vi);
-  state.owned.has(k) ? state.owned.delete(k) : state.owned.add(k);
+  if (state.owned.has(k)) {
+    state.owned.delete(k);
+    state.ownedQty.delete(k);
+    saveOwnedQty();
+  } else {
+    state.owned.add(k);
+    if (!state.ownedQty.has(k)) state.ownedQty.set(k, 1);
+    saveOwnedQty();
+  }
   saveOwned();
 }
 
@@ -34609,7 +34667,7 @@ function toggleOwned(deckId, vi) {
 const state = {
   edition: 'all', colors: new Set(), search: '',
   openDeckId: null, openEditionId: null, openVariant: 0,
-  cardCache: {}, owned: loadOwned(), showOwnedOnly: false
+  cardCache: {}, owned: loadOwned(), ownedQty: loadOwnedQty(), showOwnedOnly: false
 };
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -34739,6 +34797,16 @@ function renderGrid() {
   // Show/hide My Collection banner
   const banner = document.getElementById('collection-banner');
   if (banner) banner.classList.toggle('visible', state.showOwnedOnly);
+  document.getElementById('summary-tabs')?.classList.toggle('visible', state.showOwnedOnly);
+  if (!state.showOwnedOnly) {
+    summaryMode = 'decks';
+    document.getElementById('summary-decks-btn')?.classList.add('active');
+    document.getElementById('summary-stats-btn')?.classList.remove('active');
+    document.getElementById('main-content').style.display = '';
+    const sp = document.getElementById('summary-panel');
+    if (sp) { sp.classList.remove('visible'); sp.innerHTML = ''; }
+  }
+  renderCollectionSummary();
   const main = document.getElementById('main-content');
   const { groups, total } = getFilteredData();
   const badge = document.getElementById('search-mode-badge');
@@ -34780,6 +34848,7 @@ function renderGrid() {
               <div class="color-pips">${pips}</div>
               <div class="deck-meta">
                 <span class="owned-check-mark">✓</span>
+                ${getOwnedQty(deck.id, vi) > 1 ? `<span class="qty-badge">×${getOwnedQty(deck.id, vi)}</span>` : ''}
                 ${hasCards ? `<span class="has-list-badge">List ✓</span>` : `<span class="no-list-badge">No list</span>`}
               </div>
             </div>
@@ -34883,18 +34952,43 @@ function renderModal(deck, ed) {
     vtabs.innerHTML = '';
   }
 
-  // Own toggle button
+  // Own toggle button + qty controls
   const ownBtn = document.getElementById('own-toggle-btn');
   const ownedNow = isVariantOwned(deck.id, vi);
   ownBtn.className = `own-toggle-btn ${ownedNow ? 'is-owned' : 'not-owned'}`;
   ownBtn.innerHTML = ownedNow
     ? `<span class="own-check">✓</span> Owned`
     : `<span class="own-check">○</span> Mark Owned`;
-  ownBtn.onclick = () => {
-    toggleOwned(deck.id, vi);
-    renderModal(deck, ed);
-    renderGrid();
-  };
+  ownBtn.onclick = () => { toggleOwned(deck.id, vi); renderModal(deck, ed); renderGrid(); };
+
+  // Qty row
+  let qtyRow = document.getElementById('qty-row');
+  if (!qtyRow) {
+    qtyRow = document.createElement('div');
+    qtyRow.id = 'qty-row'; qtyRow.className = 'qty-row';
+    ownBtn.parentNode.insertBefore(qtyRow, ownBtn.nextSibling);
+  }
+  if (ownedNow) {
+    const cq = getOwnedQty(deck.id, vi);
+    qtyRow.style.display = 'flex';
+    qtyRow.innerHTML = `<span class="qty-label">Qty</span>
+      <button class="qty-btn" id="qty-minus">−</button>
+      <span class="qty-val" id="qty-val">${cq}</span>
+      <button class="qty-btn" id="qty-plus">＋</button>`;
+    document.getElementById('qty-minus').onclick = () => {
+      const q = getOwnedQty(deck.id, vi);
+      if (q <= 1) { toggleOwned(deck.id, vi); renderModal(deck, ed); renderGrid(); return; }
+      setOwnedQty(deck.id, vi, q - 1);
+      document.getElementById('qty-val').textContent = q - 1;
+      renderGrid();
+    };
+    document.getElementById('qty-plus').onclick = () => {
+      const q = getOwnedQty(deck.id, vi);
+      setOwnedQty(deck.id, vi, q + 1);
+      document.getElementById('qty-val').textContent = q + 1;
+      renderGrid();
+    };
+  } else { qtyRow.style.display = 'none'; qtyRow.innerHTML = ''; }
 
   // Body
   const body = document.getElementById('modal-body');
@@ -35049,6 +35143,70 @@ let searchTimer;
 document.getElementById('search-input').addEventListener('input', e => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { state.search = e.target.value.trim(); renderGrid(); }, 180);
+});
+
+// ── Collection summary ───────────────────────────────────────────────────────
+let summaryMode = 'decks';
+const COLOR_LABELS_S = {W:'White',U:'Blue',B:'Black',R:'Red',G:'Green',M:'Multi'};
+const COLOR_HEX_S    = {W:'#c5b87a',U:'#7ab4e8',B:'#b090e0',R:'#e88070',G:'#70d890',M:'#d4a030'};
+
+function renderCollectionSummary() {
+  const panel = document.getElementById('summary-panel');
+  if (!panel) return;
+  if (!state.showOwnedOnly || summaryMode !== 'stats') {
+    panel.classList.remove('visible'); panel.innerHTML = ''; return;
+  }
+  panel.classList.add('visible');
+  const colorGroup = colors => colors.length > 1 ? 'M' : (colors[0] || '?');
+  let grandUnique = 0, grandDupe = 0, grandTotal = 0;
+  let out = '';
+  for (const ed of liveData.editions) {
+    const rows = {W:[0,0],U:[0,0],B:[0,0],R:[0,0],G:[0,0],M:[0,0]};
+    let edHas = false;
+    for (const deck of ed.decks) {
+      for (let vi = 0; vi < deck.variants.length; vi++) {
+        if (!isVariantOwned(deck.id, vi)) continue;
+        edHas = true;
+        const g = colorGroup(deck.colors);
+        const qty = getOwnedQty(deck.id, vi);
+        rows[g][0]++; rows[g][1] += qty;
+      }
+    }
+    if (!edHas) continue;
+    const eu = Object.values(rows).reduce((s,[u])=>s+u,0);
+    const et = Object.values(rows).reduce((s,[,t])=>s+t,0);
+    grandUnique+=eu; grandTotal+=et; grandDupe+=et-eu;
+    out += `<div class="summary-edition"><div class="summary-edition-name">${esc(ed.name)}<span style="font-size:.7rem;color:var(--text2);font-weight:400;margin-left:.4rem">${ed.code||ed.id.toUpperCase()}</span></div>
+    <table class="summary-table"><tr><th>Color</th><th>Unique</th><th>Dupes</th><th>Total</th></tr>`;
+    for (const [c,[u,t]] of Object.entries(rows)) {
+      if (!u) continue;
+      out += `<tr><td><span class="summary-pip" style="background:${COLOR_HEX_S[c]}"></span>${COLOR_LABELS_S[c]}</td><td>${u}</td><td>${t-u||'—'}</td><td>${t}</td></tr>`;
+    }
+    out += `<tr class="total-row"><td>Total</td><td>${eu}</td><td>${et-eu||'—'}</td><td>${et}</td></tr></table></div>`;
+  }
+  out += `<div class="summary-grand">
+    <div class="summary-grand-item"><span class="summary-grand-val">${grandUnique}</span><span class="summary-grand-label">Unique Variants</span></div>
+    <div class="summary-grand-item"><span class="summary-grand-val">${grandDupe}</span><span class="summary-grand-label">Duplicates</span></div>
+    <div class="summary-grand-item"><span class="summary-grand-val">${grandTotal}</span><span class="summary-grand-label">Total Copies</span></div>
+  </div>`;
+  panel.innerHTML = out;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('summary-decks-btn')?.addEventListener('click', () => {
+    summaryMode = 'decks';
+    document.getElementById('summary-decks-btn').classList.add('active');
+    document.getElementById('summary-stats-btn').classList.remove('active');
+    document.getElementById('main-content').style.display = '';
+    renderCollectionSummary();
+  });
+  document.getElementById('summary-stats-btn')?.addEventListener('click', () => {
+    summaryMode = 'stats';
+    document.getElementById('summary-stats-btn').classList.add('active');
+    document.getElementById('summary-decks-btn').classList.remove('active');
+    document.getElementById('main-content').style.display = 'none';
+    renderCollectionSummary();
+  });
 });
 
 document.getElementById('owned-only-btn').addEventListener('click', () => {
@@ -35581,8 +35739,9 @@ document.getElementById('save-download-btn').addEventListener('click', () => {
 
   // Embed current ownership so other devices pick it up
   const ownedArr = JSON.stringify([...state.owned]);
-  const ownedVer = Date.now().toString(); // unique per save — forces re-merge on all devices
-  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
+  const ownedQtyArr = JSON.stringify([...state.ownedQty]);
+  const ownedVer = Date.now().toString();
+  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\nconst OWNED_QTY = ${ownedQtyArr};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
   src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
 
   const blob = new Blob([src], { type: 'text/html' });
@@ -35622,37 +35781,44 @@ document.getElementById('save-sync-collection-btn').addEventListener('click', ()
 
 document.getElementById('save-force-resync-btn').addEventListener('click', async () => {
   document.getElementById('save-dropdown').classList.remove('open');
-
-  // Build the URL of the live GitHub Pages site
   const siteUrl = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
-
-  if (!confirm(`This will fetch the latest version of the site from GitHub and replace your local collection with the one stored there.\n\nURL: ${siteUrl}\n\nYour local-only changes will be overwritten. Continue?`)) return;
 
   showToast('⏳ Fetching latest from GitHub…', 60000);
   try {
-    // Add cache-busting param so we always get the live file, not a cached one
     const res = await fetch(siteUrl + '?v=' + Date.now(), { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
 
-    // Extract OWNED_DATA and OWNED_VERSION from the fetched file
-    const dataMatch  = text.match(/const OWNED_DATA = (\[.*?\]);/s);
-    const verMatch   = text.match(/const OWNED_VERSION = "([^"]+)"/);
+    const dataMatch = text.match(/const OWNED_DATA = (\[.*?\]);/s);
+    const verMatch  = text.match(/const OWNED_VERSION = "([^"]+)"/);
     if (!dataMatch) throw new Error('Could not find OWNED_DATA in fetched file.');
 
     const remoteOwned   = JSON.parse(dataMatch[1]);
     const remoteVersion = verMatch ? verMatch[1] : Date.now().toString();
 
-    // Replace local collection entirely with remote (this is a forced overwrite)
+    // If remote is empty, warn — this means the laptop hasn't pushed its collection yet
+    if (remoteOwned.length === 0) {
+      showToast('⚠ GitHub file has 0 owned variants. On your laptop: Download → Push first, then retry.', 8000);
+      return;
+    }
+
+    if (!confirm(`Found ${remoteOwned.length} owned variant(s) on GitHub.\nReplace your local collection with this? (Local changes will be overwritten)`)) return;
+
     state.owned = new Set(remoteOwned);
+    try {
+      const qm = text.match(/const OWNED_QTY = (\[.*?\]);/s);
+      if (qm) { state.ownedQty = new Map(JSON.parse(qm[1])); saveOwnedQty(); }
+    } catch(e) {}
     saveOwned();
     localStorage.setItem('jmp-owned-version', remoteVersion);
 
-    // Sync button UI
-    document.getElementById('owned-only-btn')?.classList.toggle('active', state.showOwnedOnly);
+    // On mobile, switch to My Collection view after sync so they see results immediately
+    if (window.innerWidth <= 700) {
+      state.showOwnedOnly = true;
+      document.getElementById('owned-only-btn')?.classList.add('active');
+    }
     renderGrid();
-
-    showToast(`✓ Resynced: ${remoteOwned.length} owned variants loaded from GitHub`, 5000);
+    showToast(`✓ Resynced — ${remoteOwned.length} owned variants loaded from GitHub`, 5000);
   } catch(e) {
     showToast(`⚠ Resync failed: ${e.message}`, 5000);
   }
@@ -35803,8 +35969,9 @@ async function generateSelfContainedHtml() {
 
   // Embed current ownership so other devices pick it up
   const ownedArr = JSON.stringify([...state.owned]);
-  const ownedVer = Date.now().toString(); // unique per save — forces re-merge on all devices
-  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
+  const ownedQtyArr = JSON.stringify([...state.ownedQty]);
+  const ownedVer = Date.now().toString();
+  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\nconst OWNED_QTY = ${ownedQtyArr};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
   src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
   return src;
 }
@@ -36228,10 +36395,15 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 // Always start in normal mode regardless of what was saved in the HTML
 document.body.classList.remove('edit-mode');
 editMode = false;
-// On mobile, default to My Collection view (only if user has owned variants)
-if (window.innerWidth <= 700 && state.owned.size > 0) {
+// Mobile: always default to My Collection view
+// Desktop: always default to full unfiltered view
+const isMobile = window.innerWidth <= 700;
+if (isMobile) {
   state.showOwnedOnly = true;
   document.getElementById('owned-only-btn')?.classList.add('active');
+} else {
+  state.showOwnedOnly = false;
+  document.getElementById('owned-only-btn')?.classList.remove('active');
 }
 renderTabs();
 renderGrid();
