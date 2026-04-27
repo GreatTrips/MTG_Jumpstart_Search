@@ -48,6 +48,25 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 
 /* owned-only button */
 .owned-btn{align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;gap:.35rem;letter-spacing:.04em;padding:.4rem .8rem;transition:all .2s;white-space:nowrap}
+.help-btn{align-items:center;background:none;border:1px solid var(--border);border-radius:50%;color:var(--text2);cursor:pointer;display:flex;font-size:.8rem;font-weight:700;height:26px;justify-content:center;letter-spacing:0;padding:0;transition:all .2s;width:26px;flex-shrink:0}
+.help-btn:hover{border-color:var(--gold);color:var(--gold)}
+.help-modal{display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem}
+.help-modal.open{display:flex}
+.help-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column}
+.help-header{border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2);z-index:1}
+.help-header h2{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;letter-spacing:.06em}
+.help-body{padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)}
+.help-body h3{font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:1.4rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
+.help-body h3:first-child{margin-top:0}
+.help-body p{margin:.4rem 0}
+.help-body ol,.help-body ul{margin:.4rem 0 .8rem 1.2rem;padding:0}
+.help-body li{margin:.3rem 0}
+.help-body code{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:3px;color:var(--gold);font-size:.85em;padding:.1rem .35rem}
+.help-body .step-label{display:inline-block;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:4px;color:var(--gold);font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:.06em;padding:.1rem .4rem;margin-right:.4rem;vertical-align:middle}
+.help-body .device-tag{display:inline-block;background:rgba(92,184,92,.1);border:1px solid rgba(92,184,92,.25);border-radius:4px;color:#7dd87d;font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:.05em;padding:.1rem .4rem;margin-bottom:.3rem}
+.help-body .device-tag.phone{background:rgba(100,160,255,.1);border-color:rgba(100,160,255,.25);color:#90b8ff}
+.help-body .note-box{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:.6rem .85rem;margin:.6rem 0;font-size:.88rem;color:var(--text2)}
+.help-body .note-box strong{color:var(--text)}
 .owned-btn:hover{border-color:var(--own-color);color:var(--text)}
 .owned-btn.active{background:var(--own-glow);border-color:var(--own-color);color:var(--own-color)}
 .owned-btn .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
@@ -404,6 +423,7 @@ body.edit-mode .add-deck-btn{display:flex}
         ＋ Import List
       </button>
       <button class="edit-btn-header" id="edit-mode-btn" title="Toggle edit mode">✏ Edit</button>
+      <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
     </div>
   </div>
   <nav class="edition-tabs" id="edition-tabs" role="tablist">
@@ -35363,6 +35383,18 @@ function exitEditMode() {
 }
 
 // Password modal
+// Help modal
+document.getElementById('help-btn').addEventListener('click', () => {
+  document.getElementById('help-modal').classList.add('open');
+});
+document.getElementById('help-close-btn').addEventListener('click', () => {
+  document.getElementById('help-modal').classList.remove('open');
+});
+document.getElementById('help-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('help-modal'))
+    document.getElementById('help-modal').classList.remove('open');
+});
+
 // Logo: reset everything to home state
 document.getElementById('site-logo-btn').addEventListener('click', () => {
   // Reset filters
@@ -36012,5 +36044,88 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 renderTabs();
 renderGrid();
 </script>
+<div class="help-modal" id="help-modal">
+  <div class="help-box">
+    <div class="help-header">
+      <h2>📖 Help &amp; Sync Guide</h2>
+      <button class="modal-close-btn" id="help-close-btn" title="Close">✕</button>
+    </div>
+    <div class="help-body">
+
+      <h3>Marking Your Collection</h3>
+      <ol>
+        <li>Click any deck card to open it</li>
+        <li>Select the variant tab you own (e.g. <code>Unearthed 1</code>)</li>
+        <li>Click <strong>Mark Owned</strong> — the dot next to that variant turns green</li>
+        <li>Repeat for each variant you own</li>
+      </ol>
+      <div class="note-box">Your collection is saved automatically in your browser. Click <strong>My Collection</strong> in the header to see only your owned decks.</div>
+
+      <h3>Saving &amp; Publishing Changes</h3>
+      <p>After marking your collection (or making any edits), save to GitHub so all devices stay in sync:</p>
+      <ol>
+        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code></li>
+        <li>Go to <strong>github.com/greattrips/MTG_Jumpstart_Search</strong></li>
+        <li>Click <code>index.html</code> → pencil icon (Edit) → <code>···</code> → <strong>Upload file</strong></li>
+        <li>Upload the downloaded file → click <strong>Commit changes</strong></li>
+        <li>Wait ~60 seconds for the site to rebuild</li>
+      </ol>
+      <div class="note-box"><strong>Why download first?</strong> The download bakes your collection into the file. Just pushing a file without downloading first won't include your ownership marks.</div>
+
+      <h3>Syncing to Another Device (Phone, Tablet, etc.)</h3>
+      <div class="device-tag">📱 Phone / Tablet</div>
+      <ol>
+        <li>Open Chrome → go to <code>greattrips.github.io/MTG_Jumpstart_Search/</code></li>
+        <li>Hard refresh: tap <strong>⋮ → Reload</strong> (Android) or pull down (iPhone)</li>
+        <li>Your collection loads automatically from the file — no login needed</li>
+      </ol>
+      <div class="note-box">If your phone had the page open before, you <em>must</em> hard refresh — otherwise it shows the old cached version.</div>
+
+      <h3>Syncing Changes Made on Mobile Back to Laptop</h3>
+      <p>If multiple people mark their collection on different devices:</p>
+      <div class="device-tag phone">📱 On the phone / other device</div>
+      <ol>
+        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code></li>
+        <li>Email or share that file to the person doing the merge</li>
+      </ol>
+      <div class="device-tag">💻 On the laptop (merge person)</div>
+      <ol>
+        <li>Open the downloaded file from the phone in your browser</li>
+        <li>Click <code>💾 Save ▾</code> → <code>📲 Sync collection from file</code></li>
+        <li>Confirm the merge — it combines both collections, never removes anything</li>
+        <li>Then do the normal Download → Upload to GitHub flow above</li>
+      </ol>
+
+      <h3>Setting Up GitHub Push (One-time, Laptop Only)</h3>
+      <p>Instead of manually uploading to GitHub each time, you can set up a one-click push:</p>
+      <ol>
+        <li>Go to <strong>github.com</strong> → Profile → Settings → Developer settings → <strong>Fine-grained tokens</strong> → Generate new token</li>
+        <li>Name it anything, set expiry, choose <strong>Only select repositories</strong> → <code>MTG_Jumpstart_Search</code></li>
+        <li>Under Permissions → Repository permissions → <strong>Contents: Read and write</strong> → Generate</li>
+        <li><strong>Copy the token immediately</strong> — it starts with <code>github_pat_...</code> and is only shown once</li>
+        <li>Back in the app: <code>💾 Save ▾</code> → <code>⬆ Push to GitHub…</code></li>
+        <li>Fill in: Owner = <code>greattrips</code>, Repo = <code>MTG_Jumpstart_Search</code>, Path = <code>index.html</code>, Token = your token</li>
+        <li>Click <strong>Push</strong> — from now on this is a one-click operation</li>
+      </ol>
+      <div class="note-box"><strong>Security note:</strong> The token is stored only in your laptop's browser — it is never written into the HTML file that gets pushed to GitHub.</div>
+
+      <h3>Resetting &amp; Rebuilding Data</h3>
+      <ul>
+        <li><strong>⟳ Wipe &amp; Rebuild from Source</strong> — fetches the latest deck lists from the taw/magic-preconstructed-decks-data repository. Use this when new Jumpstart sets are released. Your collection is preserved.</li>
+        <li><strong>↺ Reset all data &amp; settings</strong> — wipes everything including ownership. Only use this if something is badly broken.</li>
+      </ul>
+
+      <h3>Tips</h3>
+      <ul>
+        <li>Click <strong>Jumpstart Deck Browser</strong> in the header at any time to reset all filters</li>
+        <li>The A–Z sidebar on the left filters by the first letter of the deck name — hover on desktop, tap to lock on mobile</li>
+        <li>Searching works across all editions including Set Tie-ins — you don't need to select a tab first</li>
+        <li>Edit mode password is <code>jumpstart</code></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
