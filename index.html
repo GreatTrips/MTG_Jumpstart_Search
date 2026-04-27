@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jumpstart Deck Browser</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&amp;family=Crimson+Pro:ital,wght@0,300;0,400;1,300&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:#0c0c16; --bg2:#141428; --bg3:#1c1c38; --bg4:#22224a;
@@ -79,6 +83,9 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 
 /* ── Filter bar ── */
 .filter-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.45rem;padding:.55rem 1.25rem;flex-wrap:wrap}
+.collection-banner{background:rgba(92,184,92,.08);border-bottom:1px solid rgba(92,184,92,.25);color:#7dd87d;font-family:'Crimson Pro',serif;font-size:.88rem;padding:.45rem 1.25rem;display:none;align-items:center;gap:.4rem}
+.collection-banner.visible{display:flex}
+.collection-banner-link{color:var(--own-color);cursor:pointer;font-weight:600;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit}
 .filter-label{color:var(--text2);font-size:.78rem;font-family:'Cinzel',serif;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
 .color-btn{align-items:center;border:1.5px solid transparent;border-radius:20px;cursor:pointer;display:inline-flex;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.25rem .65rem;transition:all .15s;white-space:nowrap}
 .color-btn .pip{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
@@ -391,7 +398,7 @@ body.edit-mode .add-deck-btn{display:flex}
 .gh-push-status.err{background:rgba(224,85,85,.1);color:#e07070;display:block}
 </style>
 </head>
-<body class="" style="">
+<body>
 
 <header class="site-header">
   <div class="header-top">
@@ -400,11 +407,11 @@ body.edit-mode .add-deck-btn{display:flex}
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
         <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false">
-        <span class="search-mode-badge" id="search-mode-badge" style="display: none;">CARD</span>
+        <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
       </div>
     </div>
     <div class="header-right">
-      <span class="edit-mode-badge visible" id="edit-mode-badge">🔓 EDIT MODE</span>
+      <span class="edit-mode-badge" id="edit-mode-badge">🔓 EDIT MODE</span>
       <div class="save-menu-wrap">
         <button class="save-menu-btn" id="save-menu-btn">💾 Save ▾</button>
         <div class="save-dropdown" id="save-dropdown">
@@ -415,7 +422,7 @@ body.edit-mode .add-deck-btn{display:flex}
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
       </div>
-      <button class="owned-btn active" id="owned-only-btn" title="Show only decks you own">
+      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
         <span class="dot"></span>My Collection
       </button>
       <button class="import-btn" id="import-btn" title="Import a card list into data.js format">
@@ -425,7 +432,10 @@ body.edit-mode .add-deck-btn{display:flex}
       <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
     </div>
   </div>
-  <nav class="edition-tabs" id="edition-tabs" role="tablist"><button class="tab active" data-edition="all">All Editions</button><button class="tab" data-edition="jmp">JMP (2020)</button><button class="tab" data-edition="j21">Historic Horizons</button><button class="tab" data-edition="j22">JMP 2022</button><button class="tab" data-edition="j25">Foundations</button><button class="tab" data-edition="tie-ins">Set Tie-ins ↓</button></nav>
+  <nav class="edition-tabs" id="edition-tabs" role="tablist">
+    <button class="tab active" data-edition="all">All Editions</button>
+    <button class="tab" data-edition="tie-ins">Set Tie-ins ↓</button>
+  </nav>
 </header>
 
 <div class="filter-bar" role="toolbar">
@@ -437,191 +447,30 @@ body.edit-mode .add-deck-btn{display:flex}
   <button class="color-btn" data-c="R"><span class="pip" style="background:var(--mana-r)"></span>Red</button>
   <button class="color-btn" data-c="G"><span class="pip" style="background:var(--mana-g)"></span>Green</button>
   <button class="color-btn" data-c="M"><span class="pip" style="background:var(--mana-multi)"></span>Multi</button>
-  <span class="results-count" id="results-count">13 owned variants</span>
+  <span class="results-count" id="results-count"></span>
   <button class="add-deck-btn" id="add-deck-btn">＋ Add New Deck</button>
 </div>
 
-<main id="main-content"><section class="edition-section"><h2 class="edition-heading">Jumpstart <span class="deck-code-badge">JMP</span><span class="edition-count">3 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="jmp-abovetheclouds" data-ed="jmp" data-vi="3" tabindex="0">
-            <div class="deck-name">Above the Clouds</div><div class="variant-title">Above the Clouds (4)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-dragons" data-ed="jmp" data-vi="0" tabindex="0">
-            <div class="deck-name">Dragons</div><div class="variant-title">Dragons (1)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-lightning" data-ed="jmp" data-vi="1" tabindex="0">
-            <div class="deck-name">Lightning</div><div class="variant-title">Lightning (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Jumpstart 2022 <span class="deck-code-badge">J22</span><span class="edition-count">4 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="j22-ferocious" data-ed="j22" data-vi="3" tabindex="0">
-            <div class="deck-name">Ferocious</div><div class="variant-title">Ferocious 4</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-fiery" data-ed="j22" data-vi="1" tabindex="0">
-            <div class="deck-name">Fiery</div><div class="variant-title">Fiery 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-goblins" data-ed="j22" data-vi="1" tabindex="0">
-            <div class="deck-name">Goblins</div><div class="variant-title">Goblins 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-thinkagain" data-ed="j22" data-vi="1" tabindex="0">
-            <div class="deck-name">Think Again</div><div class="variant-title">Think Again 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Foundations Jumpstart <span class="deck-code-badge">J25</span><span class="edition-count">5 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="j25-armed" data-ed="j25" data-vi="0" tabindex="0">
-            <div class="deck-name">Armed</div><div class="variant-title">Armed (1)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-copied" data-ed="j25" data-vi="1" tabindex="0">
-            <div class="deck-name">Copied</div><div class="variant-title">Copied (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-drowned" data-ed="j25" data-vi="0" tabindex="0">
-            <div class="deck-name">Drowned</div><div class="variant-title">Drowned (1)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-enchanted" data-ed="j25" data-vi="1" tabindex="0">
-            <div class="deck-name">Enchanted</div><div class="variant-title">Enchanted (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-vampires" data-ed="j25" data-vi="2" tabindex="0">
-            <div class="deck-name">Vampires</div><div class="variant-title">Vampires (3)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Brothers' War Jumpstart <span class="deck-code-badge">BRO</span><span class="edition-count">1 theme</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="jbro-unearthed" data-ed="jbro" data-vi="0" tabindex="0">
-            <div class="deck-name">Unearthed</div><div class="variant-title">Unearthed 1</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">BRO</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section></main>
+<div class="collection-banner" id="collection-banner">
+  <span>📦 Filtered to My Collection</span>
+  <button class="collection-banner-link" id="collection-banner-clear">Click here to clear all filters</button>
+</div>
+<main id="main-content"></main>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal" id="modal">
-    <div class="modal-header" id="modal-header">
-    <div class="modal-header-info">
-      <div class="modal-title">Dragons<span style="display:flex;gap:3px"><span class="color-pip pip-R" style="width:17px;height:17px" title="Red"></span></span></div>
-      <div class="modal-headliner">Dragonloft Idol</div>
+    <div class="modal-header" id="modal-header"></div>
+    <div class="variant-row" id="variant-row" style="display:none">
+      <div class="variant-tabs" id="variant-tabs"></div>
+      <button class="own-toggle-btn not-owned" id="own-toggle-btn"></button>
     </div>
-    <button class="modal-close" id="modal-close-btn">✕</button></div>
-    <div class="variant-row" id="variant-row" style="display: flex;">
-      <div class="variant-tabs" id="variant-tabs"><button class="variant-tab active" data-vi="0">
-        <span class="vtab-own-dot owned"></span>Dragons (1)
-      </button><button class="variant-tab" data-vi="1">
-        <span class="vtab-own-dot"></span>Dragons (2)
-      </button></div>
-      <button class="own-toggle-btn is-owned" id="own-toggle-btn"><span class="own-check">✓</span> Owned</button>
-    </div>
-    <div class="modal-body" id="modal-body">
-    <div class="card-list-panel" id="card-list-panel"><h4>Card List (20)</h4><div class="card-row" data-card="Dragonloft Idol"><span class="card-qty">1×</span><span class="card-name-list">Dragonloft Idol</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Rapacious Dragon"><span class="card-qty">1×</span><span class="card-name-list">Rapacious Dragon</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Dragonspeaker Shaman"><span class="card-qty">1×</span><span class="card-name-list">Dragonspeaker Shaman</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Dragon Hatchling"><span class="card-qty">1×</span><span class="card-name-list">Dragon Hatchling</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Lightning Shrieker"><span class="card-qty">1×</span><span class="card-name-list">Lightning Shrieker</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Terror of the Peaks"><span class="card-qty">1×</span><span class="card-name-list">Terror of the Peaks</span><span class="rarity-badge rarity-m" title="Mythic">M</span></div><div class="card-row" data-card="Hellkite Punisher"><span class="card-qty">1×</span><span class="card-name-list">Hellkite Punisher</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Bathe in Dragonfire"><span class="card-qty">1×</span><span class="card-name-list">Bathe in Dragonfire</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Dragon Fodder"><span class="card-qty">1×</span><span class="card-name-list">Dragon Fodder</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Draconic Roar"><span class="card-qty">1×</span><span class="card-name-list">Draconic Roar</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Thrill of Possibility"><span class="card-qty">1×</span><span class="card-name-list">Thrill of Possibility</span><span class="rarity-badge rarity-c" title="Common">C</span></div><hr class="section-divider"><div class="card-row land" data-card="Thriving Bluff"><span class="card-qty">1×</span><span class="card-name-list">Thriving Bluff</span></div><div class="card-row land" data-card="Mountain"><span class="card-qty">3×</span><span class="card-name-list">Mountain</span></div><div class="card-row land" data-card="Mountain"><span class="card-qty">2×</span><span class="card-name-list">Mountain</span></div><div class="card-row land" data-card="Mountain"><span class="card-qty">2×</span><span class="card-name-list">Mountain</span></div><div class="card-row land" data-card="Mountain"><span class="card-qty">1×</span><span class="card-name-list">Mountain</span></div><div class="list-summary">20 cards · 11 spells · 9 lands</div></div>
-    <div class="card-images-panel" id="card-images-panel"><h4>Card Images</h4><div class="card-images-grid"><div class="card-image-wrap" data-img-card="Dragonloft Idol" onclick="window.open('https://scryfall.com/card/jmp/463/dragonloft-idol?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/2/e/2e9fa21a-a92e-4bcd-84fe-a7aa159fd0eb.jpg?1601080625" alt="Dragonloft Idol" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Dragonloft Idol&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Rapacious Dragon" onclick="window.open('https://scryfall.com/card/tdc/229/rapacious-dragon?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/1/0/1098504a-977a-4733-a1ee-086461113a84.jpg?1743206760" alt="Rapacious Dragon" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Rapacious Dragon&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Dragonspeaker Shaman" onclick="window.open('https://scryfall.com/card/afc/330/dragonspeaker-shaman?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/7/b/7b0a2799-197e-4d61-ab23-67d974458a05.jpg?1631590611" alt="Dragonspeaker Shaman" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Dragonspeaker Shaman&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Dragon Hatchling" onclick="window.open('https://scryfall.com/card/jmp/310/dragon-hatchling?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/c/5/c5d3a18c-d030-494d-b7b1-4d1d1e27fbbf.jpg?1601077526" alt="Dragon Hatchling" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Dragon Hatchling&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Lightning Shrieker" onclick="window.open('https://scryfall.com/card/jmp/345/lightning-shrieker?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/0/1/017f94bc-f7f0-4eed-9ca0-392872405f32.jpg?1601078324" alt="Lightning Shrieker" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Lightning Shrieker&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Terror of the Peaks" onclick="window.open('https://scryfall.com/card/otj/149/terror-of-the-peaks?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/9/0/904ff94a-4db4-44a6-8593-89c32905b3fc.jpg?1712355862" alt="Terror of the Peaks" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Terror of the Peaks&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Hellkite Punisher" onclick="window.open('https://scryfall.com/card/m21/151/hellkite-punisher?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/7/b/7bf663d3-850b-4a24-8e4b-08311adf4ed0.jpg?1594736690" alt="Hellkite Punisher" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Hellkite Punisher&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Bathe in Dragonfire" onclick="window.open('https://scryfall.com/card/jmp/293/bathe-in-dragonfire?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/1/0/102740d0-ca74-460d-af30-c71bddad87c4.jpg?1600701903" alt="Bathe in Dragonfire" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Bathe in Dragonfire&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Dragon Fodder" onclick="window.open('https://scryfall.com/card/fdn/535/dragon-fodder?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/f/9/f9abe517-f601-4784-8d62-2350bd755146.jpg?1730490630" alt="Dragon Fodder" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Dragon Fodder&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Draconic Roar" onclick="window.open('https://scryfall.com/card/jmp/308/draconic-roar?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/d/8/d8a0ec06-7c48-4334-ac50-c249e7e91dbe.jpg?1601077491" alt="Draconic Roar" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Draconic Roar&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Thrill of Possibility" onclick="window.open('https://scryfall.com/card/fdn/210/thrill-of-possibility?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/8/8/882b348c-076b-41d8-b505-063480636669.jpg?1730489377" alt="Thrill of Possibility" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Thrill of Possibility&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Thriving Bluff">
-      <div class="card-placeholder"><span>Thriving Bluff</span></div>
-    </div><div class="card-image-wrap" data-img-card="Mountain"><div class="card-placeholder"><span>Mountain</span></div></div><div class="card-image-wrap" data-img-card="Mountain"><div class="card-placeholder"><span>Mountain</span></div></div><div class="card-image-wrap" data-img-card="Mountain"><div class="card-placeholder"><span>Mountain</span></div></div><div class="card-image-wrap" data-img-card="Mountain"><div class="card-placeholder"><span>Mountain</span></div></div></div></div></div>
+    <div class="modal-body" id="modal-body"></div>
     <div class="scryfall-credit">
       <span>Card images via <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a></span>
       <span style="display:flex;align-items:center;gap:.6rem">
         <button id="modal-add-variant-btn" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.65rem;font-weight:600;letter-spacing:.04em;padding:.22rem .65rem;transition:all .2s" title="Open importer pre-filled for this deck">＋ Add Variant</button>
-        <span id="modal-edition-label">Jumpstart · 2020</span>
+        <span id="modal-edition-label"></span>
       </span>
     </div>
   </div>
@@ -735,13 +584,13 @@ Moxfield, or plain card names."></textarea>
     <div class="import-actions">
       <span class="import-actions-left" id="import-actions-msg"></span>
       <button class="import-close-btn" id="import-close-btn2">Close</button>
-      <button class="import-copy-btn" id="import-copy-btn" disabled="">Copy</button>
+      <button class="import-copy-btn" id="import-copy-btn" disabled>Copy</button>
       <button class="import-add-btn" id="import-add-btn">＋ Add to Browser</button>
     </div>
   </div>
+</div>
 
-
-<div class="toast" id="toast">✓ Pushed to GitHub — rebuilding in ~30s</div>
+<div class="toast" id="toast"></div>
 <div class="rebuild-overlay" id="rebuild-overlay">
   <div class="rebuild-title" id="rebuild-title">⟳ Rebuilding from Source</div>
   <div class="rebuild-status" id="rebuild-status">Fetching taw/magic-preconstructed-decks-data…</div>
@@ -837,7 +686,7 @@ Moxfield, or plain card names."></textarea>
   <div class="pw-box">
     <h3>🔐 Enter Edit Password</h3>
     <input type="password" id="pw-input" placeholder="Password" autocomplete="off">
-    <div class="pw-error" id="pw-error" style="display: none;">Incorrect password. Try again.</div>
+    <div class="pw-error" id="pw-error">Incorrect password. Try again.</div>
     <div class="pw-actions">
       <button class="btn-secondary" id="pw-cancel-btn">Cancel</button>
       <button class="btn-primary" id="pw-confirm-btn">Unlock</button>
@@ -900,7 +749,7 @@ Moxfield, or plain card names."></textarea>
   <div class="gh-box">
     <h3>⬆ Push to GitHub</h3>
     <p class="gh-hint">
-      Enter your GitHub repo details and a <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Jumpstart+Browser" target="_blank" rel="noopener">Personal Access Token</a> with <strong>repo</strong> write scope. These are stored only in your browser's localStorage.
+      Enter your GitHub repo details and a <a href="https://github.com/settings/tokens/new?scopes=repo&description=Jumpstart+Browser" target="_blank" rel="noopener">Personal Access Token</a> with <strong>repo</strong> write scope. These are stored only in your browser's localStorage.
     </p>
     <div class="edit-field" style="margin-bottom:.6rem">
       <label>Repo Owner (your GitHub username)</label>
@@ -918,10 +767,10 @@ Moxfield, or plain card names."></textarea>
       <label>Personal Access Token</label>
       <input type="password" id="gh-token" placeholder="ghp_…">
     </div>
-    <div id="gh-push-status" class="gh-push-status" style="display: block;">⏳ Committing updated file…</div>
+    <div id="gh-push-status" class="gh-push-status"></div>
     <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.85rem">
       <button class="btn-secondary" id="gh-cancel-btn">Cancel</button>
-      <button class="btn-primary" id="gh-push-btn">Commit &amp; Push</button>
+      <button class="btn-primary" id="gh-push-btn">Commit & Push</button>
     </div>
   </div>
 </div>
@@ -34669,10 +34518,10 @@ const DECK_DATA = {
     }
   ]
 };
-// DECK_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment
+// DECK_DATA_END — do not remove this comment
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
-const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0","jmp-dragons:0"];
-// OWNED_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment
+const OWNED_DATA = [];
+// OWNED_DATA_END — do not remove this comment
 </script>
 <script>
 // ─── EDIT PASSWORD (change this in the file to your preferred password) ───────
@@ -34879,6 +34728,9 @@ function getFilteredData() {
 }
 
 function renderGrid() {
+  // Show/hide My Collection banner
+  const banner = document.getElementById('collection-banner');
+  if (banner) banner.classList.toggle('visible', state.showOwnedOnly);
   const main = document.getElementById('main-content');
   const { groups, total } = getFilteredData();
   const badge = document.getElementById('search-mode-badge');
@@ -35641,24 +35493,39 @@ document.getElementById('help-modal').addEventListener('click', e => {
 
 // Logo: reset everything to home state
 document.getElementById('site-logo-btn').addEventListener('click', () => {
-  // Reset all state
+  // 1. Reset all state
   state.search = '';
   state.edition = 'all';
   state.colors.clear();
   state.letterFilter = null;
   state.letterLocked = false;
   state.showOwnedOnly = false;
-  // Reset UI elements
+  // 2. Exit edit mode first (it calls renderGrid internally, that's fine)
+  if (editMode) exitEditMode();
+  // 3. Reset all UI elements AFTER exitEditMode so nothing gets re-highlighted
   const searchInput = document.getElementById('search-input');
   if (searchInput) searchInput.value = '';
   document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
   const allBtn = document.querySelector('.color-btn[data-c="all"]');
   if (allBtn) allBtn.classList.add('active');
-  const ownedBtn = document.getElementById('owned-only-btn');
-  if (ownedBtn) ownedBtn.classList.remove('active');
-  // Exit edit mode silently (no password prompt)
-  if (editMode) exitEditMode();
-  // renderGrid will also call renderTabs which resets active tab to 'all'
+  document.getElementById('owned-only-btn')?.classList.remove('active');
+  document.getElementById('edit-mode-badge')?.classList.remove('visible');
+  document.body.classList.remove('edit-mode');
+  // 4. Final render
+  renderGrid();
+});
+
+document.getElementById('collection-banner-clear').addEventListener('click', () => {
+  state.showOwnedOnly = false;
+  document.getElementById('owned-only-btn')?.classList.remove('active');
+  state.search = '';
+  state.edition = 'all';
+  state.colors.clear();
+  state.letterFilter = null;
+  state.letterLocked = false;
+  document.getElementById('search-input').value = '';
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
   renderGrid();
 });
 
@@ -36313,9 +36180,13 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 // Always start in normal mode regardless of what was saved in the HTML
 document.body.classList.remove('edit-mode');
 editMode = false;
+// On mobile, default to My Collection view (only if user has owned variants)
+if (window.innerWidth <= 700 && state.owned.size > 0) {
+  state.showOwnedOnly = true;
+  document.getElementById('owned-only-btn')?.classList.add('active');
+}
 renderTabs();
 renderGrid();
 </script>
-
-
-<div id="1p-menu-live-region" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all" style="clip: rect(0px, 0px, 0px, 0px); clip-path: inset(50%); height: 1px; overflow: hidden; position: fixed; top: 0px; left: 0px; white-space: nowrap; width: 1px; overflow-wrap: normal;">1Password menu is available. Press down arrow to select.</div><div id="1p-menu-live-region" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all" style="clip: rect(0px, 0px, 0px, 0px); clip-path: inset(50%); height: 1px; overflow: hidden; position: fixed; top: 0px; left: 0px; white-space: nowrap; width: 1px; overflow-wrap: normal;">1Password menu is available. Press down arrow to select.</div></body></html>
+</body>
+</html>
