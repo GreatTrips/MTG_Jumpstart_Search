@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jumpstart Deck Browser</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&amp;family=Crimson+Pro:ital,wght@0,300;0,400;1,300&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:#0c0c16; --bg2:#141428; --bg3:#1c1c38; --bg4:#22224a;
@@ -207,6 +208,8 @@ main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
 
 /* own toggle button */
 .own-toggle-btn{flex-shrink:0;margin-left:.75rem;align-items:center;border:1px solid var(--border);border-radius:6px;cursor:pointer;display:inline-flex;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;gap:.35rem;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap}
+body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:default}
+body.phone-readonly .qty-row{display:none !important}
 .own-toggle-btn.not-owned{background:none;color:var(--text2)}
 .own-toggle-btn.not-owned:hover{border-color:var(--own-color);color:var(--own-color)}
 .own-toggle-btn.is-owned{background:var(--own-glow);border-color:var(--own-color);color:var(--own-color)}
@@ -421,7 +424,7 @@ body.edit-mode .add-deck-btn{display:flex}
 .gh-push-status.err{background:rgba(224,85,85,.1);color:#e07070;display:block}
 </style>
 </head>
-<body class="" style="">
+<body>
 
 <header class="site-header">
   <div class="header-top">
@@ -446,7 +449,7 @@ body.edit-mode .add-deck-btn{display:flex}
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
       </div>
-      <button class="owned-btn active" id="owned-only-btn" title="Show only decks you own">
+      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
         <span class="dot"></span>My Collection
       </button>
       <button class="import-btn" id="import-btn" title="Import a card list into data.js format">
@@ -456,7 +459,10 @@ body.edit-mode .add-deck-btn{display:flex}
       <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
     </div>
   </div>
-  <nav class="edition-tabs" id="edition-tabs" role="tablist"><button class="tab active" data-edition="all">All Editions</button><button class="tab" data-edition="jmp">JMP (2020)</button><button class="tab" data-edition="j21">Historic Horizons</button><button class="tab" data-edition="j22">JMP 2022</button><button class="tab" data-edition="j25">Foundations</button><button class="tab" data-edition="tie-ins">Set Tie-ins ↓</button></nav>
+  <nav class="edition-tabs" id="edition-tabs" role="tablist">
+    <button class="tab active" data-edition="all">All Editions</button>
+    <button class="tab" data-edition="tie-ins">Set Tie-ins ↓</button>
+  </nav>
 </header>
 
 <div class="filter-bar" role="toolbar">
@@ -468,208 +474,35 @@ body.edit-mode .add-deck-btn{display:flex}
   <button class="color-btn" data-c="R"><span class="pip" style="background:var(--mana-r)"></span>Red</button>
   <button class="color-btn" data-c="G"><span class="pip" style="background:var(--mana-g)"></span>Green</button>
   <button class="color-btn" data-c="M"><span class="pip" style="background:var(--mana-multi)"></span>Multi</button>
-  <span class="results-count" id="results-count">12 owned variants</span>
+  <span class="results-count" id="results-count"></span>
   <button class="add-deck-btn" id="add-deck-btn">＋ Add New Deck</button>
 </div>
 
-<div class="collection-banner visible" id="collection-banner">
+<div class="collection-banner" id="collection-banner">
   <span>📦 Filtered to My Collection</span>
   <button class="collection-banner-link" id="collection-banner-clear">Click here to clear all filters</button>
 </div>
-<div class="summary-tabs visible" id="summary-tabs">
+<div class="summary-tabs" id="summary-tabs">
   <button class="summary-tab-btn active" id="summary-decks-btn">🃏 Decks</button>
   <button class="summary-tab-btn" id="summary-stats-btn">📊 Summary</button>
 </div>
 <div class="summary-panel" id="summary-panel"></div>
-<main id="main-content"><section class="edition-section"><h2 class="edition-heading">Jumpstart <span class="deck-code-badge">JMP</span><span class="edition-count">2 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="jmp-abovetheclouds" data-ed="jmp" data-vi="3" tabindex="0">
-            <div class="deck-name">Above the Clouds</div><div class="variant-title">Above the Clouds (4)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-lightning" data-ed="jmp" data-vi="1" tabindex="0">
-            <div class="deck-name">Lightning</div><div class="variant-title">Lightning (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Jumpstart 2022 <span class="deck-code-badge">J22</span><span class="edition-count">4 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="j22-ferocious" data-ed="j22" data-vi="3" tabindex="0">
-            <div class="deck-name">Ferocious</div><div class="variant-title">Ferocious 4</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-fiery" data-ed="j22" data-vi="1" tabindex="0">
-            <div class="deck-name">Fiery</div><div class="variant-title">Fiery 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-goblins" data-ed="j22" data-vi="1" tabindex="0">
-            <div class="deck-name">Goblins</div><div class="variant-title">Goblins 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-thinkagain" data-ed="j22" data-vi="1" tabindex="0">
-            <div class="deck-name">Think Again</div><div class="variant-title">Think Again 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Foundations Jumpstart <span class="deck-code-badge">J25</span><span class="edition-count">5 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="j25-armed" data-ed="j25" data-vi="0" tabindex="0">
-            <div class="deck-name">Armed</div><div class="variant-title">Armed (1)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-copied" data-ed="j25" data-vi="1" tabindex="0">
-            <div class="deck-name">Copied</div><div class="variant-title">Copied (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-drowned" data-ed="j25" data-vi="0" tabindex="0">
-            <div class="deck-name">Drowned</div><div class="variant-title">Drowned (1)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-enchanted" data-ed="j25" data-vi="1" tabindex="0">
-            <div class="deck-name">Enchanted</div><div class="variant-title">Enchanted (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-vampires" data-ed="j25" data-vi="2" tabindex="0">
-            <div class="deck-name">Vampires</div><div class="variant-title">Vampires (3)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Brothers' War Jumpstart <span class="deck-code-badge">BRO</span><span class="edition-count">1 theme</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="jbro-unearthed" data-ed="jbro" data-vi="0" tabindex="0">
-            <div class="deck-name">Unearthed</div><div class="variant-title">Unearthed 1</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">BRO</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section></main>
+<main id="main-content"></main>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal" id="modal">
-    <div class="modal-header" id="modal-header">
-    <div class="modal-header-info">
-      <div class="modal-title">Archaeology<span style="display:flex;gap:3px"><span class="color-pip pip-U" style="width:17px;height:17px" title="Blue"></span></span></div>
-      <div class="modal-headliner">Scholar of the Lost Trove</div>
+    <div class="modal-header" id="modal-header"></div>
+    <div class="variant-row" id="variant-row" style="display:none">
+      <div class="variant-tabs" id="variant-tabs"></div>
+      <button class="own-toggle-btn not-owned" id="own-toggle-btn"></button>
     </div>
-    <button class="modal-close" id="modal-close-btn">✕</button></div>
-    <div class="variant-row" id="variant-row" style="display: flex;">
-      <div class="variant-tabs" id="variant-tabs"><button class="variant-tab active" data-vi="0">
-        <span class="vtab-own-dot"></span>Archaeology (1)
-      </button><button class="variant-tab" data-vi="1">
-        <span class="vtab-own-dot"></span>Archaeology (2)
-      </button><button class="variant-tab" data-vi="2">
-        <span class="vtab-own-dot"></span>Archaeology (3)
-      </button><button class="variant-tab" data-vi="3">
-        <span class="vtab-own-dot"></span>Archaeology (4)
-      </button></div>
-      <button class="own-toggle-btn not-owned" id="own-toggle-btn"><span class="own-check">○</span> Mark Owned</button><div id="qty-row" class="qty-row" style="display: none;"></div>
-    </div>
-    <div class="modal-body" id="modal-body">
-    <div class="card-list-panel" id="card-list-panel"><h4>Card List (20)</h4><div class="card-row" data-card="Scholar of the Lost Trove"><span class="card-qty">1×</span><span class="card-name-list">Scholar of the Lost Trove</span><span class="rarity-badge rarity-r" title="Rare">R</span></div><div class="card-row" data-card="Juggernaut"><span class="card-qty">1×</span><span class="card-name-list">Juggernaut</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Meteor Golem"><span class="card-qty">1×</span><span class="card-name-list">Meteor Golem</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Ancestral Statue"><span class="card-qty">1×</span><span class="card-name-list">Ancestral Statue</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Archaeomender"><span class="card-qty">2×</span><span class="card-name-list">Archaeomender</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Erratic Visionary"><span class="card-qty">1×</span><span class="card-name-list">Erratic Visionary</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Lightning-Core Excavator"><span class="card-qty">1×</span><span class="card-name-list">Lightning-Core Excavator</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Thirst for Knowledge"><span class="card-qty">1×</span><span class="card-name-list">Thirst for Knowledge</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Chromatic Sphere"><span class="card-qty">1×</span><span class="card-name-list">Chromatic Sphere</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Hedron Archive"><span class="card-qty">1×</span><span class="card-name-list">Hedron Archive</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Aether Spellbomb"><span class="card-qty">1×</span><span class="card-name-list">Aether Spellbomb</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Buried Ruin"><span class="card-qty">1×</span><span class="card-name-list">Buried Ruin</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><hr class="section-divider"><div class="card-row land" data-card="Thriving Isle"><span class="card-qty">1×</span><span class="card-name-list">Thriving Isle</span></div><div class="card-row land" data-card="Island"><span class="card-qty">2×</span><span class="card-name-list">Island</span></div><div class="card-row land" data-card="Island"><span class="card-qty">2×</span><span class="card-name-list">Island</span></div><div class="card-row land" data-card="Island"><span class="card-qty">1×</span><span class="card-name-list">Island</span></div><div class="card-row land" data-card="Island"><span class="card-qty">1×</span><span class="card-name-list">Island</span></div><div class="list-summary">20 cards · 12 spells · 7 lands</div></div>
-    <div class="card-images-panel" id="card-images-panel"><h4>Card Images</h4><div class="card-images-grid"><div class="card-image-wrap" data-img-card="Scholar of the Lost Trove" onclick="window.open('https://scryfall.com/card/jmp/14/scholar-of-the-lost-trove?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/a/a/aa254a86-3c30-408d-9c14-befd472f9740.jpg?1770635117" alt="Scholar of the Lost Trove" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Scholar of the Lost Trove&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Juggernaut" onclick="window.open('https://scryfall.com/card/fdn/255/juggernaut?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/f/4/f4468fff-cd6f-428c-b7a0-ff89f5bbea2e.jpg?1730489555" alt="Juggernaut" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Juggernaut&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Meteor Golem" onclick="window.open('https://scryfall.com/card/fdn/256/meteor-golem?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/d/2/d291ea1e-36bc-46b3-b3ae-084fa0ba69eb.jpg?1733036771" alt="Meteor Golem" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Meteor Golem&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Ancestral Statue" onclick="window.open('https://scryfall.com/card/jmp/458/ancestral-statue?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/8/d/8d4113be-6dd9-4c15-9f57-a146bc520df8.jpg?1601080559" alt="Ancestral Statue" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Ancestral Statue&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Archaeomender" onclick="window.open('https://scryfall.com/card/jmp/9/archaeomender?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/2/2/22bb8779-ac19-43d6-b818-86eb8ee2f87d.jpg?1632261743" alt="Archaeomender" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Archaeomender&lt;/span&gt;&lt;/div&gt;'"><span class="card-image-qty">2</span>
-    </div><div class="card-image-wrap" data-img-card="Erratic Visionary" onclick="window.open('https://scryfall.com/card/clu/85/erratic-visionary?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/3/e/3e8a25fd-985f-49e5-b5b9-388571dfaec3.jpg?1706239798" alt="Erratic Visionary" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Erratic Visionary&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Lightning-Core Excavator" onclick="window.open('https://scryfall.com/card/jmp/32/lightning-core-excavator?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/b/1/b1b959af-bb23-42e7-8848-7405ed597c8d.jpg?1632261909" alt="Lightning-Core Excavator" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Lightning-Core Excavator&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Thirst for Knowledge" onclick="window.open('https://scryfall.com/card/eoc/48/thirst-for-knowledge?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/4/4/446ccc7a-fc2d-4e81-b782-31137119db00.jpg?1752944406" alt="Thirst for Knowledge" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Thirst for Knowledge&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Chromatic Sphere" onclick="window.open('https://scryfall.com/card/jmp/462/chromatic-sphere?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/e/d/edabc8b2-4413-48e4-8d6f-521b19d839a6.jpg?1601080615" alt="Chromatic Sphere" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Chromatic Sphere&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Hedron Archive" onclick="window.open('https://scryfall.com/card/fdn/726/hedron-archive?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/5/3/535b9ac6-dba2-4162-86ed-df3e9fad0306.jpg?1730572766" alt="Hedron Archive" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Hedron Archive&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Aether Spellbomb" onclick="window.open('https://scryfall.com/card/jmp/456/aether-spellbomb?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/a/5/a54e8ce9-edd7-4ae7-9521-6fb6727cf63b.jpg?1601080529" alt="Aether Spellbomb" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Aether Spellbomb&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Buried Ruin" onclick="window.open('https://scryfall.com/card/eoc/150/buried-ruin?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/7/a/7ab1a074-9d92-4125-9200-84cd035f8f53.jpg?1752945242" alt="Buried Ruin" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Buried Ruin&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Thriving Isle">
-      <div class="card-placeholder"><span>Thriving Isle</span></div>
-    </div><div class="card-image-wrap" data-img-card="Island"><div class="card-placeholder"><span>Island</span></div></div><div class="card-image-wrap" data-img-card="Island"><div class="card-placeholder"><span>Island</span></div></div><div class="card-image-wrap" data-img-card="Island"><div class="card-placeholder"><span>Island</span></div></div><div class="card-image-wrap" data-img-card="Island"><div class="card-placeholder"><span>Island</span></div></div></div></div></div>
+    <div class="modal-body" id="modal-body"></div>
     <div class="scryfall-credit">
       <span>Card images via <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a></span>
       <span style="display:flex;align-items:center;gap:.6rem">
         <button id="modal-add-variant-btn" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.65rem;font-weight:600;letter-spacing:.04em;padding:.22rem .65rem;transition:all .2s" title="Open importer pre-filled for this deck">＋ Add Variant</button>
-        <span id="modal-edition-label">Jumpstart · 2020</span>
+        <span id="modal-edition-label"></span>
       </span>
     </div>
   </div>
@@ -783,13 +616,13 @@ Moxfield, or plain card names."></textarea>
     <div class="import-actions">
       <span class="import-actions-left" id="import-actions-msg"></span>
       <button class="import-close-btn" id="import-close-btn2">Close</button>
-      <button class="import-copy-btn" id="import-copy-btn" disabled="">Copy</button>
+      <button class="import-copy-btn" id="import-copy-btn" disabled>Copy</button>
       <button class="import-add-btn" id="import-add-btn">＋ Add to Browser</button>
     </div>
   </div>
+</div>
 
-
-<div class="toast" id="toast">✓ Pushed to GitHub — rebuilding in ~30s</div>
+<div class="toast" id="toast"></div>
 <div class="rebuild-overlay" id="rebuild-overlay">
   <div class="rebuild-title" id="rebuild-title">⟳ Rebuilding from Source</div>
   <div class="rebuild-status" id="rebuild-status">Fetching taw/magic-preconstructed-decks-data…</div>
@@ -907,7 +740,7 @@ Moxfield, or plain card names."></textarea>
   <div class="pw-box">
     <h3>🔐 Enter Edit Password</h3>
     <input type="password" id="pw-input" placeholder="Password" autocomplete="off">
-    <div class="pw-error" id="pw-error" style="display: none;">Incorrect password. Try again.</div>
+    <div class="pw-error" id="pw-error">Incorrect password. Try again.</div>
     <div class="pw-actions">
       <button class="btn-secondary" id="pw-cancel-btn">Cancel</button>
       <button class="btn-primary" id="pw-confirm-btn">Unlock</button>
@@ -970,7 +803,7 @@ Moxfield, or plain card names."></textarea>
   <div class="gh-box">
     <h3>⬆ Push to GitHub</h3>
     <p class="gh-hint">
-      Enter your GitHub repo details and a <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Jumpstart+Browser" target="_blank" rel="noopener">Personal Access Token</a> with <strong>repo</strong> write scope. These are stored only in your browser's localStorage.
+      Enter your GitHub repo details and a <a href="https://github.com/settings/tokens/new?scopes=repo&description=Jumpstart+Browser" target="_blank" rel="noopener">Personal Access Token</a> with <strong>repo</strong> write scope. These are stored only in your browser's localStorage.
     </p>
     <div class="edit-field" style="margin-bottom:.6rem">
       <label>Repo Owner (your GitHub username)</label>
@@ -988,10 +821,10 @@ Moxfield, or plain card names."></textarea>
       <label>Personal Access Token</label>
       <input type="password" id="gh-token" placeholder="ghp_…">
     </div>
-    <div id="gh-push-status" class="gh-push-status" style="display: block;">⏳ Committing updated file…</div>
+    <div id="gh-push-status" class="gh-push-status"></div>
     <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.85rem">
       <button class="btn-secondary" id="gh-cancel-btn">Cancel</button>
-      <button class="btn-primary" id="gh-push-btn">Commit &amp; Push</button>
+      <button class="btn-primary" id="gh-push-btn">Commit & Push</button>
     </div>
   </div>
 </div>
@@ -34739,12 +34572,12 @@ const DECK_DATA = {
     }
   ]
 };
-// DECK_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment
+// DECK_DATA_END — do not remove this comment
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
-const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0"];
-const OWNED_QTY = [["jmp-abovetheclouds:3",1]];
-const OWNED_VERSION = "1777263231039";
-// OWNED_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment
+const OWNED_DATA = [];
+const OWNED_QTY = [];
+const OWNED_VERSION = "0";
+// OWNED_DATA_END — do not remove this comment
 </script>
 <script>
 // ─── EDIT PASSWORD (change this in the file to your preferred password) ───────
@@ -35822,6 +35655,59 @@ document.getElementById('mtgjson-deck-select').addEventListener('change', async 
 // ─── EDIT MODE ────────────────────────────────────────────────────────────────
 let editMode = false;
 
+// ── Phone edit state ─────────────────────────────────────────────────────────
+let phoneEditEnabled = localStorage.getItem('jmp-phone-edit') === 'true';
+const SITE_URL = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
+
+function isMobileDevice() { return window.innerWidth <= 700; }
+
+function applyPhoneReadonlyState() {
+  if (!isMobileDevice()) return;
+  const isReadOnly = !phoneEditEnabled;
+  document.body.classList.toggle('phone-readonly', isReadOnly);
+  document.getElementById('phone-readonly-notice')?.classList.toggle('visible', isReadOnly);
+  const toggle = document.getElementById('phone-edit-toggle');
+  if (toggle) {
+    toggle.classList.toggle('enabled', phoneEditEnabled);
+    toggle.textContent = phoneEditEnabled ? '📱 Phone updates ON' : '📱 Enable phone updates';
+  }
+}
+
+async function autoResyncFromSite() {
+  try {
+    const res = await fetch(SITE_URL + '?v=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const text = await res.text();
+    const dataMatch = text.match(/const OWNED_DATA = (\[.*?\]);/s);
+    const verMatch  = text.match(/const OWNED_VERSION = "([^"]+)"/);
+    if (!dataMatch) return;
+    const remoteOwned = JSON.parse(dataMatch[1]);
+    const remoteVer   = verMatch ? verMatch[1] : '';
+    const localVer    = localStorage.getItem('jmp-owned-version') || '';
+    if (remoteOwned.length > 0 && remoteVer !== localVer) {
+      state.owned = new Set(remoteOwned);
+      try {
+        const qm = text.match(/const OWNED_QTY = (\[.*?\]);/s);
+        if (qm) { state.ownedQty = new Map(JSON.parse(qm[1])); saveOwnedQty(); }
+      } catch(e) {}
+      saveOwned();
+      localStorage.setItem('jmp-owned-version', remoteVer);
+      renderGrid();
+      showToast(`✓ Collection synced — ${remoteOwned.length} variant${remoteOwned.length!==1?'s':''}`, 3000);
+    } else if (remoteOwned.length === 0) {
+      showToast(state.owned.size > 0
+        ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} (server has no data yet)`
+        : '📦 No collection on server — push from laptop first', 4000);
+    } else {
+      showToast(`📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} — up to date`, 2500);
+    }
+  } catch(e) {
+    showToast(state.owned.size > 0
+      ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} loaded (offline)`
+      : '⚠ Could not reach server', 3000);
+  }
+}
+
 function enterEditMode() {
   editMode = true;
   document.body.classList.add('edit-mode');
@@ -35884,6 +35770,18 @@ document.getElementById('collection-banner-clear').addEventListener('click', () 
   document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
   renderGrid();
+});
+
+document.getElementById('phone-edit-toggle').addEventListener('click', () => {
+  phoneEditEnabled = !phoneEditEnabled;
+  localStorage.setItem('jmp-phone-edit', phoneEditEnabled);
+  applyPhoneReadonlyState();
+  if (!phoneEditEnabled) {
+    showToast('🔒 Phone updates disabled — resyncing…', 2500);
+    setTimeout(autoResyncFromSite, 500);
+  } else {
+    showToast('📱 Phone updates enabled — you can now mark your collection', 3000);
+  }
 });
 
 document.getElementById('edit-mode-btn').addEventListener('click', () => {
@@ -36598,20 +36496,17 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 document.body.classList.remove('edit-mode');
 document.getElementById('edit-mode-badge')?.classList.remove('visible');
 editMode = false;
-// Mobile: always default to My Collection view
-// Desktop: always default to full unfiltered view
-const isMobile = window.innerWidth <= 700;
-if (isMobile) {
+// Mobile: My Collection + auto-resync (unless phone edit enabled)
+// Desktop: full unfiltered view
+if (isMobileDevice()) {
   state.showOwnedOnly = true;
   document.getElementById('owned-only-btn')?.classList.add('active');
-  // Show diagnostic toast so user knows what was loaded
-  setTimeout(() => {
-    if (state.owned.size > 0) {
-      showToast(`📦 ${state.owned.size} owned variant${state.owned.size !== 1 ? 's' : ''} loaded`, 3000);
-    } else {
-      showToast('📦 No collection yet — push from laptop first, then Force Resync', 5000);
-    }
-  }, 800);
+  applyPhoneReadonlyState();
+  if (!phoneEditEnabled) {
+    setTimeout(autoResyncFromSite, 600);
+  } else {
+    showToast(`📱 Phone updates ON — ${state.owned.size} variant${state.owned.size!==1?'s':''} in local cache`, 3000);
+  }
 } else {
   state.showOwnedOnly = false;
   document.getElementById('owned-only-btn')?.classList.remove('active');
@@ -36619,6 +36514,5 @@ if (isMobile) {
 renderTabs();
 renderGrid();
 </script>
-
-
-<div id="1p-menu-live-region" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all" style="clip: rect(0px, 0px, 0px, 0px); clip-path: inset(50%); height: 1px; overflow: hidden; position: fixed; top: 0px; left: 0px; white-space: nowrap; width: 1px; overflow-wrap: normal;">1Password menu is available. Press down arrow to select.</div></body></html>
+</body>
+</html>
