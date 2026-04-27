@@ -468,7 +468,7 @@ body.edit-mode .add-deck-btn{display:flex}
   <button class="color-btn" data-c="R"><span class="pip" style="background:var(--mana-r)"></span>Red</button>
   <button class="color-btn" data-c="G"><span class="pip" style="background:var(--mana-g)"></span>Green</button>
   <button class="color-btn" data-c="M"><span class="pip" style="background:var(--mana-multi)"></span>Multi</button>
-  <span class="results-count" id="results-count">13 owned variants</span>
+  <span class="results-count" id="results-count">12 owned variants</span>
   <button class="add-deck-btn" id="add-deck-btn">＋ Add New Deck</button>
 </div>
 
@@ -481,22 +481,11 @@ body.edit-mode .add-deck-btn{display:flex}
   <button class="summary-tab-btn" id="summary-stats-btn">📊 Summary</button>
 </div>
 <div class="summary-panel" id="summary-panel"></div>
-<main id="main-content"><section class="edition-section"><h2 class="edition-heading">Jumpstart <span class="deck-code-badge">JMP</span><span class="edition-count">3 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="jmp-abovetheclouds" data-ed="jmp" data-vi="3" tabindex="0">
+<main id="main-content"><section class="edition-section"><h2 class="edition-heading">Jumpstart <span class="deck-code-badge">JMP</span><span class="edition-count">2 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="jmp-abovetheclouds" data-ed="jmp" data-vi="3" tabindex="0">
             <div class="deck-name">Above the Clouds</div><div class="variant-title">Above the Clouds (4)</div>
             <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
             <div class="deck-footer">
               <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-basri" data-ed="jmp" data-vi="0" tabindex="0">
-            <div class="variant-title" style="font-size:.88rem">Basri</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
               <div class="deck-meta">
                 <span class="owned-check-mark">✓</span>
                 
@@ -637,10 +626,7 @@ body.edit-mode .add-deck-btn{display:flex}
     <button class="modal-close" id="modal-close-btn">✕</button></div>
     <div class="variant-row" id="variant-row" style="display: flex;">
       <div class="variant-tabs" id="variant-tabs"></div>
-      <button class="own-toggle-btn is-owned" id="own-toggle-btn"><span class="own-check">✓</span> Owned</button><div id="qty-row" class="qty-row" style="display: flex;"><span class="qty-label">Qty</span>
-      <button class="qty-btn" id="qty-minus">−</button>
-      <span class="qty-val" id="qty-val">1</span>
-      <button class="qty-btn" id="qty-plus">＋</button></div>
+      <button class="own-toggle-btn not-owned" id="own-toggle-btn"><span class="own-check">○</span> Mark Owned</button><div id="qty-row" class="qty-row" style="display: none;"></div>
     </div>
     <div class="modal-body" id="modal-body">
     <div class="card-list-panel" id="card-list-panel"><h4>Card List (20)</h4><div class="card-row" data-card="Basri Ket"><span class="card-qty">1×</span><span class="card-name-list">Basri Ket</span><span class="rarity-badge rarity-m" title="Mythic">M</span></div><div class="card-row" data-card="Concordia Pegasus"><span class="card-qty">1×</span><span class="card-name-list">Concordia Pegasus</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Knight of the Tusk"><span class="card-qty">1×</span><span class="card-name-list">Knight of the Tusk</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Basri's Lieutenant"><span class="card-qty">1×</span><span class="card-name-list">Basri's Lieutenant</span><span class="rarity-badge rarity-r" title="Rare">R</span></div><div class="card-row" data-card="Tempered Veteran"><span class="card-qty">1×</span><span class="card-name-list">Tempered Veteran</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Siege Striker"><span class="card-qty">1×</span><span class="card-name-list">Siege Striker</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Staunch Shieldmate"><span class="card-qty">1×</span><span class="card-name-list">Staunch Shieldmate</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Basri's Acolyte"><span class="card-qty">1×</span><span class="card-name-list">Basri's Acolyte</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Basri's Solidarity"><span class="card-qty">1×</span><span class="card-name-list">Basri's Solidarity</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Legion's Judgment"><span class="card-qty">1×</span><span class="card-name-list">Legion's Judgment</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Feat of Resistance"><span class="card-qty">1×</span><span class="card-name-list">Feat of Resistance</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Faith's Fetters"><span class="card-qty">1×</span><span class="card-name-list">Faith's Fetters</span><span class="rarity-badge rarity-c" title="Common">C</span></div><hr class="section-divider"><div class="card-row land" data-card="Thriving Heath"><span class="card-qty">1×</span><span class="card-name-list">Thriving Heath</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">2×</span><span class="card-name-list">Plains</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">2×</span><span class="card-name-list">Plains</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">2×</span><span class="card-name-list">Plains</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">1×</span><span class="card-name-list">Plains</span></div><div class="list-summary">20 cards · 12 spells · 8 lands</div></div>
@@ -795,7 +781,7 @@ Moxfield, or plain card names."></textarea>
   </div>
 
 
-<div class="toast" id="toast">✓ Downloaded index.html — ready to push to GitHub</div>
+<div class="toast" id="toast">✓ Pushed to GitHub — rebuilding in ~30s</div>
 <div class="rebuild-overlay" id="rebuild-overlay">
   <div class="rebuild-title" id="rebuild-title">⟳ Rebuilding from Source</div>
   <div class="rebuild-status" id="rebuild-status">Fetching taw/magic-preconstructed-decks-data…</div>
@@ -34747,9 +34733,9 @@ const DECK_DATA = {
 };
 // DECK_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
-const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0","jmp-basri:0"];
-const OWNED_QTY = [["jmp-abovetheclouds:3",1],["jmp-basri:0",1]];
-const OWNED_VERSION = "1777262778986";
+const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0"];
+const OWNED_QTY = [["jmp-abovetheclouds:3",1]];
+const OWNED_VERSION = "1777262980439";
 // OWNED_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment
 </script>
 <script>
