@@ -419,6 +419,7 @@ body.edit-mode .add-deck-btn{display:flex}
           <button class="save-dropdown-item" id="save-github-btn">⬆ Push to GitHub…</button>
           <button class="save-dropdown-item" id="save-rebuild-btn">⟳ Wipe &amp; Rebuild from Source</button>
           <button class="save-dropdown-item" id="save-sync-collection-btn">📲 Sync collection from file</button>
+          <button class="save-dropdown-item" id="save-force-resync-btn">🔄 Force resync from website</button>
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
       </div>
@@ -640,8 +641,8 @@ Moxfield, or plain card names."></textarea>
       <p>If multiple people mark their collection on different devices:</p>
       <div class="device-tag phone">📱 On the phone / other device</div>
       <ol>
-        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code></li>
-        <li>Email or share that file to the person doing the merge</li>
+        <li>If your phone has <em>newer</em> data you want to keep: <code>💾 Save ▾</code> → <code>⬇ Download index.html</code> → email to the merge person</li>
+        <li>If you just want to pull the latest from GitHub and discard phone changes: <code>💾 Save ▾</code> → <code>🔄 Force resync from website</code> — this overwrites local with whatever is on GitHub</li>
       </ol>
       <div class="device-tag">💻 On the laptop (merge person)</div>
       <ol>
@@ -35617,6 +35618,44 @@ document.getElementById('save-sync-collection-btn').addEventListener('click', ()
   saveOwned();
   renderGrid();
   showToast(`✓ Merged: ${merged.size} total owned variants across all devices.`, 4000);
+});
+
+document.getElementById('save-force-resync-btn').addEventListener('click', async () => {
+  document.getElementById('save-dropdown').classList.remove('open');
+
+  // Build the URL of the live GitHub Pages site
+  const siteUrl = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
+
+  if (!confirm(`This will fetch the latest version of the site from GitHub and replace your local collection with the one stored there.\n\nURL: ${siteUrl}\n\nYour local-only changes will be overwritten. Continue?`)) return;
+
+  showToast('⏳ Fetching latest from GitHub…', 60000);
+  try {
+    // Add cache-busting param so we always get the live file, not a cached one
+    const res = await fetch(siteUrl + '?v=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+
+    // Extract OWNED_DATA and OWNED_VERSION from the fetched file
+    const dataMatch  = text.match(/const OWNED_DATA = (\[.*?\]);/s);
+    const verMatch   = text.match(/const OWNED_VERSION = "([^"]+)"/);
+    if (!dataMatch) throw new Error('Could not find OWNED_DATA in fetched file.');
+
+    const remoteOwned   = JSON.parse(dataMatch[1]);
+    const remoteVersion = verMatch ? verMatch[1] : Date.now().toString();
+
+    // Replace local collection entirely with remote (this is a forced overwrite)
+    state.owned = new Set(remoteOwned);
+    saveOwned();
+    localStorage.setItem('jmp-owned-version', remoteVersion);
+
+    // Sync button UI
+    document.getElementById('owned-only-btn')?.classList.toggle('active', state.showOwnedOnly);
+    renderGrid();
+
+    showToast(`✓ Resynced: ${remoteOwned.length} owned variants loaded from GitHub`, 5000);
+  } catch(e) {
+    showToast(`⚠ Resync failed: ${e.message}`, 5000);
+  }
 });
 
 document.getElementById('save-reset-btn').addEventListener('click', () => {
