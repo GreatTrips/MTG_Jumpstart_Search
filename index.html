@@ -371,7 +371,7 @@ body.edit-mode .add-deck-btn{display:flex}
 .gh-push-status.err{background:rgba(224,85,85,.1);color:#e07070;display:block}
 </style>
 </head>
-<body class="edit-mode">
+<body class="edit-mode" style="">
 
 <header class="site-header">
   <div class="header-top">
@@ -432,14 +432,14 @@ body.edit-mode .add-deck-btn{display:flex}
             </div>
           </div>
           </button><button class="deck-edit-btn" data-edit-deck="jmp-abovetheclouds" data-edit-ed="jmp" title="Edit deck">✏</button>
-        <button class="deck-card" data-deck="jmp-angels" data-ed="jmp" tabindex="0">
+        <button class="deck-card owned-card" data-deck="jmp-angels" data-ed="jmp" tabindex="0">
           <div class="deck-name">Angels<span class="deck-code-badge">JMP</span></div>
           <div class="deck-headliner">Emancipation Angel</div>
           
           <div class="deck-footer">
             <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
             <div class="deck-meta">
-              <div class="var-dots"><span class="var-dot unowned" title="Angels (1)"></span><span class="var-dot unowned" title="Angels (2)"></span></div>
+              <div class="var-dots"><span class="var-dot owned" title="Angels (1) – Owned"></span><span class="var-dot unowned" title="Angels (2)"></span></div>
               <span class="has-list-badge">List ✓</span>
             </div>
           </div>
@@ -456,14 +456,14 @@ body.edit-mode .add-deck-btn{display:flex}
             </div>
           </div>
           </button><button class="deck-edit-btn" data-edit-deck="jmp-archaeology" data-edit-ed="jmp" title="Edit deck">✏</button>
-        <button class="deck-card" data-deck="jmp-basri" data-ed="jmp" tabindex="0">
+        <button class="deck-card owned-card" data-deck="jmp-basri" data-ed="jmp" tabindex="0">
           <div class="deck-name">Basri<span class="deck-code-badge">JMP</span></div>
           <div class="deck-headliner">Basri Ket</div>
           
           <div class="deck-footer">
             <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
             <div class="deck-meta">
-              
+              <div class="var-dots"><span class="var-dot owned" title="Basri – Owned"></span></div>
               <span class="has-list-badge">List ✓</span>
             </div>
           </div>
@@ -3053,17 +3053,50 @@ body.edit-mode .add-deck-btn{display:flex}
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal" id="modal">
-    <div class="modal-header" id="modal-header"></div>
-    <div class="variant-row" id="variant-row" style="display:none">
-      <div class="variant-tabs" id="variant-tabs"></div>
-      <button class="own-toggle-btn not-owned" id="own-toggle-btn"></button>
+    <div class="modal-header" id="modal-header">
+    <div class="modal-header-info">
+      <div class="modal-title">Basri<span style="display:flex;gap:3px"><span class="color-pip pip-W" style="width:17px;height:17px" title="White"></span></span></div>
+      <div class="modal-headliner">Basri Ket</div>
     </div>
-    <div class="modal-body" id="modal-body"></div>
+    <button class="modal-close" id="modal-close-btn">✕</button></div>
+    <div class="variant-row" id="variant-row" style="display: flex;">
+      <div class="variant-tabs" id="variant-tabs"></div>
+      <button class="own-toggle-btn is-owned" id="own-toggle-btn"><span class="own-check">✓</span> Owned</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+    <div class="card-list-panel" id="card-list-panel"><h4>Card List (20)</h4><div class="card-row" data-card="Basri Ket"><span class="card-qty">1×</span><span class="card-name-list">Basri Ket</span><span class="rarity-badge rarity-m" title="Mythic">M</span></div><div class="card-row" data-card="Concordia Pegasus"><span class="card-qty">1×</span><span class="card-name-list">Concordia Pegasus</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Knight of the Tusk"><span class="card-qty">1×</span><span class="card-name-list">Knight of the Tusk</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Basri's Lieutenant"><span class="card-qty">1×</span><span class="card-name-list">Basri's Lieutenant</span><span class="rarity-badge rarity-r" title="Rare">R</span></div><div class="card-row" data-card="Tempered Veteran"><span class="card-qty">1×</span><span class="card-name-list">Tempered Veteran</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Siege Striker"><span class="card-qty">1×</span><span class="card-name-list">Siege Striker</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Staunch Shieldmate"><span class="card-qty">1×</span><span class="card-name-list">Staunch Shieldmate</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Basri's Acolyte"><span class="card-qty">1×</span><span class="card-name-list">Basri's Acolyte</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Basri's Solidarity"><span class="card-qty">1×</span><span class="card-name-list">Basri's Solidarity</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Legion's Judgment"><span class="card-qty">1×</span><span class="card-name-list">Legion's Judgment</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Feat of Resistance"><span class="card-qty">1×</span><span class="card-name-list">Feat of Resistance</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Faith's Fetters"><span class="card-qty">1×</span><span class="card-name-list">Faith's Fetters</span><span class="rarity-badge rarity-c" title="Common">C</span></div><hr class="section-divider"><div class="card-row land" data-card="Thriving Heath"><span class="card-qty">1×</span><span class="card-name-list">Thriving Heath</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">2×</span><span class="card-name-list">Plains</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">2×</span><span class="card-name-list">Plains</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">2×</span><span class="card-name-list">Plains</span></div><div class="card-row land" data-card="Plains"><span class="card-qty">1×</span><span class="card-name-list">Plains</span></div><div class="list-summary">20 cards · 12 spells · 8 lands</div></div>
+    <div class="card-images-panel" id="card-images-panel"><h4>Card Images</h4><div class="card-images-grid"><div class="card-image-wrap" data-img-card="Basri Ket" onclick="window.open('https://scryfall.com/card/m21/7/basri-ket?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/9/8/98c85699-2daf-4e87-a3be-465d02bd64bb.jpg?1594734775" alt="Basri Ket" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Basri Ket&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Concordia Pegasus" onclick="window.open('https://scryfall.com/card/m21/12/concordia-pegasus?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/6/0/600d3517-e370-47ae-ac4f-c7ef8995a89c.jpg?1594734840" alt="Concordia Pegasus" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Concordia Pegasus&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Knight of the Tusk" onclick="window.open('https://scryfall.com/card/jmp/114/knight-of-the-tusk?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/2/f/2f81d2a0-5301-4cae-ac83-ad51647146e3.jpg?1600696727" alt="Knight of the Tusk" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Knight of the Tusk&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Basri's Lieutenant" onclick="window.open('https://scryfall.com/card/m21/9/basris-lieutenant?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/7/4/74b1eae0-1bf8-4922-a9e3-45c01ece9005.jpg?1594734796" alt="Basri's Lieutenant" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Basri's Lieutenant&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Tempered Veteran" onclick="window.open('https://scryfall.com/card/m21/41/tempered-veteran?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/3/b/3b43d7bc-173c-41eb-bba9-a9d94dcfc5fa.jpg?1594735330" alt="Tempered Veteran" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Tempered Veteran&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Siege Striker" onclick="window.open('https://scryfall.com/card/m21/37/siege-striker?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/7/a/7a0ffa89-e6ee-466c-8edc-dd24c8b52e80.jpg?1594735243" alt="Siege Striker" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Siege Striker&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Staunch Shieldmate" onclick="window.open('https://scryfall.com/card/m21/39/staunch-shieldmate?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/d/b/db17f25a-32d1-469b-bb5f-f1761e227990.jpg?1594735287" alt="Staunch Shieldmate" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Staunch Shieldmate&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Basri's Acolyte" onclick="window.open('https://scryfall.com/card/m21/8/basris-acolyte?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/0/8/08d1dd97-2675-4953-ab95-d47d23abfe05.jpg?1594734783" alt="Basri's Acolyte" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Basri's Acolyte&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Basri's Solidarity" onclick="window.open('https://scryfall.com/card/m21/10/basris-solidarity?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/c/2/c2e6fdc0-bdd4-4bba-b8f1-bbc8dfad038e.jpg?1594734810" alt="Basri's Solidarity" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Basri's Solidarity&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Legion's Judgment" onclick="window.open('https://scryfall.com/card/m21/24/legions-judgment?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/0/3/032f6c5a-8d88-4a55-a54b-28df42d801e1.jpg?1594735024" alt="Legion's Judgment" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Legion's Judgment&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Feat of Resistance" onclick="window.open('https://scryfall.com/card/m21/19/feat-of-resistance?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/7/3/73148b3b-73d3-4f57-8b67-1e91fbe112b9.jpg?1595640319" alt="Feat of Resistance" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Feat of Resistance&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Faith's Fetters" onclick="window.open('https://scryfall.com/card/rvr/18/faiths-fetters?utm_source=api','_blank')">
+      <img src="https://cards.scryfall.io/normal/front/0/8/08b62f4c-cc20-40b6-a504-407d53bdf2aa.jpg?1702429279" alt="Faith's Fetters" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Faith's Fetters&lt;/span&gt;&lt;/div&gt;'">
+    </div><div class="card-image-wrap" data-img-card="Thriving Heath">
+      <div class="card-placeholder"><span>Thriving Heath</span></div>
+    </div><div class="card-image-wrap" data-img-card="Plains"><div class="card-placeholder"><span>Plains</span></div></div><div class="card-image-wrap" data-img-card="Plains"><div class="card-placeholder"><span>Plains</span></div></div><div class="card-image-wrap" data-img-card="Plains"><div class="card-placeholder"><span>Plains</span></div></div><div class="card-image-wrap" data-img-card="Plains"><div class="card-placeholder"><span>Plains</span></div></div></div></div></div>
     <div class="scryfall-credit">
       <span>Card images via <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a></span>
       <span style="display:flex;align-items:center;gap:.6rem">
         <button id="modal-add-variant-btn" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.65rem;font-weight:600;letter-spacing:.04em;padding:.22rem .65rem;transition:all .2s" title="Open importer pre-filled for this deck">＋ Add Variant</button>
-        <span id="modal-edition-label"></span>
+        <span id="modal-edition-label">Jumpstart · 2020</span>
       </span>
     </div>
   </div>
@@ -37030,7 +37063,7 @@ const DECK_DATA = {
 };
 // DECK_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
-const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0"];
+const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0","jmp-angels:0","jmp-basri:0"];
 // OWNED_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment
 </script>
 <script>
