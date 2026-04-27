@@ -34826,7 +34826,7 @@ function renderGrid() {
     summaryMode = 'decks';
     document.getElementById('summary-decks-btn')?.classList.add('active');
     document.getElementById('summary-stats-btn')?.classList.remove('active');
-    document.getElementById('main-content').style.display = '';
+    document.getElementById('main-content')?.style.display = '';
     const sp = document.getElementById('summary-panel');
     if (sp) { sp.classList.remove('visible'); sp.innerHTML = ''; }
   }
@@ -34842,7 +34842,7 @@ function renderGrid() {
       ? `<div class="empty-state"><div class="glyph">📦</div><h3>No owned decks yet</h3><p>Open any deck and click <strong>Mark Owned</strong> on a variant to add it to your collection.</p></div>`
       : `<div class="empty-state"><div class="glyph">🔮</div><h3>No decks found</h3><p>Try adjusting your filters or search term.</p></div>`;
     main.innerHTML = msg;
-    document.getElementById('results-count').textContent = '';
+    document.getElementById('results-count')?.textContent = '';
     return;
   }
 
@@ -34909,7 +34909,7 @@ function renderGrid() {
   const countLabel = state.showOwnedOnly
     ? `${cardCount} owned variant${cardCount !== 1 ? 's' : ''}`
     : `${cardCount} deck${cardCount !== 1 ? 's' : ''}`;
-  document.getElementById('results-count').textContent = countLabel;
+  document.getElementById('results-count')?.textContent = countLabel;
 
   main.innerHTML = html;
   main.querySelectorAll('.deck-card').forEach(btn => {
@@ -34932,12 +34932,12 @@ function openDeck(deckId, editionId, vi = 0) {
   state.openDeckId = deckId; state.openEditionId = editionId;
   state.openVariant = Math.min(vi, deck.variants.length - 1);
   renderModal(deck, ed);
-  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-overlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-overlay')?.classList.remove('open');
   document.body.style.overflow = '';
   state.openDeckId = null;
 }
@@ -34948,14 +34948,14 @@ function renderModal(deck, ed) {
   const pips = deck.colors.map(c => `<span class="color-pip ${COLOR_PIP[c]||''}" style="width:17px;height:17px" title="${COLOR_NAME[c]||c}"></span>`).join('');
 
   // Header
-  document.getElementById('modal-header').innerHTML = `
+  document.getElementById('modal-header')?.innerHTML = `
     <div class="modal-header-info">
       <div class="modal-title">${esc(deck.name)}<span style="display:flex;gap:3px">${pips}</span></div>
       ${deck.headliner ? `<div class="modal-headliner">${esc(deck.headliner)}</div>` : ''}
     </div>
     <button class="modal-close" id="modal-close-btn">✕</button>`;
-  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
-  document.getElementById('modal-edition-label').textContent = `${ed.name} · ${ed.year}`;
+  document.getElementById('modal-close-btn')?.addEventListener('click', closeModal);
+  document.getElementById('modal-edition-label')?.textContent = `${ed.name} · ${ed.year}`;
 
   // Variant row
   const varRow = document.getElementById('variant-row');
@@ -35003,13 +35003,13 @@ function renderModal(deck, ed) {
       const q = getOwnedQty(deck.id, vi);
       if (q <= 1) { toggleOwned(deck.id, vi); renderModal(deck, ed); renderGrid(); return; }
       setOwnedQty(deck.id, vi, q - 1);
-      document.getElementById('qty-val').textContent = q - 1;
+      document.getElementById('qty-val')?.textContent = q - 1;
       renderGrid();
     };
     document.getElementById('qty-plus').onclick = () => {
       const q = getOwnedQty(deck.id, vi);
       setOwnedQty(deck.id, vi, q + 1);
-      document.getElementById('qty-val').textContent = q + 1;
+      document.getElementById('qty-val')?.textContent = q + 1;
       renderGrid();
     };
   } else { qtyRow.style.display = 'none'; qtyRow.innerHTML = ''; }
@@ -35164,7 +35164,7 @@ document.querySelectorAll('.color-btn').forEach(btn => {
 });
 
 let searchTimer;
-document.getElementById('search-input').addEventListener('input', e => {
+document.getElementById('search-input')?.addEventListener('input', e => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { state.search = e.target.value.trim(); renderGrid(); }, 180);
 });
@@ -35219,27 +35219,27 @@ function renderCollectionSummary() {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('summary-decks-btn')?.addEventListener('click', () => {
     summaryMode = 'decks';
-    document.getElementById('summary-decks-btn').classList.add('active');
-    document.getElementById('summary-stats-btn').classList.remove('active');
-    document.getElementById('main-content').style.display = '';
+    document.getElementById('summary-decks-btn')?.classList.add('active');
+    document.getElementById('summary-stats-btn')?.classList.remove('active');
+    document.getElementById('main-content')?.style.display = '';
     renderCollectionSummary();
   });
   document.getElementById('summary-stats-btn')?.addEventListener('click', () => {
     summaryMode = 'stats';
-    document.getElementById('summary-stats-btn').classList.add('active');
-    document.getElementById('summary-decks-btn').classList.remove('active');
-    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('summary-stats-btn')?.classList.add('active');
+    document.getElementById('summary-decks-btn')?.classList.remove('active');
+    document.getElementById('main-content')?.style.display = 'none';
     renderCollectionSummary();
   });
 });
 
-document.getElementById('owned-only-btn').addEventListener('click', () => {
+document.getElementById('owned-only-btn')?.addEventListener('click', () => {
   state.showOwnedOnly = !state.showOwnedOnly;
-  document.getElementById('owned-only-btn').classList.toggle('active', state.showOwnedOnly);
+  document.getElementById('owned-only-btn')?.classList.toggle('active', state.showOwnedOnly);
   renderGrid();
 });
 
-document.getElementById('modal-overlay').addEventListener('click', e => {
+document.getElementById('modal-overlay')?.addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 });
 
@@ -35305,34 +35305,34 @@ function populateImportDropdowns() {
 // ── Mode toggle ────────────────────────────────────────────────────
 function setImportMode(mode) {
   importState.mode = mode;
-  document.getElementById('mode-new-btn').classList.toggle('active', mode === 'new');
-  document.getElementById('mode-add-btn').classList.toggle('active', mode === 'add');
-  document.getElementById('existing-deck-field').style.display = mode === 'add' ? '' : 'none';
-  document.getElementById('deck-name-field').style.display   = mode === 'new' ? '' : 'none';
-  document.getElementById('headliner-field').style.display   = mode === 'new' ? '' : 'none';
-  document.getElementById('colors-field').style.display      = mode === 'new' ? '' : 'none';
-  document.getElementById('import-edition-field').style.display = mode === 'new' ? '' : 'none';
-  document.getElementById('import-edition-custom-field').style.display = 'none';
+  document.getElementById('mode-new-btn')?.classList.toggle('active', mode === 'new');
+  document.getElementById('mode-add-btn')?.classList.toggle('active', mode === 'add');
+  document.getElementById('existing-deck-field')?.style.display = mode === 'add' ? '' : 'none';
+  document.getElementById('deck-name-field')?.style.display   = mode === 'new' ? '' : 'none';
+  document.getElementById('headliner-field')?.style.display   = mode === 'new' ? '' : 'none';
+  document.getElementById('colors-field')?.style.display      = mode === 'new' ? '' : 'none';
+  document.getElementById('import-edition-field')?.style.display = mode === 'new' ? '' : 'none';
+  document.getElementById('import-edition-custom-field')?.style.display = 'none';
   rebuildOutput();
 }
-document.getElementById('mode-new-btn').addEventListener('click', () => setImportMode('new'));
-document.getElementById('mode-add-btn').addEventListener('click', () => setImportMode('add'));
+document.getElementById('mode-new-btn')?.addEventListener('click', () => setImportMode('new'));
+document.getElementById('mode-add-btn')?.addEventListener('click', () => setImportMode('add'));
 
 // ── Edition selector ───────────────────────────────────────────────
-document.getElementById('import-edition-select').addEventListener('change', function() {
-  document.getElementById('import-edition-custom-field').style.display = this.value === '__custom__' ? '' : 'none';
+document.getElementById('import-edition-select')?.addEventListener('change', function() {
+  document.getElementById('import-edition-custom-field')?.style.display = this.value === '__custom__' ? '' : 'none';
   rebuildOutput();
 });
-document.getElementById('import-edition-custom').addEventListener('input', rebuildOutput);
+document.getElementById('import-edition-custom')?.addEventListener('input', rebuildOutput);
 
 // ── Existing deck selector ─────────────────────────────────────────
-document.getElementById('existing-deck-select').addEventListener('change', function() {
+document.getElementById('existing-deck-select')?.addEventListener('change', function() {
   if (!this.value) return;
   const [edId, deckId] = this.value.split('|');
   const ed = liveData.editions.find(e => e.id === edId);
   const deck = ed && ed.decks.find(d => d.id === deckId);
   if (deck) {
-    document.getElementById('import-variant-label').value = '';
+    document.getElementById('import-variant-label')?.value = '';
     document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
   }
   rebuildOutput();
@@ -35387,9 +35387,9 @@ function slugify(s) {
 
 // ── Main output builder ────────────────────────────────────────────
 function rebuildOutput() {
-  const rawText = document.getElementById('import-input').value;
+  const rawText = document.getElementById('import-input')?.value;
   const cards = parseDecklist(rawText);
-  const variantLabel = document.getElementById('import-variant-label').value.trim();
+  const variantLabel = document.getElementById('import-variant-label')?.value.trim();
   const output = document.getElementById('import-output');
   const stats  = document.getElementById('import-stats');
   const hint   = document.getElementById('import-paste-hint');
@@ -35403,11 +35403,11 @@ function rebuildOutput() {
   let lines = [];
 
   if (importState.mode === 'new') {
-    const deckName = document.getElementById('import-deck-name').value.trim();
-    const headliner = document.getElementById('import-headliner').value.trim();
+    const deckName = document.getElementById('import-deck-name')?.value.trim();
+    const headliner = document.getElementById('import-headliner')?.value.trim();
     const colors = [...importState.colors];
-    const edSel = document.getElementById('import-edition-select').value;
-    const edCustom = document.getElementById('import-edition-custom').value.trim();
+    const edSel = document.getElementById('import-edition-select')?.value;
+    const edCustom = document.getElementById('import-edition-custom')?.value.trim();
     const edId = edSel === '__custom__' ? slugify(edCustom) : edSel;
     const deckId = edId && deckName ? `${edId}-${slugify(deckName)}` : 'EDITION_ID-DECK_ID';
     const label = variantLabel || deckName || 'Variant 1';
@@ -35443,7 +35443,7 @@ function rebuildOutput() {
       `]}`
     ];
 
-    const selVal = document.getElementById('existing-deck-select').value;
+    const selVal = document.getElementById('existing-deck-select')?.value;
     if (selVal) {
       const [edId, deckId] = selVal.split('|');
       const ed = liveData.editions.find(e => e.id === edId);
@@ -35470,7 +35470,7 @@ function rebuildOutput() {
   }
 }
 
-document.getElementById('import-input').addEventListener('input', rebuildOutput);
+document.getElementById('import-input')?.addEventListener('input', rebuildOutput);
 
 // ── Open / close import modal ──────────────────────────────────────
 function openImport(prefill = null) {
@@ -35489,43 +35489,43 @@ function openImport(prefill = null) {
     const deck = ed && ed.decks.find(d => d.id === prefill.deckId);
     if (deck) {
       document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
-      document.getElementById('import-actions-msg').textContent = `Adding variant to: ${deck.name}`;
+      document.getElementById('import-actions-msg')?.textContent = `Adding variant to: ${deck.name}`;
     }
   } else {
     setImportMode('new');
-    document.getElementById('import-actions-msg').textContent = '';
+    document.getElementById('import-actions-msg')?.textContent = '';
   }
 
   rebuildOutput();
-  document.getElementById('import-modal').classList.add('open');
+  document.getElementById('import-modal')?.classList.add('open');
   document.body.style.overflow = 'hidden';
   setTimeout(() => document.getElementById('import-input').focus(), 80);
 }
 
 function closeImport() {
-  document.getElementById('import-modal').classList.remove('open');
+  document.getElementById('import-modal')?.classList.remove('open');
   document.body.style.overflow = '';
   // reset
-  document.getElementById('import-input').value = '';
-  document.getElementById('import-deck-name').value = '';
-  document.getElementById('import-headliner').value = '';
-  document.getElementById('import-variant-label').value = '';
-  document.getElementById('import-edition-select').value = '';
-  document.getElementById('import-edition-custom').value = '';
+  document.getElementById('import-input')?.value = '';
+  document.getElementById('import-deck-name')?.value = '';
+  document.getElementById('import-headliner')?.value = '';
+  document.getElementById('import-variant-label')?.value = '';
+  document.getElementById('import-edition-select')?.value = '';
+  document.getElementById('import-edition-custom')?.value = '';
   importState.colors.clear();
   document.querySelectorAll('.import-color-pip').forEach(p => p.classList.remove('selected'));
-  document.getElementById('import-edition-custom-field').style.display = 'none';
+  document.getElementById('import-edition-custom-field')?.style.display = 'none';
   setImportMode('new');
 }
 
-document.getElementById('import-btn').addEventListener('click', () => openImport());
-document.getElementById('import-close-btn').addEventListener('click', closeImport);
-document.getElementById('import-close-btn2').addEventListener('click', closeImport);
-document.getElementById('import-modal').addEventListener('click', e => {
+document.getElementById('import-btn')?.addEventListener('click', () => openImport());
+document.getElementById('import-close-btn')?.addEventListener('click', closeImport);
+document.getElementById('import-close-btn2')?.addEventListener('click', closeImport);
+document.getElementById('import-modal')?.addEventListener('click', e => {
   if (e.target === document.getElementById('import-modal')) closeImport();
 });
 
-document.getElementById('import-copy-btn').addEventListener('click', () => {
+document.getElementById('import-copy-btn')?.addEventListener('click', () => {
   if (!lastSnippet) return;
   navigator.clipboard.writeText(lastSnippet).then(() => {
     const btn = document.getElementById('import-copy-btn');
@@ -35536,7 +35536,7 @@ document.getElementById('import-copy-btn').addEventListener('click', () => {
 });
 
 // ── "+ Add Variant" from deck modal ───────────────────────────────
-document.getElementById('modal-add-variant-btn').addEventListener('click', () => {
+document.getElementById('modal-add-variant-btn')?.addEventListener('click', () => {
   if (state.openDeckId && state.openEditionId) {
     closeModal();
     setTimeout(() => openImport({ deckId: state.openDeckId, editionId: state.openEditionId }), 120);
@@ -35571,9 +35571,9 @@ async function loadMtgjsonList() {
       : `${mtgjsonDeckList.length} total decks loaded (no Jumpstart filter match — showing all)`;
     if (allMtgjsonDecks.length === 0) allMtgjsonDecks = mtgjsonDeckList;
     populateMtgjsonSelect(allMtgjsonDecks);
-    document.getElementById('mtgjson-search').style.display = '';
-    document.getElementById('mtgjson-deck-select').style.display = '';
-    document.getElementById('mtgjson-bulk-btn').classList.add('visible');
+    document.getElementById('mtgjson-search')?.style.display = '';
+    document.getElementById('mtgjson-deck-select')?.style.display = '';
+    document.getElementById('mtgjson-bulk-btn')?.classList.add('visible');
   } catch(e) {
     status.textContent = `⚠ Could not reach MTGJSON (${e.message}). Use manual paste instead.`;
     btn.disabled = false;
@@ -35591,9 +35591,9 @@ function populateMtgjsonSelect(decks) {
   }
 }
 
-document.getElementById('mtgjson-load-btn').addEventListener('click', loadMtgjsonList);
+document.getElementById('mtgjson-load-btn')?.addEventListener('click', loadMtgjsonList);
 
-document.getElementById('mtgjson-search').addEventListener('input', function() {
+document.getElementById('mtgjson-search')?.addEventListener('input', function() {
   const q = this.value.toLowerCase();
   const filtered = allMtgjsonDecks.filter(d =>
     d.name.toLowerCase().includes(q) || d.code.toLowerCase().includes(q)
@@ -35601,7 +35601,7 @@ document.getElementById('mtgjson-search').addEventListener('input', function() {
   populateMtgjsonSelect(filtered);
 });
 
-document.getElementById('mtgjson-deck-select').addEventListener('change', async function() {
+document.getElementById('mtgjson-deck-select')?.addEventListener('change', async function() {
   const fileName = this.value;
   if (!fileName) return;
   const status = document.getElementById('mtgjson-status');
@@ -35615,7 +35615,7 @@ document.getElementById('mtgjson-deck-select').addEventListener('change', async 
 
     // Auto-fill metadata fields
     const rawName = deck.name || fileName.replace(/_[A-Z0-9]+$/, '').replace(/\d+$/, '').replace(/([A-Z])/g, ' $1').trim();
-    document.getElementById('import-deck-name').value = rawName;
+    document.getElementById('import-deck-name')?.value = rawName;
 
     // Build card list from mainBoard
     const mainBoard = deck.mainBoard || [];
@@ -35625,7 +35625,7 @@ document.getElementById('mtgjson-deck-select').addEventListener('change', async 
     for (const c of [...spells, ...lands]) {
       listText += `${c.count} ${c.name}\n`;
     }
-    document.getElementById('import-input').value = listText.trim();
+    document.getElementById('import-input')?.value = listText.trim();
 
     // Try to detect colors from card colors
     const colorSet = new Set();
@@ -35643,7 +35643,7 @@ document.getElementById('mtgjson-deck-select').addEventListener('change', async 
 
     // Variant label: include variant number from fileName
     const varNum = (fileName.match(/(\d+)_[A-Z0-9]+$/) || [])[1];
-    if (varNum) document.getElementById('import-variant-label').value = `Variant ${varNum}`;
+    if (varNum) document.getElementById('import-variant-label')?.value = `Variant ${varNum}`;
 
     status.textContent = `✓ ${deck.name} — ${mainBoard.length} cards loaded`;
     rebuildOutput();
@@ -35711,31 +35711,31 @@ async function autoResyncFromSite() {
 function enterEditMode() {
   editMode = true;
   document.body.classList.add('edit-mode');
-  document.getElementById('edit-mode-badge').classList.add('visible');
+  document.getElementById('edit-mode-badge')?.classList.add('visible');
   renderGrid();
 }
 function exitEditMode() {
   editMode = false;
   document.body.classList.remove('edit-mode');
-  document.getElementById('edit-mode-badge').classList.remove('visible');
+  document.getElementById('edit-mode-badge')?.classList.remove('visible');
   renderGrid();
 }
 
 // Password modal
 // Help modal
-document.getElementById('help-btn').addEventListener('click', () => {
-  document.getElementById('help-modal').classList.add('open');
+document.getElementById('help-btn')?.addEventListener('click', () => {
+  document.getElementById('help-modal')?.classList.add('open');
 });
-document.getElementById('help-close-btn').addEventListener('click', () => {
-  document.getElementById('help-modal').classList.remove('open');
+document.getElementById('help-close-btn')?.addEventListener('click', () => {
+  document.getElementById('help-modal')?.classList.remove('open');
 });
-document.getElementById('help-modal').addEventListener('click', e => {
+document.getElementById('help-modal')?.addEventListener('click', e => {
   if (e.target === document.getElementById('help-modal'))
-    document.getElementById('help-modal').classList.remove('open');
+    document.getElementById('help-modal')?.classList.remove('open');
 });
 
 // Logo: reset everything to home state
-document.getElementById('site-logo-btn').addEventListener('click', () => {
+document.getElementById('site-logo-btn')?.addEventListener('click', () => {
   // 1. Reset all state
   state.search = '';
   state.edition = 'all';
@@ -35758,7 +35758,7 @@ document.getElementById('site-logo-btn').addEventListener('click', () => {
   renderGrid();
 });
 
-document.getElementById('collection-banner-clear').addEventListener('click', () => {
+document.getElementById('collection-banner-clear')?.addEventListener('click', () => {
   state.showOwnedOnly = false;
   document.getElementById('owned-only-btn')?.classList.remove('active');
   state.search = '';
@@ -35766,13 +35766,13 @@ document.getElementById('collection-banner-clear').addEventListener('click', () 
   state.colors.clear();
   state.letterFilter = null;
   state.letterLocked = false;
-  document.getElementById('search-input').value = '';
+  document.getElementById('search-input')?.value = '';
   document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
   renderGrid();
 });
 
-document.getElementById('phone-edit-toggle').addEventListener('click', () => {
+document.getElementById('phone-edit-toggle')?.addEventListener('click', () => {
   phoneEditEnabled = !phoneEditEnabled;
   localStorage.setItem('jmp-phone-edit', phoneEditEnabled);
   applyPhoneReadonlyState();
@@ -35784,33 +35784,33 @@ document.getElementById('phone-edit-toggle').addEventListener('click', () => {
   }
 });
 
-document.getElementById('edit-mode-btn').addEventListener('click', () => {
+document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
   if (editMode) { exitEditMode(); return; }
-  document.getElementById('pw-input').value = '';
-  document.getElementById('pw-error').style.display = 'none';
-  document.getElementById('pw-modal').classList.add('open');
+  document.getElementById('pw-input')?.value = '';
+  document.getElementById('pw-error')?.style.display = 'none';
+  document.getElementById('pw-modal')?.classList.add('open');
   setTimeout(() => document.getElementById('pw-input').focus(), 60);
 });
-function closePwModal() { document.getElementById('pw-modal').classList.remove('open'); }
-document.getElementById('pw-cancel-btn').addEventListener('click', closePwModal);
-document.getElementById('pw-confirm-btn').addEventListener('click', () => {
-  const val = document.getElementById('pw-input').value;
+function closePwModal() { document.getElementById('pw-modal')?.classList.remove('open'); }
+document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal);
+document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
+  const val = document.getElementById('pw-input')?.value;
   if (val === EDIT_PASSWORD) { closePwModal(); enterEditMode(); }
-  else { document.getElementById('pw-error').style.display = 'block'; document.getElementById('pw-input').value = ''; document.getElementById('pw-input').focus(); }
+  else { document.getElementById('pw-error')?.style.display = 'block'; document.getElementById('pw-input')?.value = ''; document.getElementById('pw-input').focus(); }
 });
-document.getElementById('pw-input').addEventListener('keydown', e => {
+document.getElementById('pw-input')?.addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('pw-confirm-btn').click();
 });
 
 // Save / Export dropdown
-document.getElementById('save-menu-btn').addEventListener('click', e => {
+document.getElementById('save-menu-btn')?.addEventListener('click', e => {
   e.stopPropagation();
-  document.getElementById('save-dropdown').classList.toggle('open');
+  document.getElementById('save-dropdown')?.classList.toggle('open');
 });
-document.addEventListener('click', () => document.getElementById('save-dropdown').classList.remove('open'));
+document.addEventListener('click', () => document.getElementById('save-dropdown')?.classList.remove('open'));
 
 // Download complete self-contained index.html
-document.getElementById('save-download-btn').addEventListener('click', () => {
+document.getElementById('save-download-btn')?.addEventListener('click', () => {
   // Close all open modals/dropdowns before serialising the DOM
   const openEls = [...document.querySelectorAll('.open')];
   openEls.forEach(el => el.classList.remove('open'));
@@ -35842,19 +35842,19 @@ document.getElementById('save-download-btn').addEventListener('click', () => {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
   URL.revokeObjectURL(url);
-  document.getElementById('save-dropdown').classList.remove('open');
+  document.getElementById('save-dropdown')?.classList.remove('open');
   showToast('✓ Downloaded index.html — ready to push to GitHub', 3000);
 });
 
 // Reset
-document.getElementById('save-rebuild-btn').addEventListener('click', () => {
-  document.getElementById('save-dropdown').classList.remove('open');
+document.getElementById('save-rebuild-btn')?.addEventListener('click', () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
   if (!confirm('Wipe ALL deck data and rebuild from taw/magic-preconstructed-decks-data?\n\nYour ownership marks will be kept. This will correctly populate all editions including all 46 Historic Horizons themes.')) return;
   wipeAndRebuildFromSource();
 });
 
-document.getElementById('save-sync-collection-btn').addEventListener('click', () => {
-  document.getElementById('save-dropdown').classList.remove('open');
+document.getElementById('save-sync-collection-btn')?.addEventListener('click', () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
   if (!OWNED_DATA || OWNED_DATA.length === 0) {
     showToast('No collection data embedded in this file yet. Download after marking your collection on another device first.', 5000);
     return;
@@ -35873,8 +35873,8 @@ document.getElementById('save-sync-collection-btn').addEventListener('click', ()
   showToast(`✓ Merged: ${merged.size} total owned variants across all devices.`, 4000);
 });
 
-document.getElementById('save-force-resync-btn').addEventListener('click', async () => {
-  document.getElementById('save-dropdown').classList.remove('open');
+document.getElementById('save-force-resync-btn')?.addEventListener('click', async () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
   const siteUrl = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
 
   showToast('⏳ Fetching latest from GitHub…', 60000);
@@ -35918,12 +35918,12 @@ document.getElementById('save-force-resync-btn').addEventListener('click', async
   }
 });
 
-document.getElementById('save-reset-btn').addEventListener('click', () => {
+document.getElementById('save-reset-btn')?.addEventListener('click', () => {
   if (!confirm('Reset ALL data and settings including ownership? This cannot be undone.')) return;
   localStorage.clear();
   state.owned = new Set();
   resetLiveData();
-  document.getElementById('save-dropdown').classList.remove('open');
+  document.getElementById('save-dropdown')?.classList.remove('open');
   renderTabs();
   renderGrid();
   showToast('All data and settings cleared.');
@@ -36077,7 +36077,7 @@ async function generateSelfContainedHtml() {
 }
 
 // Add Deck button
-document.getElementById('add-deck-btn').addEventListener('click', () => {
+document.getElementById('add-deck-btn')?.addEventListener('click', () => {
   openEditDeckModal(null, null);
 });
 
@@ -36087,9 +36087,9 @@ let editingVariants = []; // [{label, cards}]
 
 function openEditDeckModal(deckId, editionId) {
   const isNew = !deckId;
-  document.getElementById('edit-deck-modal-title').textContent = isNew ? '＋ New Deck' : 'Edit Deck';
-  document.getElementById('edit-deck-id').value = deckId || '';
-  document.getElementById('edit-edition-id').value = editionId || '';
+  document.getElementById('edit-deck-modal-title')?.textContent = isNew ? '＋ New Deck' : 'Edit Deck';
+  document.getElementById('edit-deck-id')?.value = deckId || '';
+  document.getElementById('edit-edition-id')?.value = editionId || '';
 
   // Populate edition dropdown
   const edSel = document.getElementById('edit-edition-select');
@@ -36107,8 +36107,8 @@ function openEditDeckModal(deckId, editionId) {
   if (!isNew) {
     const { deck, edition } = findDeck(deckId) || {};
     if (!deck) return;
-    document.getElementById('edit-deck-name').value = deck.name || '';
-    document.getElementById('edit-deck-headliner').value = deck.headliner || '';
+    document.getElementById('edit-deck-name')?.value = deck.name || '';
+    document.getElementById('edit-deck-headliner')?.value = deck.headliner || '';
     edSel.value = edition.id;
     for (const c of (deck.colors || [])) {
       editingColors.add(c);
@@ -36116,20 +36116,20 @@ function openEditDeckModal(deckId, editionId) {
     }
     editingVariants = deepClone(deck.variants || []);
   } else {
-    document.getElementById('edit-deck-name').value = '';
-    document.getElementById('edit-deck-headliner').value = '';
+    document.getElementById('edit-deck-name')?.value = '';
+    document.getElementById('edit-deck-headliner')?.value = '';
     edSel.value = '';
     editingVariants = [{ label: 'Variant 1', cards: [] }];
   }
 
   renderVariantList();
-  document.getElementById('edit-delete-deck-btn').style.display = isNew ? 'none' : '';
-  document.getElementById('edit-deck-modal').classList.add('open');
+  document.getElementById('edit-delete-deck-btn')?.style.display = isNew ? 'none' : '';
+  document.getElementById('edit-deck-modal')?.classList.add('open');
 }
 
-function closeEditDeckModal() { document.getElementById('edit-deck-modal').classList.remove('open'); }
-document.getElementById('edit-deck-close-btn').addEventListener('click', closeEditDeckModal);
-document.getElementById('edit-deck-cancel-btn').addEventListener('click', closeEditDeckModal);
+function closeEditDeckModal() { document.getElementById('edit-deck-modal')?.classList.remove('open'); }
+document.getElementById('edit-deck-close-btn')?.addEventListener('click', closeEditDeckModal);
+document.getElementById('edit-deck-cancel-btn')?.addEventListener('click', closeEditDeckModal);
 
 document.querySelectorAll('.edit-color-pip').forEach(pip => {
   pip.addEventListener('click', () => {
@@ -36160,7 +36160,7 @@ function renderVariantList() {
   });
 }
 
-document.getElementById('edit-add-variant-btn').addEventListener('click', () => {
+document.getElementById('edit-add-variant-btn')?.addEventListener('click', () => {
   editingVariants.push({ label: `Variant ${editingVariants.length + 1}`, cards: [] });
   renderVariantList();
 });
@@ -36172,8 +36172,8 @@ function editVariantCards(vi) {
   closeEditDeckModal();
   openImport({ _editVariant: true, vi, variantLabel: variant.label });
   setTimeout(() => {
-    document.getElementById('import-input').value = cardText;
-    document.getElementById('import-variant-label').value = variant.label;
+    document.getElementById('import-input')?.value = cardText;
+    document.getElementById('import-variant-label')?.value = variant.label;
     rebuildOutput();
     // Add "Apply Cards" button
     const actMsg = document.getElementById('import-actions-msg');
@@ -36189,25 +36189,25 @@ function editVariantCards(vi) {
     })();
     applyBtn.style.display = '';
     applyBtn.onclick = () => {
-      const raw = document.getElementById('import-input').value;
+      const raw = document.getElementById('import-input')?.value;
       const cards = parseDecklist(raw);
       editingVariants[vi].cards = cards;
-      editingVariants[vi].label = document.getElementById('import-variant-label').value || variant.label;
+      editingVariants[vi].label = document.getElementById('import-variant-label')?.value || variant.label;
       closeImport();
       openEditDeckModal(
-        document.getElementById('edit-deck-id').value || null,
-        document.getElementById('edit-edition-id').value || null
+        document.getElementById('edit-deck-id')?.value || null,
+        document.getElementById('edit-edition-id')?.value || null
       );
     };
   }, 100);
 }
 
 // Save deck changes
-document.getElementById('edit-deck-save-btn').addEventListener('click', () => {
-  const deckId = document.getElementById('edit-deck-id').value;
-  const editionId = document.getElementById('edit-edition-select').value;
-  const name = document.getElementById('edit-deck-name').value.trim();
-  const headliner = document.getElementById('edit-deck-headliner').value.trim();
+document.getElementById('edit-deck-save-btn')?.addEventListener('click', () => {
+  const deckId = document.getElementById('edit-deck-id')?.value;
+  const editionId = document.getElementById('edit-edition-select')?.value;
+  const name = document.getElementById('edit-deck-name')?.value.trim();
+  const headliner = document.getElementById('edit-deck-headliner')?.value.trim();
   const colors = [...editingColors];
   if (!name) { alert('Deck name is required.'); return; }
   if (!editionId) { alert('Please select an edition.'); return; }
@@ -36246,8 +36246,8 @@ document.getElementById('edit-deck-save-btn').addEventListener('click', () => {
 });
 
 // Delete deck
-document.getElementById('edit-delete-deck-btn').addEventListener('click', () => {
-  const deckId = document.getElementById('edit-deck-id').value;
+document.getElementById('edit-delete-deck-btn')?.addEventListener('click', () => {
+  const deckId = document.getElementById('edit-deck-id')?.value;
   if (!deckId || !confirm('Permanently delete this deck from your data?')) return;
   for (const ed of liveData.editions) {
     const idx = ed.decks.findIndex(d => d.id === deckId);
@@ -36260,23 +36260,23 @@ document.getElementById('edit-delete-deck-btn').addEventListener('click', () => 
 
 // ─── GITHUB PUSH ──────────────────────────────────────────────────────────────
 function openGhModal() {
-  document.getElementById('gh-owner').value = localStorage.getItem('gh-owner') || '';
-  document.getElementById('gh-repo').value  = localStorage.getItem('gh-repo')  || '';
-  document.getElementById('gh-path').value  = localStorage.getItem('gh-path')  || 'data.js';
-  document.getElementById('gh-token').value = localStorage.getItem('gh-token') || '';
+  document.getElementById('gh-owner')?.value = localStorage.getItem('gh-owner') || '';
+  document.getElementById('gh-repo')?.value  = localStorage.getItem('gh-repo')  || '';
+  document.getElementById('gh-path')?.value  = localStorage.getItem('gh-path')  || 'data.js';
+  document.getElementById('gh-token')?.value = localStorage.getItem('gh-token') || '';
   document.getElementById('gh-push-status').className = 'gh-push-status';
-  document.getElementById('gh-push-status').textContent = '';
-  document.getElementById('gh-modal').classList.add('open');
-  document.getElementById('save-dropdown').classList.remove('open');
+  document.getElementById('gh-push-status')?.textContent = '';
+  document.getElementById('gh-modal')?.classList.add('open');
+  document.getElementById('save-dropdown')?.classList.remove('open');
 }
-document.getElementById('save-github-btn').addEventListener('click', openGhModal);
-document.getElementById('gh-cancel-btn').addEventListener('click', () => document.getElementById('gh-modal').classList.remove('open'));
+document.getElementById('save-github-btn')?.addEventListener('click', openGhModal);
+document.getElementById('gh-cancel-btn')?.addEventListener('click', () => document.getElementById('gh-modal')?.classList.remove('open'));
 
-document.getElementById('gh-push-btn').addEventListener('click', async () => {
-  const owner = document.getElementById('gh-owner').value.trim();
-  const repo  = document.getElementById('gh-repo').value.trim();
-  const path  = document.getElementById('gh-path').value.trim() || 'data.js';
-  const token = document.getElementById('gh-token').value.trim();
+document.getElementById('gh-push-btn')?.addEventListener('click', async () => {
+  const owner = document.getElementById('gh-owner')?.value.trim();
+  const repo  = document.getElementById('gh-repo')?.value.trim();
+  const path  = document.getElementById('gh-path')?.value.trim() || 'data.js';
+  const token = document.getElementById('gh-token')?.value.trim();
   const status = document.getElementById('gh-push-status');
   if (!owner || !repo || !token) { status.className = 'gh-push-status err'; status.textContent = '⚠ Owner, repo, and token are all required.'; return; }
   // Save settings
@@ -36301,7 +36301,7 @@ document.getElementById('gh-push-btn').addEventListener('click', async () => {
     status.className = 'gh-push-status ok';
     status.textContent = `✓ Pushed successfully! GitHub Pages will rebuild in ~30 seconds.`;
     // Auto-close the modal after 2s so it doesn't get baked into next save's outerHTML
-    setTimeout(() => document.getElementById('gh-modal').classList.remove('open'), 2000);
+    setTimeout(() => document.getElementById('gh-modal')?.classList.remove('open'), 2000);
     showToast('✓ Pushed to GitHub — rebuilding in ~30s', 4000);
   } catch(e) {
     status.className = 'gh-push-status err';
@@ -36332,16 +36332,16 @@ function detectColors(cards) {
 }
 
 // ── "Add to Browser" from importer ────────────────────────────────
-document.getElementById('import-add-btn').addEventListener('click', () => {
-  const raw = document.getElementById('import-input').value;
+document.getElementById('import-add-btn')?.addEventListener('click', () => {
+  const raw = document.getElementById('import-input')?.value;
   const cards = parseDecklist(raw);
-  const variantLabel = document.getElementById('import-variant-label').value.trim();
+  const variantLabel = document.getElementById('import-variant-label')?.value.trim();
 
   if (importState.mode === 'new') {
-    const deckName  = document.getElementById('import-deck-name').value.trim();
-    const headliner = document.getElementById('import-headliner').value.trim();
-    const edSel     = document.getElementById('import-edition-select').value;
-    const edCustom  = document.getElementById('import-edition-custom').value.trim();
+    const deckName  = document.getElementById('import-deck-name')?.value.trim();
+    const headliner = document.getElementById('import-headliner')?.value.trim();
+    const edSel     = document.getElementById('import-edition-select')?.value;
+    const edCustom  = document.getElementById('import-edition-custom')?.value.trim();
     const colors    = [...importState.colors];
 
     if (!deckName) { showToast('⚠ Enter a deck name first.'); return; }
@@ -36372,7 +36372,7 @@ document.getElementById('import-add-btn').addEventListener('click', () => {
 
   } else {
     // Add Variant mode
-    const selVal = document.getElementById('existing-deck-select').value;
+    const selVal = document.getElementById('existing-deck-select')?.value;
     if (!selVal) { showToast('⚠ Select an existing deck first.'); return; }
     const [edId, deckId] = selVal.split('|');
     const ed   = liveData.editions.find(e => e.id === edId);
@@ -36386,13 +36386,13 @@ document.getElementById('import-add-btn').addEventListener('click', () => {
   saveLiveData();
   renderGrid();
   // Reset card list and variant label but keep metadata for quick re-use
-  document.getElementById('import-input').value = '';
-  document.getElementById('import-variant-label').value = '';
+  document.getElementById('import-input')?.value = '';
+  document.getElementById('import-variant-label')?.value = '';
   rebuildOutput();
 });
 
 // ── MTGJSON Bulk Import ────────────────────────────────────────────
-document.getElementById('mtgjson-bulk-btn').addEventListener('click', bulkImportFromMtgjson);
+document.getElementById('mtgjson-bulk-btn')?.addEventListener('click', bulkImportFromMtgjson);
 
 async function bulkImportFromMtgjson() {
   if (!allMtgjsonDecks.length) { showToast('⚠ Load deck list first.'); return; }
