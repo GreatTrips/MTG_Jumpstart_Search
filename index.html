@@ -35777,7 +35777,7 @@ function renderModal(deck, ed) {
       ${deck.headliner ? `<div class="modal-headliner">${esc(deck.headliner)}</div>` : ''}
     </div>
     <button class="modal-close" id="modal-close-btn">✕</button>`;
-  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  document.getElementById('modal-close-btn')?.addEventListener('click', closeModal);
   document.getElementById('modal-edition-label').textContent = `${ed.name} · ${ed.year}`;
 
   // Variant row
@@ -35962,18 +35962,18 @@ document.querySelectorAll('.color-btn').forEach(btn => {
 });
 
 let searchTimer;
-document.getElementById('search-input').addEventListener('input', e => {
+document.getElementById('search-input')?.addEventListener('input', e => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { state.search = e.target.value.trim(); renderGrid(); }, 180);
 });
 
-document.getElementById('owned-only-btn').addEventListener('click', () => {
+document.getElementById('owned-only-btn')?.addEventListener('click', () => {
   state.showOwnedOnly = !state.showOwnedOnly;
   document.getElementById('owned-only-btn').classList.toggle('active', state.showOwnedOnly);
   renderGrid();
 });
 
-document.getElementById('modal-overlay').addEventListener('click', e => {
+document.getElementById('modal-overlay')?.addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 });
 
@@ -36049,18 +36049,18 @@ function setImportMode(mode) {
   document.getElementById('import-edition-custom-field').style.display = 'none';
   rebuildOutput();
 }
-document.getElementById('mode-new-btn').addEventListener('click', () => setImportMode('new'));
-document.getElementById('mode-add-btn').addEventListener('click', () => setImportMode('add'));
+document.getElementById('mode-new-btn')?.addEventListener('click', () => setImportMode('new'));
+document.getElementById('mode-add-btn')?.addEventListener('click', () => setImportMode('add'));
 
 // ── Edition selector ───────────────────────────────────────────────
-document.getElementById('import-edition-select').addEventListener('change', function() {
+document.getElementById('import-edition-select')?.addEventListener('change', function() {
   document.getElementById('import-edition-custom-field').style.display = this.value === '__custom__' ? '' : 'none';
   rebuildOutput();
 });
-document.getElementById('import-edition-custom').addEventListener('input', rebuildOutput);
+document.getElementById('import-edition-custom')?.addEventListener('input', rebuildOutput);
 
 // ── Existing deck selector ─────────────────────────────────────────
-document.getElementById('existing-deck-select').addEventListener('change', function() {
+document.getElementById('existing-deck-select')?.addEventListener('change', function() {
   if (!this.value) return;
   const [edId, deckId] = this.value.split('|');
   const ed = liveData.editions.find(e => e.id === edId);
@@ -36204,7 +36204,7 @@ function rebuildOutput() {
   }
 }
 
-document.getElementById('import-input').addEventListener('input', rebuildOutput);
+document.getElementById('import-input')?.addEventListener('input', rebuildOutput);
 
 // ── Open / close import modal ──────────────────────────────────────
 function openImport(prefill = null) {
@@ -36252,14 +36252,14 @@ function closeImport() {
   setImportMode('new');
 }
 
-document.getElementById('import-btn').addEventListener('click', () => openImport());
-document.getElementById('import-close-btn').addEventListener('click', closeImport);
-document.getElementById('import-close-btn2').addEventListener('click', closeImport);
-document.getElementById('import-modal').addEventListener('click', e => {
+document.getElementById('import-btn')?.addEventListener('click', () => openImport());
+document.getElementById('import-close-btn')?.addEventListener('click', closeImport);
+document.getElementById('import-close-btn2')?.addEventListener('click', closeImport);
+document.getElementById('import-modal')?.addEventListener('click', e => {
   if (e.target === document.getElementById('import-modal')) closeImport();
 });
 
-document.getElementById('import-copy-btn').addEventListener('click', () => {
+document.getElementById('import-copy-btn')?.addEventListener('click', () => {
   if (!lastSnippet) return;
   navigator.clipboard.writeText(lastSnippet).then(() => {
     const btn = document.getElementById('import-copy-btn');
@@ -36270,7 +36270,7 @@ document.getElementById('import-copy-btn').addEventListener('click', () => {
 });
 
 // ── "+ Add Variant" from deck modal ───────────────────────────────
-document.getElementById('modal-add-variant-btn').addEventListener('click', () => {
+document.getElementById('modal-add-variant-btn')?.addEventListener('click', () => {
   if (state.openDeckId && state.openEditionId) {
     closeModal();
     setTimeout(() => openImport({ deckId: state.openDeckId, editionId: state.openEditionId }), 120);
@@ -36325,9 +36325,9 @@ function populateMtgjsonSelect(decks) {
   }
 }
 
-document.getElementById('mtgjson-load-btn').addEventListener('click', loadMtgjsonList);
+document.getElementById('mtgjson-load-btn')?.addEventListener('click', loadMtgjsonList);
 
-document.getElementById('mtgjson-search').addEventListener('input', function() {
+document.getElementById('mtgjson-search')?.addEventListener('input', function() {
   const q = this.value.toLowerCase();
   const filtered = allMtgjsonDecks.filter(d =>
     d.name.toLowerCase().includes(q) || d.code.toLowerCase().includes(q)
@@ -36335,7 +36335,7 @@ document.getElementById('mtgjson-search').addEventListener('input', function() {
   populateMtgjsonSelect(filtered);
 });
 
-document.getElementById('mtgjson-deck-select').addEventListener('change', async function() {
+document.getElementById('mtgjson-deck-select')?.addEventListener('change', async function() {
   const fileName = this.value;
   if (!fileName) return;
   const status = document.getElementById('mtgjson-status');
@@ -36403,7 +36403,7 @@ function exitEditMode() {
 }
 
 // Password modal
-document.getElementById('edit-mode-btn').addEventListener('click', () => {
+document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
   if (editMode) { exitEditMode(); return; }
   document.getElementById('pw-input').value = '';
   document.getElementById('pw-error').style.display = 'none';
@@ -36411,25 +36411,25 @@ document.getElementById('edit-mode-btn').addEventListener('click', () => {
   setTimeout(() => document.getElementById('pw-input').focus(), 60);
 });
 function closePwModal() { document.getElementById('pw-modal').classList.remove('open'); }
-document.getElementById('pw-cancel-btn').addEventListener('click', closePwModal);
-document.getElementById('pw-confirm-btn').addEventListener('click', () => {
+document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal);
+document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
   const val = document.getElementById('pw-input').value;
   if (val === EDIT_PASSWORD) { closePwModal(); enterEditMode(); }
   else { document.getElementById('pw-error').style.display = 'block'; document.getElementById('pw-input').value = ''; document.getElementById('pw-input').focus(); }
 });
-document.getElementById('pw-input').addEventListener('keydown', e => {
+document.getElementById('pw-input')?.addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('pw-confirm-btn').click();
 });
 
 // Save / Export dropdown
-document.getElementById('save-menu-btn').addEventListener('click', e => {
+document.getElementById('save-menu-btn')?.addEventListener('click', e => {
   e.stopPropagation();
   document.getElementById('save-dropdown').classList.toggle('open');
 });
 document.addEventListener('click', () => document.getElementById('save-dropdown').classList.remove('open'));
 
 // Download complete self-contained index.html
-document.getElementById('save-download-btn').addEventListener('click', () => {
+document.getElementById('save-download-btn')?.addEventListener('click', () => {
   const openEls = [...document.querySelectorAll('.open')];
   openEls.forEach(el => el.classList.remove('open'));
   document.body.classList.remove('edit-mode');
@@ -36453,13 +36453,13 @@ document.getElementById('save-download-btn').addEventListener('click', () => {
 });
 
 // Reset
-document.getElementById('save-rebuild-btn').addEventListener('click', () => {
+document.getElementById('save-rebuild-btn')?.addEventListener('click', () => {
   document.getElementById('save-dropdown').classList.remove('open');
   if (!confirm('Wipe ALL deck data and rebuild from taw/magic-preconstructed-decks-data?\n\nYour ownership marks will be kept. This will correctly populate all editions including all 46 Historic Horizons themes.')) return;
   wipeAndRebuildFromSource();
 });
 
-document.getElementById('save-sync-collection-btn').addEventListener('click', () => {
+document.getElementById('save-sync-collection-btn')?.addEventListener('click', () => {
   document.getElementById('save-dropdown').classList.remove('open');
   if (!OWNED_DATA || OWNED_DATA.length === 0) {
     showToast('No collection data embedded in this file yet. Download after marking your collection on another device first.', 5000);
@@ -36479,7 +36479,7 @@ document.getElementById('save-sync-collection-btn').addEventListener('click', ()
   showToast(`✓ Merged: ${merged.size} total owned variants across all devices.`, 4000);
 });
 
-document.getElementById('save-reset-btn').addEventListener('click', () => {
+document.getElementById('save-reset-btn')?.addEventListener('click', () => {
   if (!confirm('Reset ALL data and settings including ownership? This cannot be undone.')) return;
   localStorage.clear();
   state.owned = new Set();
@@ -36619,7 +36619,7 @@ async function generateSelfContainedHtml() {
 }
 
 // Add Deck button
-document.getElementById('add-deck-btn').addEventListener('click', () => {
+document.getElementById('add-deck-btn')?.addEventListener('click', () => {
   openEditDeckModal(null, null);
 });
 
@@ -36670,8 +36670,8 @@ function openEditDeckModal(deckId, editionId) {
 }
 
 function closeEditDeckModal() { document.getElementById('edit-deck-modal').classList.remove('open'); }
-document.getElementById('edit-deck-close-btn').addEventListener('click', closeEditDeckModal);
-document.getElementById('edit-deck-cancel-btn').addEventListener('click', closeEditDeckModal);
+document.getElementById('edit-deck-close-btn')?.addEventListener('click', closeEditDeckModal);
+document.getElementById('edit-deck-cancel-btn')?.addEventListener('click', closeEditDeckModal);
 
 document.querySelectorAll('.edit-color-pip').forEach(pip => {
   pip.addEventListener('click', () => {
@@ -36702,7 +36702,7 @@ function renderVariantList() {
   });
 }
 
-document.getElementById('edit-add-variant-btn').addEventListener('click', () => {
+document.getElementById('edit-add-variant-btn')?.addEventListener('click', () => {
   editingVariants.push({ label: `Variant ${editingVariants.length + 1}`, cards: [] });
   renderVariantList();
 });
@@ -36745,7 +36745,7 @@ function editVariantCards(vi) {
 }
 
 // Save deck changes
-document.getElementById('edit-deck-save-btn').addEventListener('click', () => {
+document.getElementById('edit-deck-save-btn')?.addEventListener('click', () => {
   const deckId = document.getElementById('edit-deck-id').value;
   const editionId = document.getElementById('edit-edition-select').value;
   const name = document.getElementById('edit-deck-name').value.trim();
@@ -36788,7 +36788,7 @@ document.getElementById('edit-deck-save-btn').addEventListener('click', () => {
 });
 
 // Delete deck
-document.getElementById('edit-delete-deck-btn').addEventListener('click', () => {
+document.getElementById('edit-delete-deck-btn')?.addEventListener('click', () => {
   const deckId = document.getElementById('edit-deck-id').value;
   if (!deckId || !confirm('Permanently delete this deck from your data?')) return;
   for (const ed of liveData.editions) {
@@ -36811,10 +36811,10 @@ function openGhModal() {
   document.getElementById('gh-modal').classList.add('open');
   document.getElementById('save-dropdown').classList.remove('open');
 }
-document.getElementById('save-github-btn').addEventListener('click', openGhModal);
-document.getElementById('gh-cancel-btn').addEventListener('click', () => document.getElementById('gh-modal').classList.remove('open'));
+document.getElementById('save-github-btn')?.addEventListener('click', openGhModal);
+document.getElementById('gh-cancel-btn')?.addEventListener('click', () => document.getElementById('gh-modal').classList.remove('open'));
 
-document.getElementById('gh-push-btn').addEventListener('click', async () => {
+document.getElementById('gh-push-btn')?.addEventListener('click', async () => {
   const owner = document.getElementById('gh-owner').value.trim();
   const repo  = document.getElementById('gh-repo').value.trim();
   const path  = document.getElementById('gh-path').value.trim() || 'data.js';
@@ -36871,7 +36871,7 @@ function detectColors(cards) {
 }
 
 // ── "Add to Browser" from importer ────────────────────────────────
-document.getElementById('import-add-btn').addEventListener('click', () => {
+document.getElementById('import-add-btn')?.addEventListener('click', () => {
   const raw = document.getElementById('import-input').value;
   const cards = parseDecklist(raw);
   const variantLabel = document.getElementById('import-variant-label').value.trim();
@@ -36931,7 +36931,7 @@ document.getElementById('import-add-btn').addEventListener('click', () => {
 });
 
 // ── MTGJSON Bulk Import ────────────────────────────────────────────
-document.getElementById('mtgjson-bulk-btn').addEventListener('click', bulkImportFromMtgjson);
+document.getElementById('mtgjson-bulk-btn')?.addEventListener('click', bulkImportFromMtgjson);
 
 async function bulkImportFromMtgjson() {
   if (!allMtgjsonDecks.length) { showToast('⚠ Load deck list first.'); return; }
