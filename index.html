@@ -35452,24 +35452,21 @@ const EDIT_PASSWORD = 'jumpstart';
 function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
 let liveData = (() => {
   try {
-    const saved = localStorage.getItem('jmp-live-data');
-    if (saved) {
+    const saved    = localStorage.getItem('jmp-live-data');
+    const savedVer = localStorage.getItem('jmp-data-version');
+    if (saved && savedVer === DECK_VERSION) {
       const loaded = JSON.parse(saved);
-      // Merge any editions in DECK_DATA not in localStorage (e.g. J21 after taw rebuild)
-      const loadedIds = new Set(loaded.editions.map(e => e.id));
-      for (const ed of DECK_DATA.editions) {
-        if (!loadedIds.has(ed.id)) {
-          const idx = DECK_DATA.editions.indexOf(ed);
-          const insertBefore = loaded.editions.findIndex(le =>
-            DECK_DATA.editions.findIndex(de => de.id === le.id) > idx
-          );
-          if (insertBefore === -1) loaded.editions.push(deepClone(ed));
-          else loaded.editions.splice(insertBefore, 0, deepClone(ed));
-        }
-      }
+      // Ensure every edition in DECK_DATA is present
+      const loadedMap = new Map(loaded.editions.map(e => [e.id, e]));
+      const merged = DECK_DATA.editions.map(ded => loadedMap.get(ded.id) || deepClone(ded));
+      // Keep any extra editions added by rebuild not in static DECK_DATA
+      const staticIds = new Set(DECK_DATA.editions.map(e => e.id));
+      for (const [id, ed] of loadedMap) if (!staticIds.has(id)) merged.push(ed);
+      loaded.editions = merged;
       return loaded;
     }
   } catch(e) {}
+  // Version mismatch or no saved data — start fresh from DECK_DATA
   return deepClone(DECK_DATA);
 })();
 function saveLiveData() {
