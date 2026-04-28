@@ -598,7 +598,7 @@ Moxfield, or plain card names."></textarea>
   <div class="rebuild-detail" id="rebuild-detail"></div>
 </div>
 
-<div id="help-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem">
+<div id="help-modal" style="display:none;pointer-events:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem">
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column">
     <div style="border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)">
       <h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">📖 Help &amp; Sync Guide</h2>
@@ -37213,23 +37213,33 @@ document.getElementById('save-force-resync-btn')?.addEventListener('click',async
   }catch(e){showToast('\u26A0 Resync failed: '+e.message,5000);}
 });
 document.getElementById('help-btn')?.addEventListener('click',()=>{
-  const m=document.getElementById('help-modal');if(m)m.style.display='flex';
+  const m=document.getElementById('help-modal');
+  if(m){m.style.display='flex';m.style.pointerEvents='auto';}
 });
 document.getElementById('help-close-btn')?.addEventListener('click',()=>{
-  const m=document.getElementById('help-modal');if(m)m.style.display='none';
+  const m=document.getElementById('help-modal');
+  if(m){m.style.display='none';m.style.pointerEvents='none';}
 });
 document.getElementById('help-modal')?.addEventListener('click',e=>{
-  if(e.target===document.getElementById('help-modal'))document.getElementById('help-modal').style.display='none';
+  if(e.target===document.getElementById('help-modal')){
+    e.target.style.display='none';e.target.style.pointerEvents='none';
+  }
 });
 // Edit button: opens pw-modal; shows phone-edit section on mobile
 document.getElementById('edit-mode-btn')?.addEventListener('click',()=>{
   if(editMode){exitEditMode();return;}
-  document.getElementById('pw-modal')?.classList.add('open');
+  const pwModal = document.getElementById('pw-modal');
+  if(!pwModal){return;}
+  const inp = document.getElementById('pw-input');
+  const err = document.getElementById('pw-error');
+  if(inp) inp.value='';
+  if(err) err.style.display='none';
+  pwModal.classList.add('open');
   const ps=document.getElementById('phone-edit-section');
   if(ps)ps.style.display=isMobileDevice()?'block':'none';
   const tg=document.getElementById('phone-edit-toggle');
   if(tg){tg.classList.toggle('enabled',phoneEditEnabled);tg.textContent=phoneEditEnabled?'📱 Phone updates ON — tap to disable':'📱 Enable phone updates';}
-  setTimeout(()=>document.getElementById('pw-input')?.focus(),50);
+  setTimeout(()=>inp?.focus(),50);
 });
 
 // ─── COLLECTION FILE HANDLERS ────────────────────────────────────────────────
@@ -37281,7 +37291,7 @@ document.getElementById('save-push-collection-btn')?.addEventListener('click', a
   try {
     // Get current SHA (needed to update an existing file)
     let sha = null;
-    const getRes = await fetch(apiUrl, {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}});
+    const getRes = await fetch(apiUrl, {headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github.v3+json'}});
     if (getRes.ok) { const j = await getRes.json(); sha = j.sha; }
 
     const body = {message:'Update collection.json', content: encoded};
@@ -37289,7 +37299,7 @@ document.getElementById('save-push-collection-btn')?.addEventListener('click', a
 
     const putRes = await fetch(apiUrl, {
       method: 'PUT',
-      headers: {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      headers: {'Authorization':'Bearer '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
       body: JSON.stringify(body)
     });
     if (!putRes.ok) {
