@@ -20,7 +20,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 /* ── Header ── */
 .site-header{background:linear-gradient(180deg,#08081a 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
 .header-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;margin-bottom:1rem}
-.site-logo{background:none;border:none;padding:0;cursor:pointer;text-align:left;font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap}
+.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap}
 .site-logo span{color:var(--text2);font-weight:400}
 .header-center{display:flex;align-items:center;justify-content:center}
 .header-right{display:flex;align-items:center;gap:.6rem;justify-content:flex-end}
@@ -356,43 +356,6 @@ body.edit-mode .add-deck-btn{display:flex}
 .gh-push-status{font-size:.82rem;margin-top:.65rem;padding:.45rem .7rem;border-radius:5px;display:none}
 .gh-push-status.ok{background:rgba(92,184,92,.1);color:var(--own-color);display:block}
 .gh-push-status.err{background:rgba(224,85,85,.1);color:#e07070;display:block}
-
-.search-clear-btn{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;padding:.15rem .25rem;border-radius:3px;transition:color .15s}
-.search-clear-btn:hover{color:var(--text)}
-.phone-edit-badge{align-items:center;background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.4);border-radius:5px;color:var(--own-color);display:none;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap}
-.phone-edit-badge.visible{display:flex}
-body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:default}
-.phone-readonly-notice{background:rgba(100,160,255,.07);border-bottom:1px solid rgba(100,160,255,.2);color:#90b8ff;font-family:'Crimson Pro',serif;font-size:.82rem;padding:.35rem 1.25rem;display:none;align-items:center;gap:.4rem}
-.phone-readonly-notice.visible{display:flex}
-.collection-banner{background:rgba(92,184,92,.08);border-bottom:1px solid rgba(92,184,92,.25);color:#7dd87d;font-family:'Crimson Pro',serif;font-size:.88rem;padding:.45rem 1.25rem;display:none;align-items:center;gap:.4rem}
-.collection-banner.visible{display:flex}
-.collection-banner-link{color:var(--own-color);cursor:pointer;font-weight:600;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit}
-.summary-tabs{display:none;gap:.5rem;padding:.5rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border)}
-.summary-tabs.visible{display:flex}
-.summary-tab-btn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.68rem;font-weight:600;letter-spacing:.05em;padding:.28rem .7rem;transition:all .15s}
-.summary-tab-btn.active{background:rgba(92,184,92,.1);border-color:var(--own-color);color:var(--own-color)}
-.summary-panel{padding:1rem 1.25rem;display:none}
-.summary-panel.visible{display:block}
-.summary-edition{margin-bottom:1.5rem}
-.summary-edition-name{font-family:'Cinzel',serif;font-size:.85rem;color:var(--gold);font-weight:700;letter-spacing:.06em;margin-bottom:.6rem}
-.summary-table{width:100%;border-collapse:collapse;font-family:'Crimson Pro',serif;font-size:.9rem}
-.summary-table th{border-bottom:1px solid var(--border);color:var(--text2);font-family:'Cinzel',serif;font-size:.63rem;letter-spacing:.07em;padding:.3rem .5rem;text-align:left;text-transform:uppercase}
-.summary-table td{border-bottom:1px solid rgba(255,255,255,.04);padding:.32rem .5rem;color:var(--text)}
-.summary-table .total-row td{border-top:1px solid var(--border);color:var(--gold);font-weight:600;padding-top:.45rem}
-.summary-pip{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle}
-.summary-grand{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:.75rem 1rem;margin-top:1.2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center}
-.summary-grand-item{font-family:'Cinzel',serif}
-.summary-grand-val{font-size:1.4rem;font-weight:700;color:var(--gold);display:block}
-.summary-grand-label{font-size:.62rem;color:var(--text2);letter-spacing:.06em;text-transform:uppercase}
-@media(max-width:700px){
-  .header-top{grid-template-columns:1fr auto;grid-template-rows:auto auto;row-gap:.5rem}
-  .header-center{grid-column:1/-1;grid-row:2}
-  .search-wrap{max-width:100%}
-  .search-wrap input{font-size:16px}
-  .save-menu-btn,.edit-btn-header,.owned-btn,.help-btn{font-size:.62rem;padding:.3rem .5rem}
-  .filter-label{display:none}
-  .color-btn{padding:.28rem .45rem;font-size:.65rem}
-}
 </style>
 </head>
 <body>
@@ -404,8 +367,8 @@ body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:defau
     <div class="header-center">
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
-        <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false">
-        <button class="search-clear-btn" id="search-clear-btn" title="Clear search" style="display:none">✕</button>
+        <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false"
+        <button class="search-clear-btn" id="search-clear-btn" title="Clear" style="display:none;position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;padding:.15rem .25rem">✕</button>>
         <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
       </div>
     </div>
@@ -413,7 +376,7 @@ body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:defau
       <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
         <span class="dot"></span>My Collection
       </button>
-      <span class="phone-edit-badge" id="phone-edit-badge">📱 PHONE EDIT</span>
+      <span class="phone-edit-badge" id="phone-edit-badge" style="align-items:center;background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.4);border-radius:5px;color:var(--own-color);cursor:pointer;display:none;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap">📱 PHONE EDIT</span>
       <span class="edit-mode-badge" id="edit-mode-badge" title="Click to exit edit mode" style="cursor:pointer">🔓 EDIT MODE</span>
       <div class="save-menu-wrap">
         <button class="save-menu-btn" id="save-menu-btn">💾 Save ▾</button>
@@ -430,7 +393,7 @@ body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:defau
       </div>
       <button class="edit-btn-header" id="edit-mode-btn" title="Enter/exit edit mode">✏ Edit</button>
       <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
-    </div>
+    </div>/div>
   </div>
   <nav class="edition-tabs" id="edition-tabs" role="tablist">
     <button class="tab active" data-edition="all">All Editions</button>
@@ -451,10 +414,9 @@ body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:defau
   <button class="add-deck-btn" id="add-deck-btn">＋ Add New Deck</button>
 </div>
 
-<div id="phone-readonly-notice" style="display:none;background:rgba(100,160,255,.07);border-bottom:1px solid rgba(100,160,255,.2);color:#90b8ff;font-family:'Crimson Pro',serif;font-size:.82rem;padding:.35rem 1.25rem;align-items:center;gap:.4rem">🔒 Phone view — collection is read-only. Tap ✏ Edit to enable updates.</div>
 <div id="collection-banner" style="display:none;background:rgba(92,184,92,.08);border-bottom:1px solid rgba(92,184,92,.25);color:#7dd87d;font-family:'Crimson Pro',serif;font-size:.88rem;padding:.45rem 1.25rem;align-items:center;gap:.4rem"><span>📦 Filtered to My Collection</span><button id="collection-banner-clear" style="color:var(--own-color);cursor:pointer;font-weight:600;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit">Click here to clear all filters</button></div>
-<div id="summary-tabs" style="display:none;gap:.5rem;padding:.5rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border)"><button class="summary-tab-btn active" id="summary-decks-btn">🃏 Decks</button><button class="summary-tab-btn" id="summary-stats-btn">📊 Summary</button></div>
-<div id="summary-panel" style="padding:1rem 1.25rem;display:none"></div>
+<div id="summary-tabs" style="display:none;gap:.5rem;padding:.5rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border)"><button class="summary-tab-btn active" id="summary-decks-btn">🃏 Decks</button><button class="summary-tab-btn" id="summary-stats-btn">📊 Summary</button></div><div id="summary-panel" style="padding:1rem 1.25rem;display:none"></div>
+<div id="phone-readonly-notice" style="display:none;background:rgba(100,160,255,.07);border-bottom:1px solid rgba(100,160,255,.2);color:#90b8ff;font-family:'Crimson Pro',serif;font-size:.82rem;padding:.35rem 1.25rem;align-items:center;gap:.4rem">🔒 Phone view — read-only. Tap Edit to enable updates.</div>
 <main id="main-content"></main>
 
 <!-- Modal -->
@@ -598,60 +560,6 @@ Moxfield, or plain card names."></textarea>
   <div class="rebuild-detail" id="rebuild-detail"></div>
 </div>
 
-<div id="help-modal" style="display:none;pointer-events:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem">
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column">
-    <div style="border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)">
-      <h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">📖 Help &amp; Sync Guide</h2>
-      <button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">✕</button>
-    </div>
-    <div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)">
-
-      <p style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:.35rem;margin-bottom:.5rem">Marking Your Collection</p>
-      <p>Click any deck → select the variant tab you own → <strong>Mark Owned</strong>. Use <strong>Qty ＋/−</strong> to track duplicate copies (tapping − at 1 un-marks it).</p>
-
-      <p style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:.35rem;margin:.9rem 0 .5rem">Day-to-Day Sync (Recommended)</p>
-      <p>After marking your collection on laptop:</p>
-      <ol style="margin:.3rem 0 .5rem 1.2rem;padding:0">
-        <li style="margin:.25rem 0">💾 Save ▾ → <strong>⬆ Push collection.json to GitHub</strong></li>
-        <li style="margin:.25rem 0">Phone refreshes → collection loads automatically within 1 second</li>
-      </ol>
-      <p style="color:var(--text2);font-size:.88rem">collection.json is tiny (~2KB) and independent of index.html.</p>
-
-      <p style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:.35rem;margin:.9rem 0 .5rem">After Getting Code Updates from Claude</p>
-      <ol style="margin:.3rem 0 .5rem 1.2rem;padding:0">
-        <li style="margin:.25rem 0">Download the new index.html from Claude</li>
-        <li style="margin:.25rem 0">Upload it to GitHub (your collection.json stays untouched)</li>
-        <li style="margin:.25rem 0">That's it — collection.json is separate, so your marks are preserved automatically</li>
-      </ol>
-      <p style="color:var(--text2);font-size:.88rem">You no longer need the "download → open locally → download again" workaround. collection.json handles collection sync independently.</p>
-
-      <p style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:.35rem;margin:.9rem 0 .5rem">Multiple People / Devices</p>
-      <ol style="margin:.3rem 0 .5rem 1.2rem;padding:0">
-        <li style="margin:.25rem 0">Each person: 💾 Save ▾ → <strong>📤 Export collection.json</strong></li>
-        <li style="margin:.25rem 0">Send files to the merge person (laptop)</li>
-        <li style="margin:.25rem 0">Laptop: 💾 Save ▾ → <strong>📥 Import collection.json</strong> for each file (merges additively)</li>
-        <li style="margin:.25rem 0">Laptop: 💾 Save ▾ → <strong>⬆ Push collection.json to GitHub</strong></li>
-        <li style="margin:.25rem 0">Everyone refreshes → all get the merged collection</li>
-      </ol>
-
-      <p style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:.35rem;margin:.9rem 0 .5rem">Phone Not Updating?</p>
-      <p>💾 Save ▾ → <strong>🔄 Force resync from website</strong> — fetches index.html directly from GitHub, bypassing cache. Use this if auto-sync isn't picking up changes.</p>
-
-      <p style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:.35rem;margin:.9rem 0 .5rem">GitHub Push Setup (One-time)</p>
-      <p>github.com → Profile → Settings → Developer settings → Fine-grained tokens → Generate new token → select repo <code style="color:var(--gold)">MTG_Jumpstart_Search</code>, Contents: Read and write → copy the <code style="color:var(--gold)">github_pat_…</code> token. Then in the app: 💾 Save ▾ → ⬆ Push to GitHub… → fill in the fields. Settings are remembered.</p>
-
-      <p style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:.35rem;margin:.9rem 0 .5rem">Tips</p>
-      <ul style="margin:.3rem 0 .5rem 1.2rem;padding:0">
-        <li style="margin:.25rem 0">Click <strong>Jumpstart Deck Browser</strong> to reset all filters</li>
-        <li style="margin:.25rem 0">Click the <strong>🔓 EDIT MODE</strong> badge to exit edit mode</li>
-        <li style="margin:.25rem 0"><strong>📊 Summary</strong> tab in My Collection shows color breakdown per release with unique/duplicate/total counts</li>
-        <li style="margin:.25rem 0">Search works across all editions including Set Tie-ins</li>
-        <li style="margin:.25rem 0">Edit password: <code style="color:var(--gold)">jumpstart</code></li>
-        <li style="margin:.25rem 0">⟳ Wipe &amp; Rebuild fetches fresh deck lists from source · ↺ Reset clears all data</li>
-      </ul>
-    </div>
-  </div>
-
 <!-- Password Modal -->
 <div class="pw-modal" id="pw-modal">
   <div class="pw-box">
@@ -662,13 +570,13 @@ Moxfield, or plain card names."></textarea>
       <button class="btn-secondary" id="pw-cancel-btn">Cancel</button>
       <button class="btn-primary" id="pw-confirm-btn">Unlock</button>
     </div>
+    <div id="phone-edit-section" style="display:none;margin-top:.85rem;border-top:1px solid var(--border);padding-top:.85rem">
+      <button id="phone-edit-toggle" style="align-items:center;background:rgba(100,160,255,.08);border:1px solid rgba(100,160,255,.3);border-radius:6px;color:#90b8ff;cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;padding:.38rem .9rem;transition:all .2s;width:100%">📱 Enable phone updates</button>
+      <p style="color:var(--text2);font-size:.73rem;margin-top:.5rem">When enabled: mark collection on this device.</p>
+    </div>
     <p style="color:var(--text2);font-size:.75rem;margin-top:.85rem;line-height:1.5">
       Default password is set in <code style="color:var(--gold)">index.html</code> — search for <code style="color:var(--gold)">EDIT_PASSWORD</code> to change it.
     </p>
-  </div>
-  <div id="phone-edit-section" style="display:none;border-top:1px solid var(--border);padding:.85rem 1rem .5rem">
-    <button id="phone-edit-toggle" style="align-items:center;background:rgba(100,160,255,.08);border:1px solid rgba(100,160,255,.3);border-radius:6px;color:#90b8ff;cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;padding:.38rem .9rem;transition:all .2s;width:100%">📱 Enable phone updates</button>
-    <p style="color:var(--text2);font-size:.73rem;margin-top:.5rem;line-height:1.45">When enabled: you can mark your collection on this device. Auto-resync is paused.</p>
   </div>
 </div>
 
@@ -749,9 +657,10 @@ Moxfield, or plain card names."></textarea>
     </div>
   </div>
 </div>
-<script>
+
+<script id="jmp-data-script">
 const DECK_VERSION = "2026-04";
-// DECK_DATA_START — do not remove this comment (used by Download feature)
+// DECK_DATA_START — do not remove this comment
 const DECK_DATA = {
   "editions": [
     {
@@ -30093,7 +30002,7 @@ const DECK_DATA = {
       "name": "Avatar: The Last Airbender Jumpstart",
       "year": 2025,
       "code": "TLA",
-      "note": "Use ⟳ Rebuild to populate card lists from taw",
+      "note": "Use Rebuild to populate card lists",
       "decks": [
         {
           "id": "atj-airnomads",
@@ -35097,7 +35006,7 @@ const DECK_DATA = {
       "name": "Marvel Super Heroes Jumpstart",
       "year": 2026,
       "code": "MSH",
-      "note": "Releasing June 26, 2026 — card lists not yet available",
+      "note": "Releasing June 26 2026 — card lists TBD",
       "decks": [
         {
           "id": "msh-antmanwasp",
@@ -35494,10 +35403,13 @@ const DECK_DATA = {
   ]
 };
 // DECK_DATA_END — do not remove this comment
-// OWNED_DATA_START — do not remove this comment (syncs collection across devices)
+// OWNED_DATA_START — do not remove this comment
 const OWNED_DATA = [];
 const OWNED_QTY = [];
 const OWNED_VERSION = "0";
+// OWNED_DATA_END — do not remove this comment
+// OWNED_DATA_START — do not remove this comment (syncs collection across devices)
+const OWNED_DATA = [];
 // OWNED_DATA_END — do not remove this comment
 </script>
 <script>
@@ -35508,26 +35420,28 @@ const EDIT_PASSWORD = 'jumpstart';
 function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
 let liveData = (() => {
   try {
-    const saved    = localStorage.getItem('jmp-live-data');
-    const savedVer = localStorage.getItem('jmp-data-version');
-    if (saved && savedVer === DECK_VERSION) {
+    const saved = localStorage.getItem('jmp-live-data');
+    if (saved) {
       const loaded = JSON.parse(saved);
-      // Ensure every edition in DECK_DATA is present
-      const loadedMap = new Map(loaded.editions.map(e => [e.id, e]));
-      const merged = DECK_DATA.editions.map(ded => loadedMap.get(ded.id) || deepClone(ded));
-      // Keep any extra editions added by rebuild not in static DECK_DATA
-      const staticIds = new Set(DECK_DATA.editions.map(e => e.id));
-      for (const [id, ed] of loadedMap) if (!staticIds.has(id)) merged.push(ed);
-      loaded.editions = merged;
+      // Merge any editions in DECK_DATA not in localStorage (e.g. J21 after taw rebuild)
+      const loadedIds = new Set(loaded.editions.map(e => e.id));
+      for (const ed of DECK_DATA.editions) {
+        if (!loadedIds.has(ed.id)) {
+          const idx = DECK_DATA.editions.indexOf(ed);
+          const insertBefore = loaded.editions.findIndex(le =>
+            DECK_DATA.editions.findIndex(de => de.id === le.id) > idx
+          );
+          if (insertBefore === -1) loaded.editions.push(deepClone(ed));
+          else loaded.editions.splice(insertBefore, 0, deepClone(ed));
+        }
+      }
       return loaded;
     }
   } catch(e) {}
-  // Version mismatch or no saved data — start fresh from DECK_DATA
   return deepClone(DECK_DATA);
 })();
 function saveLiveData() {
   localStorage.setItem('jmp-live-data', JSON.stringify(liveData));
-  localStorage.setItem('jmp-data-version', DECK_VERSION);
 }
 function resetLiveData() {
   liveData = deepClone(DECK_DATA);
@@ -35558,24 +35472,6 @@ function loadOwned() {
 function saveOwned() {
   localStorage.setItem('jmp-owned', JSON.stringify([...state.owned]));
 }
-function loadOwnedQty() {
-  try {
-    const s = localStorage.getItem('jmp-owned-qty');
-    if (s) return new Map(JSON.parse(s));
-    if (typeof OWNED_QTY !== 'undefined' && OWNED_QTY.length) {
-      localStorage.setItem('jmp-owned-qty', JSON.stringify(OWNED_QTY));
-      return new Map(OWNED_QTY);
-    }
-    return new Map();
-  } catch { return new Map(); }
-}
-function saveOwnedQty() { localStorage.setItem('jmp-owned-qty', JSON.stringify([...state.ownedQty])); }
-function getOwnedQty(deckId, vi) { return state.ownedQty.get(ownedKey(deckId, vi)) || 1; }
-function setOwnedQty(deckId, vi, qty) {
-  const k = ownedKey(deckId, vi);
-  if (qty <= 0) state.ownedQty.delete(k); else state.ownedQty.set(k, qty);
-  saveOwnedQty();
-}
 function ownedKey(deckId, vi) { return `${deckId}:${vi}`; }
 function isVariantOwned(deckId, vi) { return state.owned.has(ownedKey(deckId, vi)); }
 function isDeckOwned(deck) { return deck.variants.some((_, i) => isVariantOwned(deck.id, i)); }
@@ -35589,8 +35485,7 @@ function toggleOwned(deckId, vi) {
 const state = {
   edition: 'all', colors: new Set(), search: '',
   openDeckId: null, openEditionId: null, openVariant: 0,
-  cardCache: {}, owned: loadOwned(), ownedQty: loadOwnedQty(), showOwnedOnly: false,
-  letterFilter: null, letterLocked: false
+  cardCache: {}, owned: loadOwned(), showOwnedOnly: false
 };
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -35638,19 +35533,24 @@ function deckMatchesSearch(deck, q) {
 
 // Edition display metadata
 const EDITION_CONFIG = {
-  jmp:   { name:'Jumpstart',                               year:2020, tieIn:false },
-  j21:   { name:'Historic Horizons',                       year:2021, tieIn:false, note:'Arena only' },
-  j22:   { name:'Jumpstart 2022',                          year:2022, tieIn:false },
-  j25:   { name:'Foundations Jumpstart',                   year:2024, tieIn:false },
-  atj:   { name:'Avatar: The Last Airbender Jumpstart',    year:2025, tieIn:false, tawCode:'tla' },
-  msh:   { name:'Marvel Super Heroes Jumpstart',           year:2026, tieIn:false },
-  jdmu:  { name:'Dominaria United Jumpstart',              year:2022, tieIn:true, tawCode:'dmu', code:'DMU' },
-  jbro:  { name:"Brothers' War Jumpstart",                 year:2022, tieIn:true, tawCode:'bro', code:'BRO' },
-  jone:  { name:'Phyrexia: All Will Be One Jumpstart',     year:2023, tieIn:true, tawCode:'one', code:'ONE' },
-  jmom:  { name:'March of the Machine Jumpstart',          year:2023, tieIn:true, tawCode:'mom', code:'MOM' },
-  jltr:  { name:'Lord of the Rings Jumpstart',             year:2023, tieIn:true, tawCode:'ltr', code:'LTR' },
+  jmp:   { name:'Jumpstart',                  year:2020, tieIn:false },
+  j21:   { name:'Historic Horizons',          year:2021, tieIn:false, note:'Arena only' },
+  j22:   { name:'Jumpstart 2022',             year:2022, tieIn:false },
+  j25:   { name:'Foundations Jumpstart',      year:2024, tieIn:false },
+  atj:   { name:'Avatar: TLA Jumpstart',      year:2025, tieIn:false },
+  jdmu:  { name:'Dominaria United Jumpstart', year:2022, tieIn:true, tawCode:'dmu'  },
+  jbro:  { name:"Brothers' War Jumpstart",    year:2022, tieIn:true, tawCode:'bro'  },
+  jone:  { name:'Phyrexia: All Will Be One Jumpstart', year:2023, tieIn:true, tawCode:'one'  },
+  jmom:  { name:'March of the Machine Jumpstart', year:2023, tieIn:true, tawCode:'mom'  },
+  jltr:  { name:'Lord of the Rings Jumpstart', year:2023, tieIn:true, tawCode:'ltr'  },
+  jltr2: { name:'LotR Jumpstart Vol.2',       year:2023, tieIn:true  },
+  jwoe:  { name:'Wilds of Eldraine Jumpstart',year:2023, tieIn:true  },
+  jlci:  { name:'Lost Caverns Jumpstart',     year:2023, tieIn:true  },
+  jmkm:  { name:'Karlov Manor Jumpstart',     year:2024, tieIn:true  },
+  jblb:  { name:'Bloomburrow Jumpstart',      year:2024, tieIn:true  },
+  jdsk:  { name:'Duskmourn Jumpstart',        year:2024, tieIn:true  },
 };
-const MAIN_SET_ORDER = ['jmp','j21','j22','j25','atj','msh'];
+const MAIN_SET_ORDER = ['jmp','j21','j22','j25','atj'];
 function getTieInIds() {
   return new Set(liveData.editions.filter(e => {
     const cfg = EDITION_CONFIG[e.id];
@@ -35681,7 +35581,7 @@ function renderTabs() {
   const mainEds = liveData.editions
     .filter(e => !getTieInIds().has(e.id))
     .sort((a,b) => (EDITION_CONFIG[a.id]?.year||9999) - (EDITION_CONFIG[b.id]?.year||9999));
-  const TAB_LABELS = { jmp:'JMP (2020)', j21:'Historic Horizons', j22:'JMP 2022', j25:'Foundations', atj:'Avatar: TLA', msh:'Marvel Heroes' };
+  const TAB_LABELS = { jmp:'JMP (2020)', j21:'Historic Horizons', j22:'JMP 2022', j25:'Foundations', atj:'Avatar' };
   for (const ed of mainEds) {
     nav.appendChild(makeTab(ed.id, TAB_LABELS[ed.id] || `${ed.name} (${ed.year||'?'})`));
   }
@@ -35834,7 +35734,7 @@ function renderModal(deck, ed) {
       ${deck.headliner ? `<div class="modal-headliner">${esc(deck.headliner)}</div>` : ''}
     </div>
     <button class="modal-close" id="modal-close-btn">✕</button>`;
-  document.getElementById('modal-close-btn')?.addEventListener('click', closeModal);
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
   document.getElementById('modal-edition-label').textContent = `${ed.name} · ${ed.year}`;
 
   // Variant row
@@ -36019,18 +35919,18 @@ document.querySelectorAll('.color-btn').forEach(btn => {
 });
 
 let searchTimer;
-document.getElementById('search-input')?.addEventListener('input', e => {
+document.getElementById('search-input').addEventListener('input', e => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { state.search = e.target.value.trim(); renderGrid(); }, 180);
 });
 
-document.getElementById('owned-only-btn')?.addEventListener('click', () => {
+document.getElementById('owned-only-btn').addEventListener('click', () => {
   state.showOwnedOnly = !state.showOwnedOnly;
   document.getElementById('owned-only-btn').classList.toggle('active', state.showOwnedOnly);
   renderGrid();
 });
 
-document.getElementById('modal-overlay')?.addEventListener('click', e => {
+document.getElementById('modal-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 });
 
@@ -36106,18 +36006,18 @@ function setImportMode(mode) {
   document.getElementById('import-edition-custom-field').style.display = 'none';
   rebuildOutput();
 }
-document.getElementById('mode-new-btn')?.addEventListener('click', () => setImportMode('new'));
-document.getElementById('mode-add-btn')?.addEventListener('click', () => setImportMode('add'));
+document.getElementById('mode-new-btn').addEventListener('click', () => setImportMode('new'));
+document.getElementById('mode-add-btn').addEventListener('click', () => setImportMode('add'));
 
 // ── Edition selector ───────────────────────────────────────────────
-document.getElementById('import-edition-select')?.addEventListener('change', function() {
+document.getElementById('import-edition-select').addEventListener('change', function() {
   document.getElementById('import-edition-custom-field').style.display = this.value === '__custom__' ? '' : 'none';
   rebuildOutput();
 });
-document.getElementById('import-edition-custom')?.addEventListener('input', rebuildOutput);
+document.getElementById('import-edition-custom').addEventListener('input', rebuildOutput);
 
 // ── Existing deck selector ─────────────────────────────────────────
-document.getElementById('existing-deck-select')?.addEventListener('change', function() {
+document.getElementById('existing-deck-select').addEventListener('change', function() {
   if (!this.value) return;
   const [edId, deckId] = this.value.split('|');
   const ed = liveData.editions.find(e => e.id === edId);
@@ -36261,7 +36161,7 @@ function rebuildOutput() {
   }
 }
 
-document.getElementById('import-input')?.addEventListener('input', rebuildOutput);
+document.getElementById('import-input').addEventListener('input', rebuildOutput);
 
 // ── Open / close import modal ──────────────────────────────────────
 function openImport(prefill = null) {
@@ -36309,14 +36209,14 @@ function closeImport() {
   setImportMode('new');
 }
 
-document.getElementById('import-btn')?.addEventListener('click', () => openImport());
-document.getElementById('import-close-btn')?.addEventListener('click', closeImport);
-document.getElementById('import-close-btn2')?.addEventListener('click', closeImport);
-document.getElementById('import-modal')?.addEventListener('click', e => {
+document.getElementById('import-btn').addEventListener('click', () => openImport());
+document.getElementById('import-close-btn').addEventListener('click', closeImport);
+document.getElementById('import-close-btn2').addEventListener('click', closeImport);
+document.getElementById('import-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('import-modal')) closeImport();
 });
 
-document.getElementById('import-copy-btn')?.addEventListener('click', () => {
+document.getElementById('import-copy-btn').addEventListener('click', () => {
   if (!lastSnippet) return;
   navigator.clipboard.writeText(lastSnippet).then(() => {
     const btn = document.getElementById('import-copy-btn');
@@ -36327,7 +36227,7 @@ document.getElementById('import-copy-btn')?.addEventListener('click', () => {
 });
 
 // ── "+ Add Variant" from deck modal ───────────────────────────────
-document.getElementById('modal-add-variant-btn')?.addEventListener('click', () => {
+document.getElementById('modal-add-variant-btn').addEventListener('click', () => {
   if (state.openDeckId && state.openEditionId) {
     closeModal();
     setTimeout(() => openImport({ deckId: state.openDeckId, editionId: state.openEditionId }), 120);
@@ -36382,9 +36282,9 @@ function populateMtgjsonSelect(decks) {
   }
 }
 
-document.getElementById('mtgjson-load-btn')?.addEventListener('click', loadMtgjsonList);
+document.getElementById('mtgjson-load-btn').addEventListener('click', loadMtgjsonList);
 
-document.getElementById('mtgjson-search')?.addEventListener('input', function() {
+document.getElementById('mtgjson-search').addEventListener('input', function() {
   const q = this.value.toLowerCase();
   const filtered = allMtgjsonDecks.filter(d =>
     d.name.toLowerCase().includes(q) || d.code.toLowerCase().includes(q)
@@ -36392,7 +36292,7 @@ document.getElementById('mtgjson-search')?.addEventListener('input', function() 
   populateMtgjsonSelect(filtered);
 });
 
-document.getElementById('mtgjson-deck-select')?.addEventListener('change', async function() {
+document.getElementById('mtgjson-deck-select').addEventListener('change', async function() {
   const fileName = this.value;
   if (!fileName) return;
   const status = document.getElementById('mtgjson-status');
@@ -36460,46 +36360,54 @@ function exitEditMode() {
 }
 
 // Password modal
+document.getElementById('edit-mode-btn').addEventListener('click', () => {
+  if (editMode) { exitEditMode(); return; }
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+  document.getElementById('pw-modal').classList.add('open');
+  setTimeout(() => document.getElementById('pw-input').focus(), 60);
+});
 function closePwModal() { document.getElementById('pw-modal').classList.remove('open'); }
-document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal);
-document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
+document.getElementById('pw-cancel-btn').addEventListener('click', closePwModal);
+document.getElementById('pw-confirm-btn').addEventListener('click', () => {
   const val = document.getElementById('pw-input').value;
   if (val === EDIT_PASSWORD) { closePwModal(); enterEditMode(); }
   else { document.getElementById('pw-error').style.display = 'block'; document.getElementById('pw-input').value = ''; document.getElementById('pw-input').focus(); }
 });
-document.getElementById('pw-input')?.addEventListener('keydown', e => {
+document.getElementById('pw-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('pw-confirm-btn').click();
 });
 
 // Save / Export dropdown
-document.getElementById('save-menu-btn')?.addEventListener('click', e => {
+document.getElementById('save-menu-btn').addEventListener('click', e => {
   e.stopPropagation();
   document.getElementById('save-dropdown').classList.toggle('open');
 });
 document.addEventListener('click', () => document.getElementById('save-dropdown').classList.remove('open'));
 
 // Download complete self-contained index.html
-document.getElementById('save-download-btn')?.addEventListener('click', () => {
-  const openEls = [...document.querySelectorAll('.open')];
-  openEls.forEach(el => el.classList.remove('open'));
-  document.body.classList.remove('edit-mode');
-  const badge = document.getElementById('edit-mode-badge');
-  badge?.classList.remove('visible');
-  document.getElementById('phone-edit-badge')?.classList.remove('visible');
-  document.getElementById('rebuild-overlay')?.classList.remove('open');
-  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-  openEls.forEach(el => el.classList.add('open'));
-  if (editMode) { document.body.classList.add('edit-mode'); badge?.classList.add('visible'); }
-  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END[^\n]*/,
-    '// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "' + DECK_VERSION + '";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ' + JSON.stringify(liveData, null, 2) + ';\n// DECK_DATA_END — do not remove this comment');
-  const ov = Date.now().toString();
-  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/,
-    '// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ' + JSON.stringify([...state.owned]) + ';\nconst OWNED_QTY = ' + JSON.stringify([...state.ownedQty]) + ';\nconst OWNED_VERSION = "' + ov + '";\n// OWNED_DATA_END — do not remove this comment');
-  const blob = new Blob([src], {type:'text/html'}), url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
-  URL.revokeObjectURL(url);
-  document.getElementById('save-dropdown')?.classList.remove('open');
-  showToast('\u2713 Downloaded index.html', 3000);
+document.getElementById('save-download-btn').addEventListener('click', async () => {
+  try {
+    // Fetch current page source
+    const res = await fetch(location.href);
+    let src = await res.text();
+    // Replace inline data block with current liveData
+    const newDataBlock = `// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
+    src = src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+    const blob = new Blob([src], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) {
+    // Fallback: generate minimal standalone file
+    const content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Jumpstart Data</title></head><body><script>const DECK_DATA = ${JSON.stringify(liveData, null, 2)};<\/script><p>Data exported. Replace the DECK_DATA block in your index.html with the script tag above.</p><div id="help-modal" style="display:none;pointer-events:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1rem"><div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto"><div style="border-bottom:1px solid var(--border);display:flex;align-items:center;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)"><h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">Help &amp; Sync Guide</h2><button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">✕</button></div><div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)"><p><strong style="color:var(--gold)">Mark owned:</strong> click deck → select variant → Mark Owned. Use Qty ± for duplicates.</p><p><strong style="color:var(--gold)">Sync (easiest):</strong> 💾 Save ▾ → Push collection.json to GitHub → phone auto-loads on next refresh.</p><p><strong style="color:var(--gold)">After Claude updates:</strong> just upload the new index.html to GitHub. Your collection.json is separate and untouched.</p><p><strong style="color:var(--gold)">Phone not updating?</strong> 💾 Save ▾ → Force resync from website.</p><p><strong style="color:var(--gold)">Tips:</strong> Click "Jumpstart Deck Browser" to reset filters. Click 🔓 EDIT MODE badge to exit edit mode. Password: <code style="color:var(--gold)">jumpstart</code>.</p></div></div></div>
+</body></html>`;
+    const blob = new Blob([content], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'deck-data-export.html'; a.click();
+    URL.revokeObjectURL(url);
+  }
+  document.getElementById('save-dropdown').classList.remove('open');
 });
 
 // Reset
@@ -37082,42 +36990,56 @@ async function bulkImportFromMtgjson() {
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ─── PHONE EDIT MODE ──────────────────────────────────────────────────────────
+// === PHASE 2: NEW FEATURES ================================================
+
 let phoneEditEnabled = localStorage.getItem('jmp-phone-edit') === 'true';
 const SITE_URL = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
+const COLLECTION_URL = 'https://greattrips.github.io/MTG_Jumpstart_Search/collection.json';
+
 function isMobileDevice() { return window.innerWidth <= 700; }
+
 function applyPhoneReadonlyState() {
   if (!isMobileDevice()) return;
   document.body.classList.toggle('phone-readonly', !phoneEditEnabled);
   document.getElementById('phone-readonly-notice')?.classList.toggle('visible', !phoneEditEnabled);
-  const b=document.getElementById('phone-edit-badge'); if(b)b.classList.toggle('visible',phoneEditEnabled);
+  const b=document.getElementById('phone-edit-badge');
+  if(b){b.classList.toggle('visible',phoneEditEnabled);b.style.cursor=phoneEditEnabled?'pointer':'default';}
   const t=document.getElementById('phone-edit-toggle');
-  if(t){t.classList.toggle('enabled',phoneEditEnabled);t.textContent=phoneEditEnabled?'📱 Phone updates ON — tap to disable':'📱 Enable phone updates';}
+  if(t){t.classList.toggle('enabled',phoneEditEnabled);t.textContent=phoneEditEnabled?'\uD83D\uDCF1 Phone updates ON \u2014 tap to disable':'\uD83D\uDCF1 Enable phone updates';}
 }
-async function autoResyncFromSite(){
-  try{
-    const res=await fetch(SITE_URL+'?v='+Date.now(),{cache:'no-store'}); if(!res.ok)return;
+
+async function autoResyncFromSite() {
+  try {
+    const res=await fetch(SITE_URL+'?v='+Date.now(),{cache:'no-store'});if(!res.ok)return;
     const txt=await res.text();
-    const dm=txt.match(/const OWNED_DATA = (\[.*?\]);/s),vm=txt.match(/const OWNED_VERSION = "([^"]+)"/);
+    const dm=txt.match(/const OWNED_DATA = (\[.*?\]);/s),vm2=txt.match(/const OWNED_VERSION = "([^"]+)"/);
     if(!dm)return;
-    const ro=JSON.parse(dm[1]),rv=vm?vm[1]:'',lv=localStorage.getItem('jmp-owned-version')||'';
+    const ro=JSON.parse(dm[1]),rv=vm2?vm2[1]:'',lv=localStorage.getItem('jmp-owned-version')||'';
     if(ro.length>0&&rv!==lv){
       state.owned=new Set(ro);
       try{const qm=txt.match(/const OWNED_QTY = (\[.*?\]);/s);if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();}}catch(e){}
       saveOwned();localStorage.setItem('jmp-owned-version',rv);
-      renderGrid();showToast('\u2713 Collection synced \u2014 '+ro.length+' variant'+(ro.length!==1?'s':''),3000);
-    }else if(ro.length===0){
-      showToast(state.owned.size>0?'\uD83D\uDCE6 '+state.owned.size+' loaded (server empty)':'\uD83D\uDCE6 No collection on server \u2014 push from laptop first',4000);
-    }else{
-      showToast('\uD83D\uDCE6 '+state.owned.size+' variant'+(state.owned.size!==1?'s':'')+' \u2014 up to date',2500);
-    }
-  }catch(e){showToast(state.owned.size>0?'\uD83D\uDCE6 '+state.owned.size+' loaded (offline)':'\u26A0 Could not reach server',3000);}
+      renderGrid();showToast('\u2713 Collection synced \u2014 '+ro.length+' variants',3000);
+    }else{showToast('\uD83D\uDCE6 '+state.owned.size+' variants \u2014 '+(ro.length===0?'server empty':'up to date'),2500);}
+  }catch(e){showToast('\uD83D\uDCE6 '+state.owned.size+' variants (offline)',2500);}
 }
 
-// ─── COLLECTION SUMMARY ───────────────────────────────────────────────────────
-let summaryMode = 'decks';
+async function autoLoadCollectionJson() {
+  try {
+    const res=await fetch(COLLECTION_URL+'?v='+Date.now(),{cache:'no-store'});if(!res.ok)return;
+    const data=await res.json();if(!data.owned||!Array.isArray(data.owned))return;
+    const rv=data.version||'',lv=localStorage.getItem('jmp-collection-version')||'';
+    if(rv===lv)return;
+    const merged=new Set([...state.owned,...data.owned]);
+    if(data.ownedQty){const qmap=new Map(data.ownedQty);for(const[k,v]of qmap)state.ownedQty.set(k,v);saveOwnedQty();}
+    state.owned=merged;saveOwned();localStorage.setItem('jmp-collection-version',rv);
+    renderGrid();showToast('\u2713 Collection loaded ('+merged.size+' variants)',3000);
+  }catch(e){}
+}
+
+let summaryMode='decks';
 function renderCollectionSummary(){
-  const panel=document.getElementById('summary-panel'); if(!panel)return;
+  const panel=document.getElementById('summary-panel');if(!panel)return;
   if(!state.showOwnedOnly||summaryMode!=='stats'){panel.classList.remove('visible');panel.innerHTML='';return;}
   panel.classList.add('visible');
   const cg=c=>c.length>1?'M':(c[0]||'?');
@@ -37133,15 +37055,73 @@ function renderCollectionSummary(){
     if(!has)continue;
     const eu=Object.values(rows).reduce((s,[u])=>s+u,0),et=Object.values(rows).reduce((s,[,t])=>s+t,0);
     gu+=eu;gt+=et;gd+=et-eu;
-    out+='<div class="summary-edition"><div class="summary-edition-name">'+esc(ed.name)+' <span style="font-size:.7rem;color:var(--text2)">'+( ed.code||ed.id.toUpperCase())+'</span></div><table class="summary-table"><tr><th>Color</th><th>Unique</th><th>Dupes</th><th>Total</th></tr>';
-    for(const [c,[u,t]]of Object.entries(rows))if(u)out+='<tr><td><span class="summary-pip" style="background:'+HX[c]+'"></span>'+LB[c]+'</td><td>'+u+'</td><td>'+(t-u||'\u2014')+'</td><td>'+t+'</td></tr>';
-    out+='<tr class="total-row"><td>Total</td><td>'+eu+'</td><td>'+(et-eu||'\u2014')+'</td><td>'+et+'</td></tr></table></div>';
+    out+='<div class="summary-edition"><div class="summary-edition-name">'+esc(ed.name)+' <span style="font-size:.7rem;color:var(--text2)">'+(ed.code||ed.id.toUpperCase())+'</span></div><table class="summary-table"><tr><th>Color</th><th>Unique</th><th>Dupes</th><th>Total</th></tr>';
+    for(const[c,[u,t]]of Object.entries(rows))if(u)out+='<tr><td><span class="summary-pip" style="background:'+HX[c]+'"></span>'+LB[c]+'</td><td>'+u+'</td><td>'+(t-u||'-')+'</td><td>'+t+'</td></tr>';
+    out+='<tr class="total-row"><td>Total</td><td>'+eu+'</td><td>'+(et-eu||'-')+'</td><td>'+et+'</td></tr></table></div>';
   }
-  out+='<div class="summary-grand"><div class="summary-grand-item"><span class="summary-grand-val">'+gu+'</span><span class="summary-grand-label">Unique Variants</span></div><div class="summary-grand-item"><span class="summary-grand-val">'+gd+'</span><span class="summary-grand-label">Duplicates</span></div><div class="summary-grand-item"><span class="summary-grand-val">'+gt+'</span><span class="summary-grand-label">Total Copies</span></div></div>';
+  out+='<div class="summary-grand"><div class="summary-grand-item"><span class="summary-grand-val">'+gu+'</span><span class="summary-grand-label">Unique</span></div><div class="summary-grand-item"><span class="summary-grand-val">'+gd+'</span><span class="summary-grand-label">Duplicates</span></div><div class="summary-grand-item"><span class="summary-grand-val">'+gt+'</span><span class="summary-grand-label">Total</span></div></div>';
   panel.innerHTML=out;
 }
 
-// ─── NEW EVENT HANDLERS ───────────────────────────────────────────────────────
+// === EVENT HANDLERS =======================================================
+
+document.getElementById('site-logo-btn')?.addEventListener('click',()=>{
+  if(editMode)exitEditMode();
+  state.search='';state.edition='all';state.colors.clear();state.letterFilter=null;state.letterLocked=false;state.showOwnedOnly=false;
+  document.getElementById('search-input').value='';
+  document.getElementById('search-clear-btn').style.display='none';
+  document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
+  document.getElementById('owned-only-btn')?.classList.remove('active');
+  document.getElementById('edit-mode-badge')?.classList.remove('visible');
+  document.getElementById('phone-edit-badge')?.classList.remove('visible');
+  document.body.classList.remove('edit-mode');
+  summaryMode='decks';
+  document.getElementById('summary-tabs')?.classList.remove('visible');
+  const sp=document.getElementById('summary-panel');if(sp){sp.classList.remove('visible');sp.innerHTML='';}
+  document.getElementById('main-content').style.display='';
+  renderGrid();
+});
+
+document.getElementById('edit-mode-badge')?.addEventListener('click',()=>{if(editMode)exitEditMode();});
+
+document.getElementById('phone-edit-badge')?.addEventListener('click',()=>{
+  phoneEditEnabled=!phoneEditEnabled;localStorage.setItem('jmp-phone-edit',String(phoneEditEnabled));
+  applyPhoneReadonlyState();
+  if(!phoneEditEnabled){showToast('\uD83D\uDD12 Phone updates disabled',2500);setTimeout(autoResyncFromSite,500);}
+  else showToast('\uD83D\uDCF1 Phone updates enabled',3000);
+});
+
+document.getElementById('edit-mode-btn')?.addEventListener('click',()=>{
+  if(editMode){exitEditMode();return;}
+  const pwModal=document.getElementById('pw-modal');if(!pwModal)return;
+  const inp=document.getElementById('pw-input'),err=document.getElementById('pw-error');
+  if(inp)inp.value='';if(err)err.style.display='none';
+  pwModal.classList.add('open');
+  const ps=document.getElementById('phone-edit-section');
+  if(ps)ps.style.display=isMobileDevice()?'block':'none';
+  const tg=document.getElementById('phone-edit-toggle');
+  if(tg){tg.classList.toggle('enabled',phoneEditEnabled);tg.textContent=phoneEditEnabled?'\uD83D\uDCF1 Phone updates ON \u2014 tap to disable':'\uD83D\uDCF1 Enable phone updates';}
+  setTimeout(()=>inp?.focus(),50);
+});
+
+document.getElementById('phone-edit-toggle')?.addEventListener('click',()=>{
+  phoneEditEnabled=!phoneEditEnabled;localStorage.setItem('jmp-phone-edit',String(phoneEditEnabled));
+  applyPhoneReadonlyState();
+  if(!phoneEditEnabled){showToast('\uD83D\uDD12 Phone updates disabled',2500);setTimeout(autoResyncFromSite,500);}
+  else showToast('\uD83D\uDCF1 Phone updates enabled',3000);
+});
+
+document.getElementById('help-btn')?.addEventListener('click',()=>{
+  const m=document.getElementById('help-modal');if(m){m.style.display='flex';m.style.pointerEvents='auto';}
+});
+document.getElementById('help-close-btn')?.addEventListener('click',()=>{
+  const m=document.getElementById('help-modal');if(m){m.style.display='none';m.style.pointerEvents='none';}
+});
+document.getElementById('help-modal')?.addEventListener('click',e=>{
+  if(e.target.id==='help-modal'){e.target.style.display='none';e.target.style.pointerEvents='none';}
+});
+
 document.getElementById('search-clear-btn')?.addEventListener('click',()=>{
   document.getElementById('search-input').value='';
   document.getElementById('search-clear-btn').style.display='none';
@@ -37150,6 +37130,7 @@ document.getElementById('search-clear-btn')?.addEventListener('click',()=>{
 document.getElementById('search-input')?.addEventListener('input',function(){
   document.getElementById('search-clear-btn').style.display=this.value?'block':'none';
 });
+
 document.getElementById('summary-decks-btn')?.addEventListener('click',()=>{
   summaryMode='decks';document.getElementById('summary-decks-btn')?.classList.add('active');
   document.getElementById('summary-stats-btn')?.classList.remove('active');
@@ -37160,228 +37141,92 @@ document.getElementById('summary-stats-btn')?.addEventListener('click',()=>{
   document.getElementById('summary-decks-btn')?.classList.remove('active');
   document.getElementById('main-content').style.display='none';renderCollectionSummary();
 });
+
 document.getElementById('collection-banner-clear')?.addEventListener('click',()=>{
-  state.showOwnedOnly=false;state.search='';state.edition='all';state.colors.clear();
-  state.letterFilter=null;state.letterLocked=false;
+  state.showOwnedOnly=false;state.search='';state.edition='all';state.colors.clear();state.letterFilter=null;state.letterLocked=false;
   document.getElementById('owned-only-btn')?.classList.remove('active');
-  document.getElementById('search-input').value='';
-  document.getElementById('search-clear-btn').style.display='none';
+  document.getElementById('search-input').value='';document.getElementById('search-clear-btn').style.display='none';
   document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
   document.getElementById('summary-tabs')?.classList.remove('visible');
   const sp=document.getElementById('summary-panel');if(sp){sp.classList.remove('visible');sp.innerHTML='';}
   document.getElementById('main-content').style.display='';renderGrid();
 });
-document.getElementById('phone-edit-toggle')?.addEventListener('click',()=>{
-  phoneEditEnabled=!phoneEditEnabled;localStorage.setItem('jmp-phone-edit',String(phoneEditEnabled));
-  applyPhoneReadonlyState();
-  if(!phoneEditEnabled){showToast('\uD83D\uDD12 Phone updates disabled \u2014 resyncing\u2026',2500);setTimeout(autoResyncFromSite,500);}
-  else showToast('\uD83D\uDCF1 Phone updates enabled',3000);
-});
-document.getElementById('site-logo-btn')?.addEventListener('click',()=>{
-  if(editMode)exitEditMode();
-  state.search='';state.edition='all';state.colors.clear();state.letterFilter=null;state.letterLocked=false;state.showOwnedOnly=false;
-  const si=document.getElementById('search-input');if(si)si.value='';
-  document.getElementById('search-clear-btn').style.display='none';
-  document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
-  document.getElementById('owned-only-btn')?.classList.remove('active');
-  document.getElementById('edit-mode-badge')?.classList.remove('visible');
-  document.getElementById('phone-edit-badge')?.classList.remove('visible');
-  document.body.classList.remove('edit-mode');
-  document.getElementById('summary-tabs')?.classList.remove('visible');
-  const sp=document.getElementById('summary-panel');if(sp){sp.classList.remove('visible');sp.innerHTML='';}
-  document.getElementById('main-content').style.display='';summaryMode='decks';renderGrid();
-});
-document.getElementById('edit-mode-badge')?.addEventListener('click',()=>{if(editMode)exitEditMode();});
-document.getElementById('save-force-resync-btn')?.addEventListener('click',async()=>{
+
+document.getElementById('save-export-collection-btn')?.addEventListener('click',()=>{
   document.getElementById('save-dropdown')?.classList.remove('open');
-  showToast('\u23F3 Fetching latest from GitHub\u2026',60000);
+  const col={version:Date.now().toString(),exportedAt:new Date().toISOString(),owned:[...state.owned],ownedQty:[...state.ownedQty]};
+  const blob=new Blob([JSON.stringify(col,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='collection.json';a.click();URL.revokeObjectURL(url);
+  showToast('\u2713 Exported collection.json',3000);
+});
+
+document.getElementById('save-push-collection-btn')?.addEventListener('click',async()=>{
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  const owner=localStorage.getItem('gh-owner')||'greattrips',repo=localStorage.getItem('gh-repo')||'MTG_Jumpstart_Search',token=localStorage.getItem('gh-token')||'';
+  if(!token){showToast('\u26A0 No GitHub token \u2014 set it up via Push to GitHub first',5000);return;}
+  const col={version:Date.now().toString(),exportedAt:new Date().toISOString(),owned:[...state.owned],ownedQty:[...state.ownedQty]};
+  const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(col,null,2))));
+  const apiUrl='https://api.github.com/repos/'+owner+'/'+repo+'/contents/collection.json';
+  showToast('\u23F3 Pushing collection.json...',30000);
   try{
-    const res=await fetch(SITE_URL+'?v='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);
-    const txt=await res.text();
-    const dm=txt.match(/const OWNED_DATA = (\[.*?\]);/s),vm=txt.match(/const OWNED_VERSION = "([^"]+)"/);
-    if(!dm)throw new Error('Could not find OWNED_DATA');
-    const ro=JSON.parse(dm[1]);
-    if(ro.length===0){showToast('\u26A0 GitHub has 0 owned variants. Push from laptop first.',8000);return;}
-    if(!confirm('Found '+ro.length+' owned variant(s) on GitHub. Replace local collection?'))return;
-    state.owned=new Set(ro);
-    try{const qm=txt.match(/const OWNED_QTY = (\[.*?\]);/s);if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();}}catch(e){}
-    saveOwned();localStorage.setItem('jmp-owned-version',vm?vm[1]:Date.now().toString());
-    if(isMobileDevice()){state.showOwnedOnly=true;document.getElementById('owned-only-btn')?.classList.add('active');}
-    renderGrid();showToast('\u2713 Resynced \u2014 '+ro.length+' owned variants',5000);
-  }catch(e){showToast('\u26A0 Resync failed: '+e.message,5000);}
-});
-document.getElementById('help-btn')?.addEventListener('click',()=>{
-  const m=document.getElementById('help-modal');
-  if(m){m.style.display='flex';m.style.pointerEvents='auto';}
-});
-document.getElementById('help-close-btn')?.addEventListener('click',()=>{
-  const m=document.getElementById('help-modal');
-  if(m){m.style.display='none';m.style.pointerEvents='none';}
-});
-document.getElementById('help-modal')?.addEventListener('click',e=>{
-  if(e.target===document.getElementById('help-modal')){
-    e.target.style.display='none';e.target.style.pointerEvents='none';
-  }
-});
-// Edit button: opens pw-modal; shows phone-edit section on mobile
-document.getElementById('edit-mode-btn')?.addEventListener('click',()=>{
-  if(editMode){exitEditMode();return;}
-  const pwModal = document.getElementById('pw-modal');
-  if(!pwModal){return;}
-  const inp = document.getElementById('pw-input');
-  const err = document.getElementById('pw-error');
-  if(inp) inp.value='';
-  if(err) err.style.display='none';
-  pwModal.classList.add('open');
-  const ps=document.getElementById('phone-edit-section');
-  if(ps)ps.style.display=isMobileDevice()?'block':'none';
-  const tg=document.getElementById('phone-edit-toggle');
-  if(tg){tg.classList.toggle('enabled',phoneEditEnabled);tg.textContent=phoneEditEnabled?'📱 Phone updates ON — tap to disable':'📱 Enable phone updates';}
-  setTimeout(()=>inp?.focus(),50);
+    let sha=null;
+    const get=await fetch(apiUrl,{headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github.v3+json'}});
+    if(get.ok){const j=await get.json();sha=j.sha;}
+    const body={message:'Update collection.json',content:encoded};if(sha)body.sha=sha;
+    const put=await fetch(apiUrl,{method:'PUT',headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!put.ok){const err=await put.json();throw new Error(err.message||put.status);}
+    showToast('\u2713 collection.json pushed \u2014 '+col.owned.length+' variants',4000);
+  }catch(e){showToast('\u26A0 Push failed: '+e.message,5000);}
 });
 
-// ─── COLLECTION FILE HANDLERS ────────────────────────────────────────────────
-
-// Export collection.json
-document.getElementById('save-export-collection-btn')?.addEventListener('click', () => {
-  document.getElementById('save-dropdown')?.classList.remove('open');
-  const collection = {
-    version: Date.now().toString(),
-    exportedAt: new Date().toISOString(),
-    owned: [...state.owned],
-    ownedQty: [...state.ownedQty]
-  };
-  const blob = new Blob([JSON.stringify(collection, null, 2)], {type:'application/json'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = 'collection.json'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('✓ Exported collection.json — upload this to your GitHub repo', 4000);
-});
-
-// Push collection.json directly to GitHub
-document.getElementById('save-push-collection-btn')?.addEventListener('click', async () => {
-  document.getElementById('save-dropdown')?.classList.remove('open');
-
-  // Reuse saved GitHub settings from the Push to GitHub modal
-  const owner = localStorage.getItem('gh-owner') || 'greattrips';
-  const repo  = localStorage.getItem('gh-repo')  || 'MTG_Jumpstart_Search';
-  const token = localStorage.getItem('gh-token')  || '';
-
-  if (!token) {
-    showToast('⚠ No GitHub token found. Use ⬆ Push to GitHub… first to save your token.', 6000);
-    return;
-  }
-  // Debug: show what we're pushing to
-  console.log('Pushing collection.json to:', owner+'/'+repo);
-
-  const collection = {
-    version: Date.now().toString(),
-    exportedAt: new Date().toISOString(),
-    owned: [...state.owned],
-    ownedQty: [...state.ownedQty]
-  };
-  const content  = JSON.stringify(collection, null, 2);
-  const encoded  = btoa(unescape(encodeURIComponent(content)));
-  const apiUrl   = `https://api.github.com/repos/${owner}/${repo}/contents/collection.json`;
-
-  showToast('⏳ Pushing collection.json to GitHub…', 30000);
-  try {
-    // Get current SHA (needed to update an existing file)
-    let sha = null;
-    const getRes = await fetch(apiUrl, {headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github.v3+json'}});
-    if (getRes.ok) { const j = await getRes.json(); sha = j.sha; }
-
-    const body = {message:'Update collection.json', content: encoded};
-    if (sha) body.sha = sha;
-
-    const putRes = await fetch(apiUrl, {
-      method: 'PUT',
-      headers: {'Authorization':'Bearer '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body: JSON.stringify(body)
-    });
-    if (!putRes.ok) {
-      const err = await putRes.json();
-      throw new Error(err.message || putRes.status);
-    }
-    showToast(`✓ collection.json pushed — ${collection.owned.length} variants on GitHub`, 4000);
-  } catch(e) {
-    showToast('⚠ Push failed: ' + e.message, 5000);
-  }
-});
-
-// Import collection.json from file
-document.getElementById('save-import-collection-btn')?.addEventListener('click', () => {
+document.getElementById('save-import-collection-btn')?.addEventListener('click',()=>{
   document.getElementById('save-dropdown')?.classList.remove('open');
   document.getElementById('collection-file-input').click();
 });
-
-document.getElementById('collection-file-input')?.addEventListener('change', function() {
-  const file = this.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const data = JSON.parse(e.target.result);
-      if (!data.owned || !Array.isArray(data.owned)) throw new Error('Invalid collection file');
-      const incoming = new Set(data.owned);
-      const merged   = new Set([...state.owned, ...incoming]);
-      const added    = merged.size - state.owned.size;
-      if (!confirm(`Merge ${incoming.size} owned variants from file with your current ${state.owned.size}?
-(${added} new items will be added)`)) return;
-      state.owned = merged;
-      if (data.ownedQty) {
-        const qmap = new Map(data.ownedQty);
-        for (const [k, v] of qmap) state.ownedQty.set(k, v);
-        saveOwnedQty();
-      }
-      saveOwned();
-      renderGrid();
-      showToast(`✓ Merged: ${merged.size} total owned variants`, 4000);
-    } catch(err) {
-      showToast('⚠ Could not read collection file: ' + err.message, 5000);
-    }
-  };
-  reader.readAsText(file);
-  this.value = ''; // reset so same file can be re-imported
+document.getElementById('collection-file-input')?.addEventListener('change',function(){
+  const file=this.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{try{const data=JSON.parse(e.target.result);if(!data.owned||!Array.isArray(data.owned))throw new Error('Invalid file');const merged=new Set([...state.owned,...data.owned]);if(!confirm('Merge '+data.owned.length+' variants with your current '+state.owned.size+'?'))return;state.owned=merged;if(data.ownedQty){const qm=new Map(data.ownedQty);for(const[k,v]of qm)state.ownedQty.set(k,v);saveOwnedQty();}saveOwned();renderGrid();showToast('\u2713 Merged: '+merged.size+' variants',4000);}catch(err){showToast('\u26A0 '+err.message,5000);}};
+  reader.readAsText(file);this.value='';
 });
 
-// Auto-load collection.json from GitHub on page load
-async function autoLoadCollectionJson() {
-  const collectionUrl = 'https://greattrips.github.io/MTG_Jumpstart_Search/collection.json';
-  try {
-    const res = await fetch(collectionUrl + '?v=' + Date.now(), {cache:'no-store'});
-    if (!res.ok) return; // file doesn't exist yet — that's fine
-    const data = await res.json();
-    if (!data.owned || !Array.isArray(data.owned)) return;
-    const remoteVer = data.version || '';
-    const localVer  = localStorage.getItem('jmp-collection-version') || '';
-    if (remoteVer === localVer) return; // already have this version
-    // Merge remote into local
-    const merged = new Set([...state.owned, ...data.owned]);
-    if (data.ownedQty) {
-      const qmap = new Map(data.ownedQty);
-      for (const [k,v] of qmap) state.ownedQty.set(k, v);
-      saveOwnedQty();
-    }
-    state.owned = merged;
-    saveOwned();
-    localStorage.setItem('jmp-collection-version', remoteVer);
-    renderGrid();
-    showToast(`✓ Collection loaded from collection.json (${merged.size} variants)`, 3000);
-  } catch(e) {
-    // Silently ignore — collection.json may not exist yet
-  }
-}
+document.getElementById('save-force-resync-btn')?.addEventListener('click',async()=>{
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  showToast('\u23F3 Fetching from GitHub...',60000);
+  try{
+    const res=await fetch(SITE_URL+'?v='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('HTTP '+res.status);
+    const txt=await res.text();const dm=txt.match(/const OWNED_DATA = (\[.*?\]);/s);if(!dm)throw new Error('No OWNED_DATA');
+    const ro=JSON.parse(dm[1]);if(ro.length===0){showToast('\u26A0 GitHub has 0 variants \u2014 push first',8000);return;}
+    if(!confirm('Found '+ro.length+' variant(s). Replace local collection?'))return;
+    state.owned=new Set(ro);try{const qm=txt.match(/const OWNED_QTY = (\[.*?\]);/s);if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();}}catch(e){}
+    saveOwned();localStorage.setItem('jmp-owned-version',txt.match(/const OWNED_VERSION = "([^"]+)"/)?.[1]||'');
+    if(isMobileDevice()){state.showOwnedOnly=true;document.getElementById('owned-only-btn')?.classList.add('active');}
+    renderGrid();showToast('\u2713 Resynced \u2014 '+ro.length+' variants',5000);
+  }catch(e){showToast('\u26A0 Resync failed: '+e.message,5000);}
+});
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+document.getElementById('save-rebuild-btn')?.addEventListener('click',()=>{
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  if(!confirm('Wipe ALL deck data and rebuild? Ownership preserved.'))return;
+  wipeAndRebuildFromSource();
+});
+
+document.getElementById('save-reset-btn')?.addEventListener('click',()=>{
+  if(!confirm('Reset ALL data? Cannot be undone.'))return;
+  localStorage.clear();state.owned=new Set();state.ownedQty=new Map();
+  resetLiveData();document.getElementById('save-dropdown')?.classList.remove('open');
+  renderTabs();renderGrid();showToast('All data cleared.');
+});
+
+// === INIT =================================================================
+
 document.body.classList.remove('edit-mode');
 document.getElementById('edit-mode-badge')?.classList.remove('visible');
 document.getElementById('phone-edit-badge')?.classList.remove('visible');
 document.getElementById('rebuild-overlay')?.classList.remove('open');
 editMode=false;
+
 if(isMobileDevice()){
   state.showOwnedOnly=true;
   document.getElementById('owned-only-btn')?.classList.add('active');
@@ -37389,23 +37234,14 @@ if(isMobileDevice()){
   document.getElementById('summary-tabs')?.classList.add('visible');
   applyPhoneReadonlyState();
   if(!phoneEditEnabled)setTimeout(autoResyncFromSite,800);
-  else showToast('\uD83D\uDCF1 Phone updates ON \u2014 '+state.owned.size+' variant'+(state.owned.size!==1?'s':'')+' in cache',3000);
+  else showToast('\uD83D\uDCF1 Phone updates ON \u2014 '+state.owned.size+' variants cached',3000);
 }else{
   state.showOwnedOnly=false;
   document.getElementById('owned-only-btn')?.classList.remove('active');
 }
 renderTabs();
 renderGrid();
-// Auto-load collection.json from GitHub (silently, on every page load)
-setTimeout(autoLoadCollectionJson, 1000);
-
+setTimeout(autoLoadCollectionJson,1000);
 </script>
-</div>
-<footer style="text-align:center;padding:1.5rem 1.25rem 2rem;color:var(--text2);font-family:'Crimson Pro',serif;font-size:.82rem;border-top:1px solid var(--border);margin-top:2rem">
-  Card data sourced from <a href="https://github.com/taw/magic-preconstructed-decks-data" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">taw/magic-preconstructed-decks-data</a>
-  (upstream of <a href="https://mtgjson.com" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">MTGJSON</a>).
-  Card images via <a href="https://scryfall.com" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">Scryfall</a>.
-  Magic: The Gathering is © Wizards of the Coast.
-</footer>
 </body>
 </html>
