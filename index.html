@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jumpstart Deck Browser</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
@@ -22,9 +19,8 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 
 /* ── Header ── */
 .site-header{background:linear-gradient(180deg,#08081a 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
-.header-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;margin-bottom:.5rem}
-.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap;cursor:pointer;background:none;border:none;padding:0;text-align:left}
-.site-logo:hover span{color:var(--text)}
+.header-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;margin-bottom:1rem}
+.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap}
 .site-logo span{color:var(--text2);font-weight:400}
 .header-center{display:flex;align-items:center;justify-content:center}
 .header-right{display:flex;align-items:center;gap:.6rem;justify-content:flex-end}
@@ -33,43 +29,10 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .search-wrap input:focus{border-color:var(--gold);background:rgba(255,255,255,.1)}
 .search-wrap input::placeholder{color:var(--text2)}
 .search-icon{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;font-size:.95rem}
-.search-clear-btn{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;line-height:1;padding:.15rem .25rem;border-radius:3px;transition:color .15s}
-.search-clear-btn:hover{color:var(--text)}
-/* ── Mobile header: stack search on its own row ── */
-@media(max-width:700px){
-  .header-top{grid-template-columns:auto auto;grid-template-rows:auto auto;row-gap:.6rem;margin-bottom:.5rem}
-  .site-logo{grid-column:1;grid-row:1}
-  .header-right{grid-column:2;grid-row:1;justify-content:flex-end}
-  .header-center{grid-column:1/-1;grid-row:2}
-  .search-wrap{max-width:100%}
-  .search-wrap input{font-size:16px;padding:.5rem 2.2rem}
-  .save-menu-btn{font-size:.65rem;padding:.35rem .55rem}
-  .edit-btn-header{font-size:.65rem;padding:.35rem .55rem}
-  .owned-btn{font-size:.65rem;padding:.35rem .55rem}
-}
 .search-mode-badge{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);font-size:.62rem;padding:.1rem .35rem;border-radius:4px;font-family:'Cinzel',serif;letter-spacing:.04em;pointer-events:none;background:var(--bg4);color:var(--gold)}
 
 /* owned-only button */
 .owned-btn{align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;gap:.35rem;letter-spacing:.04em;padding:.4rem .8rem;transition:all .2s;white-space:nowrap}
-.help-btn{align-items:center;background:none;border:1px solid var(--border);border-radius:50%;color:var(--text2);cursor:pointer;display:flex;font-size:.8rem;font-weight:700;height:26px;justify-content:center;letter-spacing:0;padding:0;transition:all .2s;width:26px;flex-shrink:0}
-.help-btn:hover{border-color:var(--gold);color:var(--gold)}
-.help-modal{display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem}
-.help-modal.open{display:flex}
-.help-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column}
-.help-header{border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2);z-index:1}
-.help-header h2{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;letter-spacing:.06em}
-.help-body{padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)}
-.help-body h3{font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:1.4rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem}
-.help-body h3:first-child{margin-top:0}
-.help-body p{margin:.4rem 0}
-.help-body ol,.help-body ul{margin:.4rem 0 .8rem 1.2rem;padding:0}
-.help-body li{margin:.3rem 0}
-.help-body code{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:3px;color:var(--gold);font-size:.85em;padding:.1rem .35rem}
-.help-body .step-label{display:inline-block;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);border-radius:4px;color:var(--gold);font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;letter-spacing:.06em;padding:.1rem .4rem;margin-right:.4rem;vertical-align:middle}
-.help-body .device-tag{display:inline-block;background:rgba(92,184,92,.1);border:1px solid rgba(92,184,92,.25);border-radius:4px;color:#7dd87d;font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:.05em;padding:.1rem .4rem;margin-bottom:.3rem}
-.help-body .device-tag.phone{background:rgba(100,160,255,.1);border-color:rgba(100,160,255,.25);color:#90b8ff}
-.help-body .note-box{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:.6rem .85rem;margin:.6rem 0;font-size:.88rem;color:var(--text2)}
-.help-body .note-box strong{color:var(--text)}
 .owned-btn:hover{border-color:var(--own-color);color:var(--text)}
 .owned-btn.active{background:var(--own-glow);border-color:var(--own-color);color:var(--own-color)}
 .owned-btn .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
@@ -83,33 +46,6 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 
 /* ── Filter bar ── */
 .filter-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.45rem;padding:.55rem 1.25rem;flex-wrap:wrap}
-.collection-banner{background:rgba(92,184,92,.08);border-bottom:1px solid rgba(92,184,92,.25);color:#7dd87d;font-family:'Crimson Pro',serif;font-size:.88rem;padding:.45rem 1.25rem;display:none;align-items:center;gap:.4rem}
-.collection-banner.visible{display:flex}
-.collection-banner-link{color:var(--own-color);cursor:pointer;font-weight:600;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit}
-.qty-row{display:flex;align-items:center;gap:.5rem;margin-left:.75rem}
-.qty-label{font-family:'Cinzel',serif;font-size:.68rem;color:var(--text2);letter-spacing:.05em;text-transform:uppercase}
-.qty-btn{background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);cursor:pointer;font-size:.9rem;font-weight:700;height:26px;line-height:1;padding:0;transition:all .15s;width:26px}
-.qty-btn:hover{border-color:var(--gold);color:var(--gold)}
-.qty-val{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--own-color);min-width:22px;text-align:center}
-.qty-badge{background:rgba(92,184,92,.15);border:1px solid rgba(92,184,92,.3);border-radius:10px;color:var(--own-color);font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;padding:.08rem .35rem;margin-left:.25rem}
-.summary-tabs{display:none;gap:.5rem;padding:.5rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
-.summary-tabs.visible{display:flex}
-.summary-tab-btn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.68rem;font-weight:600;letter-spacing:.05em;padding:.28rem .7rem;transition:all .15s}
-.summary-tab-btn.active{background:rgba(92,184,92,.1);border-color:var(--own-color);color:var(--own-color)}
-.summary-panel{padding:1rem 1.25rem;display:none}
-.summary-panel.visible{display:block}
-.summary-edition{margin-bottom:1.5rem}
-.summary-edition-name{font-family:'Cinzel',serif;font-size:.85rem;color:var(--gold);font-weight:700;letter-spacing:.06em;margin-bottom:.6rem}
-.summary-table{width:100%;border-collapse:collapse;font-family:'Crimson Pro',serif;font-size:.9rem}
-.summary-table th{border-bottom:1px solid var(--border);color:var(--text2);font-family:'Cinzel',serif;font-size:.63rem;letter-spacing:.07em;padding:.3rem .5rem;text-align:left;text-transform:uppercase}
-.summary-table td{border-bottom:1px solid rgba(255,255,255,.04);padding:.32rem .5rem;color:var(--text)}
-.summary-table tr:last-child td{border-bottom:none}
-.summary-table .total-row td{border-top:1px solid var(--border);color:var(--gold);font-weight:600;padding-top:.45rem}
-.summary-pip{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle}
-.summary-grand{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:.75rem 1rem;margin-top:1.2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center}
-.summary-grand-item{font-family:'Cinzel',serif}
-.summary-grand-val{font-size:1.4rem;font-weight:700;color:var(--gold);display:block}
-.summary-grand-label{font-size:.62rem;color:var(--text2);letter-spacing:.06em;text-transform:uppercase}
 .filter-label{color:var(--text2);font-size:.78rem;font-family:'Cinzel',serif;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
 .color-btn{align-items:center;border:1.5px solid transparent;border-radius:20px;cursor:pointer;display:inline-flex;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.25rem .65rem;transition:all .15s;white-space:nowrap}
 .color-btn .pip{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
@@ -208,8 +144,6 @@ main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
 
 /* own toggle button */
 .own-toggle-btn{flex-shrink:0;margin-left:.75rem;align-items:center;border:1px solid var(--border);border-radius:6px;cursor:pointer;display:inline-flex;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;gap:.35rem;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap}
-body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:default}
-body.phone-readonly .qty-row{display:none !important}
 .own-toggle-btn.not-owned{background:none;color:var(--text2)}
 .own-toggle-btn.not-owned:hover{border-color:var(--own-color);color:var(--own-color)}
 .own-toggle-btn.is-owned{background:var(--own-glow);border-color:var(--own-color);color:var(--own-color)}
@@ -271,13 +205,95 @@ body.phone-readonly .qty-row{display:none !important}
 .variant-card .edition-badge{font-size:.62rem;padding:.12rem .4rem;border-radius:10px;background:rgba(92,184,92,.1);color:var(--own-color);font-family:'Cinzel',serif;letter-spacing:.04em;display:inline-block;margin-bottom:.38rem}
 .owned-check-mark{font-size:.75rem;color:var(--own-color)}
 
+/* ── Import tool ── */
+.import-btn{align-items:center;background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.4rem .75rem;transition:all .2s;white-space:nowrap}
+.import-btn:hover{border-color:var(--border-hover);color:var(--text)}
+.import-modal{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.82);backdrop-filter:blur(4px)}
+.import-modal.open{display:flex;align-items:center;justify-content:center;padding:1rem}
+.import-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;max-width:760px;width:100%;height:min(620px,88vh);overflow:hidden}
+.import-header{border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.3rem;flex-shrink:0}
+.import-header h2{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1}
+/* MTGJSON fetch bar */
+.import-fetch-bar{background:rgba(201,168,76,.04);border-bottom:1px solid var(--border);padding:.7rem 1.3rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;flex-shrink:0}
+.import-fetch-bar .fetch-label{font-family:'Cinzel',serif;font-size:.7rem;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.fetch-load-btn{background:var(--bg4);border:1px solid var(--border-hover);border-radius:5px;color:var(--text);cursor:pointer;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap}
+.fetch-load-btn:hover{border-color:var(--gold);color:var(--gold)}
+.fetch-load-btn:disabled{opacity:.4;cursor:default}
+.fetch-status{color:var(--text2);font-size:.78rem;font-style:italic}
+.fetch-deck-select{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.88rem;padding:.3rem .6rem;min-width:260px;flex:1;max-width:400px;outline:none;cursor:pointer}
+.fetch-deck-select:focus{border-color:var(--gold)}
+.fetch-search{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.88rem;padding:.3rem .6rem;width:180px;outline:none}
+.fetch-search:focus{border-color:var(--gold)}
+.fetch-search::placeholder{color:var(--text2)}
+/* main body grid */
+.import-body{display:grid;grid-template-columns:230px 1fr;flex:1;min-height:0;overflow:hidden;height:0}
+@media(max-width:780px){.import-body{grid-template-columns:1fr}}
+.import-col{display:flex;flex-direction:column;padding:.8rem 1rem;overflow-y:auto;min-height:0}
+.import-col:first-child{border-right:1px solid var(--border)}
+.import-col:last-child{border-right:none}
+@media(max-width:780px){.import-col{border-right:none;border-bottom:1px solid var(--border);max-height:none}}
+.import-col-head{font-family:'Cinzel',serif;font-size:.68rem;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.7rem;flex-shrink:0}
+/* form fields */
+.import-field{margin-bottom:.7rem}
+.import-field label{display:block;font-family:'Cinzel',serif;font-size:.67rem;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.28rem}
+.import-field input,.import-field select{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.9rem;outline:none;padding:.32rem .6rem;transition:border-color .2s;width:100%}
+.import-field input:focus,.import-field select:focus{border-color:var(--gold)}
+.import-field input::placeholder{color:var(--text2)}
+.import-field select option{background:var(--bg2)}
+/* mode toggle */
+.mode-toggle{display:flex;gap:.3rem}
+.mode-btn{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.67rem;font-weight:600;letter-spacing:.04em;padding:.28rem .65rem;transition:all .15s;white-space:nowrap}
+.mode-btn.active{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold)}
+/* color picker */
+.import-color-row{display:flex;gap:.3rem;flex-wrap:wrap}
+.import-color-pip{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s;flex-shrink:0;position:relative}
+.import-color-pip:hover{transform:scale(1.12)}
+.import-color-pip.selected::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+.import-color-pip[data-c="W"]{background:var(--mana-w)}.import-color-pip[data-c="W"].selected{border-color:var(--mana-w);filter:brightness(1.1)}
+.import-color-pip[data-c="U"]{background:var(--mana-u)}.import-color-pip[data-c="U"].selected{border-color:#78b4f0}
+.import-color-pip[data-c="B"]{background:var(--mana-b)}.import-color-pip[data-c="B"].selected{border-color:#c098f0}
+.import-color-pip[data-c="R"]{background:var(--mana-r)}.import-color-pip[data-c="R"].selected{border-color:#f09080}
+.import-color-pip[data-c="G"]{background:var(--mana-g)}.import-color-pip[data-c="G"].selected{border-color:#80e8a0}
+/* textarea + output */
+.import-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.88rem;line-height:1.5;height:155px;outline:none;padding:.55rem .7rem;resize:none;transition:border-color .2s;width:100%}
+.import-textarea:focus{border-color:var(--gold)}
+.import-textarea::placeholder{color:var(--text2);font-size:.82rem}
+.import-output{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Courier New',monospace;font-size:.7rem;line-height:1.5;height:155px;overflow-y:auto;padding:.55rem .7rem;white-space:pre;user-select:all;margin-top:.6rem}
+.import-stats{background:rgba(92,184,92,.06);border:1px solid rgba(92,184,92,.2);border-radius:5px;color:var(--text2);font-size:.76rem;margin-top:.45rem;padding:.35rem .6rem}
+.import-hint{color:var(--text2);font-size:.75rem;margin-top:.4rem;line-height:1.4}
+/* actions */
+.import-actions{border-top:1px solid var(--border);display:flex;align-items:center;gap:.5rem;padding:.7rem 1.3rem;flex-shrink:0}
+.import-actions-left{flex:1;color:var(--text2);font-size:.76rem;font-style:italic}
+.import-copy-btn{background:var(--gold);border:none;border-radius:6px;color:#1a1000;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.04em;padding:.42rem 1.1rem;transition:opacity .2s}
+.import-copy-btn:hover{opacity:.85}
+.import-copy-btn:disabled{opacity:.35;cursor:default}
+.import-add-btn{background:var(--own-color);border:none;border-radius:6px;color:#fff;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.04em;padding:.42rem 1.1rem;transition:opacity .2s}
+.import-add-btn:hover{opacity:.85}
+.import-add-btn:disabled{opacity:.35;cursor:default}
+/* Toast */
+.toast{background:var(--bg4);border:1px solid var(--own-color);border-radius:8px;bottom:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.5);color:var(--text);font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;left:50%;padding:.6rem 1.2rem;position:fixed;transform:translateX(-50%) translateY(20px);transition:opacity .3s,transform .3s;opacity:0;pointer-events:none;z-index:900;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.rebuild-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;gap:.8rem}
+.rebuild-overlay.open{display:flex}
+.rebuild-title{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);font-weight:700;letter-spacing:.06em}
+.rebuild-status{color:var(--text);font-size:.88rem;max-width:440px;text-align:center;line-height:1.5}
+.rebuild-bar-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:20px;height:6px;overflow:hidden;width:320px}
+.rebuild-bar{background:var(--gold);border-radius:20px;height:100%;transition:width .25s;width:0%}
+.rebuild-detail{color:var(--text2);font-size:.76rem;max-width:440px;text-align:center;font-style:italic}
+/* Bulk import progress */
+.bulk-progress{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:.77rem;margin-top:.4rem;padding:.4rem .7rem;width:100%;display:none}
+.bulk-progress.visible{display:block}
+.bulk-import-btn{background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.45);border-radius:5px;color:var(--own-color);cursor:pointer;font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap;display:none}
+.bulk-import-btn:hover{background:rgba(92,184,92,.22)}
+.bulk-import-btn:disabled{opacity:.4;cursor:default}
+.bulk-import-btn.visible{display:inline-block}
+.import-close-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;padding:.38rem .9rem;transition:color .2s,border-color .2s}
+.import-close-btn:hover{color:var(--text);border-color:var(--border-hover)}
 
 /* ── Edit Mode ── */
 .edit-mode-badge{align-items:center;background:rgba(255,160,30,.12);border:1px solid rgba(255,160,30,.45);border-radius:5px;color:#f0a020;display:none;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;gap:.35rem;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap}
 .edit-mode-badge.visible{display:flex}
 body.edit-mode .edit-mode-badge{display:flex}
-.phone-edit-badge{align-items:center;background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.4);border-radius:5px;color:var(--own-color);display:none;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;gap:.35rem;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap}
-.phone-edit-badge.visible{display:flex}
 .edit-btn-header{align-items:center;background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.4rem .75rem;transition:all .2s;white-space:nowrap}
 .edit-btn-header:hover{border-color:var(--border-hover);color:var(--text)}
 body.edit-mode .edit-btn-header{border-color:rgba(255,160,30,.5);color:#f0a020}
@@ -340,22 +356,48 @@ body.edit-mode .add-deck-btn{display:flex}
 .gh-push-status{font-size:.82rem;margin-top:.65rem;padding:.45rem .7rem;border-radius:5px;display:none}
 .gh-push-status.ok{background:rgba(92,184,92,.1);color:var(--own-color);display:block}
 .gh-push-status.err{background:rgba(224,85,85,.1);color:#e07070;display:block}
-.toast{background:var(--bg4);border:1px solid var(--own-color);border-radius:8px;bottom:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.5);color:var(--text);font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;left:50%;padding:.6rem 1.2rem;position:fixed;transform:translateX(-50%) translateY(20px);transition:opacity .3s,transform .3s;opacity:0;pointer-events:none;z-index:900;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.rebuild-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;gap:.8rem}
-.rebuild-overlay.open{display:flex}
-.rebuild-title{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);font-weight:700;letter-spacing:.06em}
-.rebuild-status{color:var(--text);font-size:.88rem;max-width:440px;text-align:center;line-height:1.5}
-.rebuild-bar-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:20px;height:6px;overflow:hidden;width:320px}
-.rebuild-bar{background:var(--gold);border-radius:20px;height:100%;transition:width .25s;width:0%}
-.rebuild-detail{color:var(--text2);font-size:.76rem;max-width:440px;text-align:center;font-style:italic}
+
+.search-clear-btn{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;line-height:1;padding:.15rem .25rem;border-radius:3px;transition:color .15s}
+.search-clear-btn:hover{color:var(--text)}
+.phone-edit-badge{align-items:center;background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.4);border-radius:5px;color:var(--own-color);display:none;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;gap:.35rem;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap}
+.phone-edit-badge.visible{display:flex}
+body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:default}
+body.phone-readonly .qty-row{display:none !important}
+.qty-row{display:flex;align-items:center;gap:.5rem;margin-left:.75rem}
+.qty-label{font-family:'Cinzel',serif;font-size:.68rem;color:var(--text2);letter-spacing:.05em;text-transform:uppercase}
+.qty-btn{background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text);cursor:pointer;font-size:.9rem;font-weight:700;height:26px;line-height:1;padding:0;transition:all .15s;width:26px}
+.qty-btn:hover{border-color:var(--gold);color:var(--gold)}
+.qty-val{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--own-color);min-width:22px;text-align:center}
+.qty-badge{background:rgba(92,184,92,.15);border:1px solid rgba(92,184,92,.3);border-radius:10px;color:var(--own-color);font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;padding:.08rem .35rem;margin-left:.25rem}
+.phone-readonly-notice{background:rgba(100,160,255,.07);border-bottom:1px solid rgba(100,160,255,.2);color:#90b8ff;font-family:'Crimson Pro',serif;font-size:.82rem;padding:.35rem 1.25rem;display:none;align-items:center;gap:.4rem}
+.phone-readonly-notice.visible{display:flex}
+.collection-banner{background:rgba(92,184,92,.08);border-bottom:1px solid rgba(92,184,92,.25);color:#7dd87d;font-family:'Crimson Pro',serif;font-size:.88rem;padding:.45rem 1.25rem;display:none;align-items:center;gap:.4rem}
+.collection-banner.visible{display:flex}
+.collection-banner-link{color:var(--own-color);cursor:pointer;font-weight:600;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit}
+.summary-tabs{display:none;gap:.5rem;padding:.5rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.summary-tabs.visible{display:flex}
+.summary-tab-btn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.68rem;font-weight:600;letter-spacing:.05em;padding:.28rem .7rem;transition:all .15s}
+.summary-tab-btn.active{background:rgba(92,184,92,.1);border-color:var(--own-color);color:var(--own-color)}
+.summary-panel{padding:1rem 1.25rem;display:none}
+.summary-panel.visible{display:block}
+.summary-edition{margin-bottom:1.5rem}
+.summary-edition-name{font-family:'Cinzel',serif;font-size:.85rem;color:var(--gold);font-weight:700;letter-spacing:.06em;margin-bottom:.6rem}
+.summary-table{width:100%;border-collapse:collapse;font-family:'Crimson Pro',serif;font-size:.9rem}
+.summary-table th{border-bottom:1px solid var(--border);color:var(--text2);font-family:'Cinzel',serif;font-size:.63rem;letter-spacing:.07em;padding:.3rem .5rem;text-align:left;text-transform:uppercase}
+.summary-table td{border-bottom:1px solid rgba(255,255,255,.04);padding:.32rem .5rem;color:var(--text)}
+.summary-table .total-row td{border-top:1px solid var(--border);color:var(--gold);font-weight:600;padding-top:.45rem}
+.summary-pip{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle}
+.summary-grand{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:.75rem 1rem;margin-top:1.2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;text-align:center}
+.summary-grand-item{font-family:'Cinzel',serif}
+.summary-grand-val{font-size:1.4rem;font-weight:700;color:var(--gold);display:block}
+.summary-grand-label{font-size:.62rem;color:var(--text2);letter-spacing:.06em;text-transform:uppercase}
 </style>
 </head>
 <body>
 
 <header class="site-header">
   <div class="header-top">
-    <button class="site-logo" id="site-logo-btn" title="Reset all filters">Jumpstart <span>Deck Browser</span></button>
+    <div class="site-logo">Jumpstart <span>Deck Browser</span></div>
     <div class="header-center">
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
@@ -365,11 +407,8 @@ body.edit-mode .add-deck-btn{display:flex}
       </div>
     </div>
     <div class="header-right">
-      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
-        <span class="dot"></span>My Collection
-      </button>
-      <span class="edit-mode-badge" id="edit-mode-badge">🔓 EDIT MODE</span>
       <span class="phone-edit-badge" id="phone-edit-badge">📱 PHONE EDIT</span>
+      <span class="edit-mode-badge" id="edit-mode-badge">🔓 EDIT MODE</span>
       <div class="save-menu-wrap">
         <button class="save-menu-btn" id="save-menu-btn">💾 Save ▾</button>
         <div class="save-dropdown" id="save-dropdown">
@@ -377,12 +416,16 @@ body.edit-mode .add-deck-btn{display:flex}
           <button class="save-dropdown-item" id="save-github-btn">⬆ Push to GitHub…</button>
           <button class="save-dropdown-item" id="save-rebuild-btn">⟳ Wipe &amp; Rebuild from Source</button>
           <button class="save-dropdown-item" id="save-sync-collection-btn">📲 Sync collection from file</button>
-          <button class="save-dropdown-item" id="save-force-resync-btn">🔄 Force resync from website</button>
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
       </div>
+      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
+        <span class="dot"></span>My Collection
+      </button>
+      <button class="import-btn" id="import-btn" title="Import a card list into data.js format">
+        ＋ Import List
+      </button>
       <button class="edit-btn-header" id="edit-mode-btn" title="Toggle edit mode">✏ Edit</button>
-      <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
     </div>
   </div>
   <nav class="edition-tabs" id="edition-tabs" role="tablist">
@@ -404,15 +447,6 @@ body.edit-mode .add-deck-btn{display:flex}
   <button class="add-deck-btn" id="add-deck-btn">＋ Add New Deck</button>
 </div>
 
-<div class="collection-banner" id="collection-banner">
-  <span>📦 Filtered to My Collection</span>
-  <button class="collection-banner-link" id="collection-banner-clear">Click here to clear all filters</button>
-</div>
-<div class="summary-tabs" id="summary-tabs">
-  <button class="summary-tab-btn active" id="summary-decks-btn">🃏 Decks</button>
-  <button class="summary-tab-btn" id="summary-stats-btn">📊 Summary</button>
-</div>
-<div class="summary-panel" id="summary-panel"></div>
 <main id="main-content"></main>
 
 <!-- Modal -->
@@ -435,7 +469,120 @@ body.edit-mode .add-deck-btn{display:flex}
 </div>
 
 <!-- Import Tool Modal -->
+<div class="import-modal" id="import-modal">
+  <div class="import-box">
+    <div class="import-header">
+      <h2>⚡ Decklist Importer</h2>
+      <button class="modal-close" id="import-close-btn">✕</button>
+    </div>
 
+    <!-- MTGJSON Auto-Fetch bar -->
+    <div class="import-fetch-bar">
+      <span class="fetch-label">MTGJSON Auto-Fetch</span>
+      <button class="fetch-load-btn" id="mtgjson-load-btn">Load Jumpstart Decks</button>
+      <input type="text" class="fetch-search" id="mtgjson-search" placeholder="Filter decks…" style="display:none">
+      <select class="fetch-deck-select" id="mtgjson-deck-select" style="display:none">
+        <option value="">— Select a deck to auto-fill —</option>
+      </select>
+      <button class="bulk-import-btn" id="mtgjson-bulk-btn" title="Fetch all decks and add card lists to the browser">⬇ Import All to Browser</button>
+      <span class="fetch-status" id="mtgjson-status"></span>
+    </div>
+    <div class="bulk-progress" id="bulk-progress"></div>
+    </div>
+
+    <!-- 3-column body -->
+    <div class="import-body">
+
+      <!-- Col 1: Metadata -->
+      <div class="import-col">
+        <div class="import-col-head">Deck Metadata</div>
+
+        <div class="import-field">
+          <label>Mode</label>
+          <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="new" id="mode-new-btn">New Deck</button>
+            <button class="mode-btn" data-mode="add" id="mode-add-btn">Add Variant</button>
+          </div>
+        </div>
+
+        <div class="import-field" id="existing-deck-field" style="display:none">
+          <label>Existing Deck</label>
+          <select id="existing-deck-select">
+            <option value="">— Select deck —</option>
+          </select>
+        </div>
+
+        <div class="import-field" id="import-edition-field">
+          <label>Edition</label>
+          <select id="import-edition-select">
+            <option value="">— Select edition —</option>
+          </select>
+        </div>
+        <div class="import-field" id="import-edition-custom-field" style="display:none">
+          <label>Custom Edition Name</label>
+          <input type="text" id="import-edition-custom" placeholder="e.g. Unfinity Jumpstart">
+        </div>
+
+        <div class="import-field" id="deck-name-field">
+          <label>Deck Name</label>
+          <input type="text" id="import-deck-name" placeholder="e.g. Above the Clouds">
+        </div>
+
+        <div class="import-field" id="headliner-field">
+          <label>Headliner Card</label>
+          <input type="text" id="import-headliner" placeholder="e.g. Warden of Evos Isle">
+        </div>
+
+        <div class="import-field" id="colors-field">
+          <label>Colors</label>
+          <div class="import-color-row">
+            <span class="import-color-pip" data-c="W" title="White"></span>
+            <span class="import-color-pip" data-c="U" title="Blue"></span>
+            <span class="import-color-pip" data-c="B" title="Black"></span>
+            <span class="import-color-pip" data-c="R" title="Red"></span>
+            <span class="import-color-pip" data-c="G" title="Green"></span>
+          </div>
+        </div>
+
+        <div class="import-field">
+          <label>Variant Label</label>
+          <input type="text" id="import-variant-label" placeholder="e.g. Warden variant 1">
+        </div>
+
+        <div class="import-hint">All fields optional — only filled fields appear in output. Variant label defaults to deck name if blank.</div>
+      </div>
+
+      <!-- Col 2: Paste + Output stacked -->
+      <div class="import-col">
+        <div class="import-col-head">Paste Card List</div>
+        <textarea class="import-textarea" id="import-input" placeholder="Paste any standard decklist:
+
+1 Warden of Evos Isle
+1 Empyrean Eagle
+9 Plains
+1 Thriving Heath
+
+Works with Wizards.com, Scryfall,
+Moxfield, or plain card names."></textarea>
+        <div class="import-hint">Basic / Thriving / channel lands auto-tagged <code style="color:var(--gold)">basic:true</code>.</div>
+        <div class="import-col-head" style="margin-top:.65rem">Output</div>
+        <pre class="import-output" id="import-output">// Paste cards above to generate output.</pre>
+        <div class="import-stats" id="import-stats" style="display:none"></div>
+        <div class="import-hint" id="import-paste-hint" style="display:none"></div>
+      </div>
+
+    </div>
+
+    <div class="import-actions">
+      <span class="import-actions-left" id="import-actions-msg"></span>
+      <button class="import-close-btn" id="import-close-btn2">Close</button>
+      <button class="import-copy-btn" id="import-copy-btn" disabled>Copy</button>
+      <button class="import-add-btn" id="import-add-btn">＋ Add to Browser</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 <div class="rebuild-overlay" id="rebuild-overlay">
   <div class="rebuild-title" id="rebuild-title">⟳ Rebuilding from Source</div>
   <div class="rebuild-status" id="rebuild-status">Fetching taw/magic-preconstructed-decks-data…</div>
@@ -444,121 +591,6 @@ body.edit-mode .add-deck-btn{display:flex}
 </div>
 
 <!-- Password Modal -->
-<div class="help-modal" id="help-modal">
-  <div class="help-box">
-    <div class="help-header">
-      <h2>📖 Help &amp; Sync Guide</h2>
-      <button class="modal-close-btn" id="help-close-btn" title="Close">✕</button>
-    </div>
-    <div class="help-body">
-
-      <h3>Marking Your Collection</h3>
-      <ol>
-        <li>Click any deck card to open it</li>
-        <li>If the deck has multiple variants, select the variant tab you own (e.g. <code>Unearthed 1</code>)</li>
-        <li>Click <strong>Mark Owned</strong> — it turns green and the dot on that variant lights up</li>
-        <li>A <strong>Qty</strong> counter appears: tap <code>＋</code> if you own duplicate copies, <code>−</code> to reduce (hitting − at 1 un-marks it)</li>
-        <li>Repeat for every variant you own across all sets</li>
-      </ol>
-      <div class="note-box">Everything saves automatically in your browser. On mobile the app opens directly in <strong>My Collection</strong> view. On desktop it opens in the full unfiltered view — click <strong>My Collection</strong> in the header to switch.</div>
-
-      <h3>My Collection View</h3>
-      <p>When My Collection is active, two tabs appear below the banner:</p>
-      <ul>
-        <li><strong>🃏 Decks</strong> — shows one tile per owned variant. Variants you own more than one copy of display a <code>×2</code> / <code>×3</code> badge.</li>
-        <li><strong>📊 Summary</strong> — a breakdown table per release showing unique variants, duplicates, and total copies grouped by color (White / Blue / Black / Red / Green / Multi). A grand total at the bottom counts across your entire collection.</li>
-      </ul>
-      <div class="note-box">The green banner at the top reads "Filtered to My Collection — click here to clear all filters." Clicking it (or clicking <strong>Jumpstart Deck Browser</strong> in the header) returns you to the full unfiltered view.</div>
-
-      <h3>Saving &amp; Syncing — The Golden Rule</h3>
-      <p>Your collection lives in your browser's local storage. To share it with other devices you must bake it into the file and push it to GitHub. <strong>Always follow this sequence:</strong></p>
-      <div class="device-tag">💻 On your laptop</div>
-      <ol>
-        <li>Mark/update your collection as needed</li>
-        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code> — this bakes your collection into the file</li>
-        <li>Either: upload the downloaded file to GitHub manually (repo → <code>index.html</code> → pencil → <code>···</code> → Upload file → Commit)</li>
-        <li>Or: use <code>💾 Save ▾</code> → <code>⬆ Push to GitHub…</code> for one-click publishing (see setup below)</li>
-        <li>Wait ~60 seconds for GitHub Pages to rebuild</li>
-      </ol>
-      <div class="note-box"><strong>Why download first?</strong> The Download step is what transfers your browser's localStorage collection into the file. Skipping it and uploading an old file will push an empty or stale collection. Always download immediately before pushing.</div>
-
-      <h3>Syncing to Your Phone / Tablet</h3>
-      <div class="device-tag phone">📱 After pushing from laptop</div>
-      <ol>
-        <li>Open Chrome → go to <code>greattrips.github.io/MTG_Jumpstart_Search/</code></li>
-        <li>Hard refresh: tap <strong>⋮ → Reload</strong> (Android) or pull down to refresh (iPhone)</li>
-        <li>Your collection appears automatically — the phone reads it from the embedded file</li>
-      </ol>
-      <p>If the page looks stale after refreshing, use <code>💾 Save ▾</code> → <code>🔄 Force resync from website</code>. This fetches the live GitHub file directly, bypassing Chrome's cache, and replaces your local collection with whatever is on GitHub. It will warn you if the remote file has 0 owned variants (meaning the laptop hasn't pushed yet).</p>
-      <div class="note-box"><strong>Important:</strong> Force resync <em>overwrites</em> your local collection. Only use it when you know GitHub has the version you want.</div>
-
-      <h3>Multiple People / Multiple Devices</h3>
-      <p>If more than one person marks their collection on different devices and you need to combine them:</p>
-      <div class="device-tag phone">📱 On each phone / other device</div>
-      <ol>
-        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code></li>
-        <li>Email or share that file to the person doing the merge (the laptop owner)</li>
-      </ol>
-      <div class="device-tag">💻 On the laptop (merge person)</div>
-      <ol>
-        <li>Open the downloaded file from the phone in your browser (double-click the file)</li>
-        <li>Click <code>💾 Save ▾</code> → <code>📲 Sync collection from file</code></li>
-        <li>Confirm — it adds the phone's marks to your laptop's collection without removing anything</li>
-        <li>Repeat for each person's file if merging more than two devices</li>
-        <li>Then do the full Download → Push sequence above to publish the merged result</li>
-      </ol>
-      <div class="note-box">After the merge is pushed, each phone should do a <strong>Force resync from website</strong> to pick up the combined collection.</div>
-
-      <h3>Getting Code Updates from Claude</h3>
-      <p>When new features are added, Claude generates a new <code>index.html</code> with <code>OWNED_DATA = []</code> (no collection). To avoid losing your collection:</p>
-      <ol>
-        <li>Download the new file from Claude</li>
-        <li>Open it locally in your browser</li>
-        <li>Click <code>💾 Save ▾</code> → <code>⬇ Download index.html</code> <em>again</em> — this re-bakes your localStorage collection into the new file</li>
-        <li>Push or upload that second download to GitHub</li>
-      </ol>
-      <div class="note-box">The extra Download step in the middle is essential — it transfers your existing collection into the new code file.</div>
-
-      <h3>Setting Up One-Click GitHub Push (Laptop Only)</h3>
-      <ol>
-        <li>Go to <strong>github.com</strong> → Profile photo → Settings → Developer settings → <strong>Fine-grained tokens</strong> → Generate new token</li>
-        <li>Name it (e.g. <code>MTG Jumpstart Browser</code>), set expiry, choose <strong>Only select repositories</strong> → <code>MTG_Jumpstart_Search</code></li>
-        <li>Under Permissions → Repository permissions → <strong>Contents: Read and write</strong> → Generate token</li>
-        <li><strong>Copy the token immediately</strong> — starts with <code>github_pat_...</code>, only shown once</li>
-        <li>In the app: <code>💾 Save ▾</code> → <code>⬆ Push to GitHub…</code> → fill in Owner = <code>greattrips</code>, Repo = <code>MTG_Jumpstart_Search</code>, Path = <code>index.html</code>, Token = your token → <strong>Push</strong></li>
-        <li>Settings are remembered — future pushes are one click</li>
-      </ol>
-      <div class="note-box"><strong>Security:</strong> The token is stored only in your laptop's browser localStorage. It is never written into the HTML file that gets pushed to GitHub, so it stays private.</div>
-
-      <h3>Resetting &amp; Rebuilding Data</h3>
-      <ul>
-        <li><strong>⟳ Wipe &amp; Rebuild from Source</strong> — fetches the latest deck lists from the taw/magic-preconstructed-decks-data repository. Use this when new Jumpstart sets are released. Your collection and quantities are preserved.</li>
-        <li><strong>↺ Reset all data &amp; settings</strong> — wipes everything including ownership and quantities. Only use this if something is badly broken.</li>
-      </ul>
-
-      <h3>Force Resync from Website</h3>
-      <p>If your phone's collection is out of date or got overwritten, use this to pull the latest version directly from GitHub:</p>
-      <ol>
-        <li>Tap <code>💾 Save ▾</code> → <code>🔄 Force resync from website</code></li>
-        <li>It fetches the live file from GitHub, bypassing Chrome's cache entirely</li>
-        <li>If GitHub has your collection (you pushed from laptop), it replaces your local collection with it</li>
-        <li>If GitHub shows 0 owned variants, it means the laptop hasn't pushed yet — go push first</li>
-      </ol>
-      <div class="note-box">Force resync <strong>overwrites</strong> your local collection — use it only when you know GitHub has the correct version.</div>
-
-      <h3>Tips &amp; Shortcuts</h3>
-      <ul>
-        <li>Click <strong>Jumpstart Deck Browser</strong> in the header to reset all filters and exit edit mode</li>
-        <li>The <strong>A–Z sidebar</strong> on the left edge filters by deck name initial — hover to preview on desktop, tap to lock on mobile</li>
-        <li>Search works across all editions including Set Tie-ins — no need to select a tab first</li>
-        <li>The <strong>color filter bar</strong> works alongside search and letter filter simultaneously</li>
-        <li>Edit mode password is <code>jumpstart</code></li>
-      </ul>
-
-    </div>
-  </div>
-</div>
-
 <div class="pw-modal" id="pw-modal">
   <div class="pw-box">
     <h3>🔐 Enter Edit Password</h3>
@@ -569,7 +601,7 @@ body.edit-mode .add-deck-btn{display:flex}
       <button class="btn-primary" id="pw-confirm-btn">Unlock</button>
     </div>
     <div id="phone-edit-section" style="display:none;margin-top:.85rem;border-top:1px solid var(--border);padding-top:.85rem">
-      <button class="phone-edit-toggle" id="phone-edit-toggle">📱 Enable phone updates</button>
+      <button class="phone-edit-toggle" id="phone-edit-toggle" style="align-items:center;background:rgba(100,160,255,.08);border:1px solid rgba(100,160,255,.3);border-radius:6px;color:#90b8ff;cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;gap:.4rem;letter-spacing:.04em;padding:.38rem .9rem;transition:all .2s;width:100%">📱 Enable phone updates</button>
       <p style="color:var(--text2);font-size:.73rem;margin-top:.5rem;line-height:1.45">When enabled: you can mark your collection on this device. Auto-resync is paused.</p>
     </div>
     <p style="color:var(--text2);font-size:.75rem;margin-top:.85rem;line-height:1.5">
@@ -10533,7 +10565,7 @@ const DECK_DATA = {
       "name": "Historic Horizons",
       "year": 2021,
       "code": "J21",
-      "note": "MTG Arena exclusive — not in taw source. Use Import List to add card lists.",
+      "note": "MTG Arena exclusive — use Rebuild to populate",
       "decks": [
         {
           "id": "j21-abovetheclouds",
@@ -30284,20 +30316,6 @@ const DECK_DATA = {
           ]
         },
         {
-          "id": "atj-fogoflostsouls",
-          "name": "Fog of Lost Souls",
-          "headliner": "Huu, the Vine Master",
-          "colors": [
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Fog of Lost Souls",
-              "cards": []
-            }
-          ]
-        },
-        {
           "id": "atj-fournations",
           "name": "Four Nations",
           "headliner": "Avatar Aang, Four Elements",
@@ -30339,6 +30357,20 @@ const DECK_DATA = {
           "variants": [
             {
               "label": "Kyoshi Warriors",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-kyoshiwarriorsii",
+          "name": "Kyoshi Warriors II",
+          "headliner": "Master Piandao",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Kyoshi Warriors II",
               "cards": []
             }
           ]
@@ -30751,8 +30783,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue DMU rare or mythic rare"
+              ]
             }
           ]
         },
@@ -30847,8 +30878,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green DMU rare or mythic rare"
+              ]
             }
           ]
         },
@@ -30937,8 +30967,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white DMU rare or mythic rare"
+              ]
             }
           ]
         },
@@ -31027,8 +31056,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white DMU rare or mythic rare"
+              ]
             }
           ]
         },
@@ -31123,8 +31151,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green DMU rare or mythic rare"
+              ]
             }
           ]
         },
@@ -31213,8 +31240,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue DMU rare or mythic rare"
+              ]
             }
           ]
         },
@@ -31303,8 +31329,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red DMU rare or mythic rare"
+              ]
             }
           ]
         },
@@ -31393,8 +31418,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red DMU rare or mythic rare"
+              ]
             }
           ]
         },
@@ -31483,8 +31507,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black DMU rare or mythic rare, or colorless mythic"
+              ]
             }
           ]
         },
@@ -31573,8 +31596,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black DMU rare or mythic rare, or colorless mythic"
+              ]
             }
           ]
         }
@@ -31662,8 +31684,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white BRO rare or mythic rare"
+              ]
             },
             {
               "label": "Infantry 2",
@@ -31732,8 +31753,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white BRO rare or mythic rare"
+              ]
             }
           ]
         },
@@ -31812,8 +31832,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue BRO rare or mythic rare; or Liberator, Urza's Battlethopter; or Thran Spider"
+              ]
             },
             {
               "label": "Powerstones 2",
@@ -31882,8 +31901,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue BRO rare or mythic rare; or Liberator, Urza's Battlethopter; or Thran Spider"
+              ]
             }
           ]
         },
@@ -31962,8 +31980,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green BRO rare or mythic rare"
+              ]
             },
             {
               "label": "Titanic 2",
@@ -32032,8 +32049,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green BRO rare or mythic rare"
+              ]
             }
           ]
         },
@@ -32112,8 +32128,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black BRO rare or mythic rare"
+              ]
             },
             {
               "label": "Unearthed 2",
@@ -32182,8 +32197,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black BRO rare or mythic rare"
+              ]
             }
           ]
         },
@@ -32262,8 +32276,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red BRO rare or mythic rare"
+              ]
             },
             {
               "label": "Welded 2",
@@ -32332,8 +32345,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red BRO rare or mythic rare"
+              ]
             }
           ]
         }
@@ -32415,8 +32427,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black ONE rare or mythic rare"
+              ]
             },
             {
               "label": "Corruption 2",
@@ -32479,8 +32490,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black ONE rare or mythic rare"
+              ]
             }
           ]
         },
@@ -32554,8 +32564,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white ONE rare or mythic rare"
+              ]
             },
             {
               "label": "Mite-y 2",
@@ -32619,8 +32628,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white ONE rare or mythic rare"
+              ]
             }
           ]
         },
@@ -32693,8 +32701,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue ONE rare or mythic rare"
+              ]
             },
             {
               "label": "Progress 2",
@@ -32757,8 +32764,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue ONE rare or mythic rare"
+              ]
             }
           ]
         },
@@ -32831,8 +32837,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red ONE rare or mythic rare"
+              ]
             },
             {
               "label": "Rebellious 2",
@@ -32895,8 +32900,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red ONE rare or mythic rare"
+              ]
             }
           ]
         },
@@ -32970,8 +32974,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green ONE rare or mythic rare"
+              ]
             },
             {
               "label": "Toxic 2",
@@ -33035,8 +33038,7 @@ const DECK_DATA = {
                   "qty": 2,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green ONE rare or mythic rare"
+              ]
             }
           ]
         }
@@ -33119,8 +33121,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white MOM rare or mythic rare, or colorless"
+              ]
             },
             {
               "label": "Brood 2",
@@ -33184,8 +33185,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white MOM rare or mythic rare, or colorless"
+              ]
             }
           ]
         },
@@ -33259,8 +33259,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green MOM rare or mythic rare, or colorless"
+              ]
             },
             {
               "label": "Buff 2",
@@ -33324,8 +33323,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green MOM rare or mythic rare, or colorless"
+              ]
             }
           ]
         },
@@ -33399,8 +33397,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black MOM rare or mythic rare, or colorless"
+              ]
             },
             {
               "label": "Expendable 2",
@@ -33464,8 +33461,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black MOM rare or mythic rare, or colorless"
+              ]
             }
           ]
         },
@@ -33539,8 +33535,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue MOM rare or mythic rare, or colorless"
+              ]
             },
             {
               "label": "Overachiever 2",
@@ -33604,8 +33599,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue MOM rare or mythic rare, or colorless"
+              ]
             }
           ]
         },
@@ -33679,8 +33673,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red MOM rare or mythic rare, or colorless"
+              ]
             },
             {
               "label": "Reinforcement 2",
@@ -33744,8 +33737,7 @@ const DECK_DATA = {
                   "qty": 1,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red MOM rare or mythic rare, or colorless"
+              ]
             }
           ]
         }
@@ -33823,8 +33815,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Courageous 2",
@@ -33883,8 +33874,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white LTR rare or mythic rare"
+              ]
             }
           ]
         },
@@ -33953,8 +33943,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Cunning 2",
@@ -34013,8 +34002,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue LTR rare or mythic rare"
+              ]
             }
           ]
         },
@@ -34083,8 +34071,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Elven 2",
@@ -34143,8 +34130,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green LTR rare or mythic rare"
+              ]
             }
           ]
         },
@@ -34213,8 +34199,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Journey 2",
@@ -34273,8 +34258,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random green LTR rare or mythic rare"
+              ]
             }
           ]
         },
@@ -34343,8 +34327,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Marauders 2",
@@ -34403,8 +34386,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red LTR rare or mythic rare"
+              ]
             }
           ]
         },
@@ -34473,8 +34455,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Mordor 2",
@@ -34533,8 +34514,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black LTR rare or mythic rare"
+              ]
             }
           ]
         },
@@ -34603,8 +34583,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Mortals 2",
@@ -34663,8 +34642,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random white LTR rare or mythic rare"
+              ]
             }
           ]
         },
@@ -34733,8 +34711,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Orcish 2",
@@ -34793,8 +34770,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random black LTR rare or mythic rare"
+              ]
             }
           ]
         },
@@ -34863,8 +34839,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Riders 2",
@@ -34923,8 +34898,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random red LTR rare or mythic rare"
+              ]
             }
           ]
         },
@@ -34993,8 +34967,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue LTR rare or mythic rare"
+              ]
             },
             {
               "label": "Tricksy 2",
@@ -35053,8 +35026,7 @@ const DECK_DATA = {
                   "qty": 4,
                   "basic": true
                 }
-              ],
-              "randomNote": "+ 1 random blue LTR rare or mythic rare"
+              ]
             }
           ]
         }
@@ -35464,8 +35436,6 @@ const DECK_DATA = {
 // DECK_DATA_END — do not remove this comment
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
 const OWNED_DATA = [];
-const OWNED_QTY = [];
-const OWNED_VERSION = "0";
 // OWNED_DATA_END — do not remove this comment
 </script>
 <script>
@@ -35498,6 +35468,7 @@ let liveData = (() => {
 })();
 function saveLiveData() {
   localStorage.setItem('jmp-live-data', JSON.stringify(liveData));
+  localStorage.setItem('jmp-data-version', DECK_VERSION);
 }
 function resetLiveData() {
   liveData = deepClone(DECK_DATA);
@@ -35514,8 +35485,16 @@ function findDeck(deckId) {
 
 // ─── OWNERSHIP (localStorage) ─────────────────────────────────────────────────
 function loadOwned() {
-  try { return new Set(JSON.parse(localStorage.getItem('jmp-owned') || '[]')); }
-  catch { return new Set(); }
+  try {
+    const saved = localStorage.getItem('jmp-owned');
+    if (saved !== null) return new Set(JSON.parse(saved));
+    // No localStorage data — seed from embedded OWNED_DATA (set by GitHub/Download sync)
+    if (OWNED_DATA && OWNED_DATA.length > 0) {
+      localStorage.setItem('jmp-owned', JSON.stringify(OWNED_DATA));
+      return new Set(OWNED_DATA);
+    }
+    return new Set();
+  } catch { return new Set(); }
 }
 function saveOwned() {
   localStorage.setItem('jmp-owned', JSON.stringify([...state.owned]));
@@ -35602,24 +35581,19 @@ function deckMatchesSearch(deck, q) {
 
 // Edition display metadata
 const EDITION_CONFIG = {
-  jmp:   { name:'Jumpstart',                  year:2020, tieIn:false },
-  j21:   { name:'Historic Horizons',          year:2021, tieIn:false, note:'Arena only' },
-  j22:   { name:'Jumpstart 2022',             year:2022, tieIn:false },
-  j25:   { name:'Foundations Jumpstart',      year:2024, tieIn:false },
-  atj:   { name:'Avatar: TLA Jumpstart',      year:2025, tieIn:false },
-  jdmu:  { name:'Dominaria United Jumpstart', year:2022, tieIn:true  },
-  jbro:  { name:"Brothers' War Jumpstart",    year:2022, tieIn:true  },
-  jone:  { name:'Phyrexia: ONE Jumpstart',    year:2023, tieIn:true  },
-  jmom:  { name:'March of Machine Jumpstart', year:2023, tieIn:true  },
-  jltr:  { name:'LotR Jumpstart Vol.1',       year:2023, tieIn:true  },
-  jltr2: { name:'LotR Jumpstart Vol.2',       year:2023, tieIn:true  },
-  jwoe:  { name:'Wilds of Eldraine Jumpstart',year:2023, tieIn:true  },
-  jlci:  { name:'Lost Caverns Jumpstart',     year:2023, tieIn:true  },
-  jmkm:  { name:'Karlov Manor Jumpstart',     year:2024, tieIn:true  },
-  jblb:  { name:'Bloomburrow Jumpstart',      year:2024, tieIn:true  },
-  jdsk:  { name:'Duskmourn Jumpstart',        year:2024, tieIn:true  },
+  jmp:   { name:'Jumpstart',                               year:2020, tieIn:false },
+  j21:   { name:'Historic Horizons',                       year:2021, tieIn:false, note:'MTG Arena exclusive' },
+  j22:   { name:'Jumpstart 2022',                          year:2022, tieIn:false },
+  j25:   { name:'Foundations Jumpstart',                   year:2024, tieIn:false },
+  atj:   { name:'Avatar: The Last Airbender Jumpstart',    year:2025, tieIn:false, tawCode:'tla' },
+  msh:   { name:'Marvel Super Heroes Jumpstart',           year:2026, tieIn:false },
+  jdmu:  { name:'Dominaria United Jumpstart',              year:2022, tieIn:true, tawCode:'dmu', code:'DMU' },
+  jbro:  { name:"Brothers' War Jumpstart",                 year:2022, tieIn:true, tawCode:'bro', code:'BRO' },
+  jone:  { name:'Phyrexia: All Will Be One Jumpstart',     year:2023, tieIn:true, tawCode:'one', code:'ONE' },
+  jmom:  { name:'March of the Machine Jumpstart',          year:2023, tieIn:true, tawCode:'mom', code:'MOM' },
+  jltr:  { name:'Lord of the Rings Jumpstart',             year:2023, tieIn:true, tawCode:'ltr', code:'LTR' },
 };
-const MAIN_SET_ORDER = ['jmp','j21','j22','j25','atj'];
+const MAIN_SET_ORDER = ['jmp','j21','j22','j25','atj','msh'];
 function getTieInIds() {
   return new Set(liveData.editions.filter(e => {
     const cfg = EDITION_CONFIG[e.id];
@@ -35650,7 +35624,7 @@ function renderTabs() {
   const mainEds = liveData.editions
     .filter(e => !getTieInIds().has(e.id))
     .sort((a,b) => (EDITION_CONFIG[a.id]?.year||9999) - (EDITION_CONFIG[b.id]?.year||9999));
-  const TAB_LABELS = { jmp:'JMP (2020)', j21:'Historic Horizons', j22:'JMP 2022', j25:'Foundations', atj:'Avatar' };
+  const TAB_LABELS = { jmp:'JMP (2020)', j21:'Historic Horizons', j22:'JMP 2022', j25:'Foundations', atj:'Avatar: TLA', msh:'Marvel Heroes' };
   for (const ed of mainEds) {
     nav.appendChild(makeTab(ed.id, TAB_LABELS[ed.id] || `${ed.name} (${ed.year||'?'})`));
   }
@@ -35665,7 +35639,7 @@ function getFilteredData() {
     const isTieIn = getTieInIds().has(ed.id);
     if (state.edition === 'tie-ins' && !isTieIn) continue;
     if (state.edition !== 'all' && state.edition !== 'tie-ins' && ed.id !== state.edition) continue;
-    if (state.edition === 'all' && isTieIn) continue; // hide tie-ins from "all" unless selected
+    // tie-ins are included in 'all' so search finds them everywhere
     const q = state.search;
     const filteredDecks = [];
     for (const deck of ed.decks) {
@@ -35701,11 +35675,10 @@ function renderGrid() {
   const showEdHead = state.edition === 'all' || groups.length > 1;
 
   for (const { edition, decks } of groups) {
-    const isAllView = state.edition === 'all' || state.edition === 'tie-ins';
-    const gridClass = isAllView ? 'deck-grid grid-mode' : 'deck-grid';
     const codeLabel = `<span class="deck-code-badge">${esc(edition.code || edition.id.toUpperCase())}</span>`;
-    if (showEdHead) html += `<section class="edition-section"><h2 class="edition-heading">${esc(edition.name)} ${codeLabel}<span class="edition-count">${decks.length} theme${decks.length !== 1 ? 's' : ''}</span></h2><div class="${gridClass}">`;
-    else html += `<section class="edition-section"><div class="${gridClass}">`;
+    const yearLine = `<div class="edition-year">Released ${edition.year || '?'} · ${edition.code || edition.id.toUpperCase()}${edition.note ? ' · <em>' + esc(edition.note) + '</em>' : ''}</div>`;
+    if (showEdHead) html += `<section class="edition-section"><h2 class="edition-heading">${esc(edition.name)} ${codeLabel}<span class="edition-count">${decks.length} theme${decks.length !== 1 ? 's' : ''}</span></h2>${state.edition !== 'all' ? yearLine : ''}<div class="deck-grid grid-mode">`;
+    else html += `<section class="edition-section">${yearLine}<div class="deck-grid grid-mode">`;
 
     for (const { deck, searchResult } of decks) {
       if (state.showOwnedOnly) {
@@ -35857,7 +35830,11 @@ function renderModal(deck, ed) {
   const edObj = liveData.editions.find(e => e.id === state.openEditionId);
   const tieInNote = edObj?.note ? `<div class="tie-in-notice">⚠ ${esc(edObj.note)}</div>` : '';
 
-  let listHtml = `${tieInNote}<h4>Card List (${total})</h4>`;
+  const randomNote = variant.randomNote || '';
+  let listHtml = `${tieInNote}<h4>Card List (${total}${randomNote ? ' + 1 random' : ''})</h4>`;
+  if (randomNote) {
+    listHtml += `<div class="random-note-row"><span class="random-note-icon">🎲</span><span class="random-note-text">${esc(randomNote)}</span></div>`;
+  }
   spells.forEach(c => { listHtml += `<div class="card-row" data-card="${esc(c.name)}"><span class="card-qty">${c.qty}×</span><span class="card-name-list">${esc(c.name)}</span></div>`; });
   if (lands.length) {
     listHtml += `<hr class="section-divider">`;
@@ -35962,90 +35939,6 @@ function highlightImg(name) {
   panel.querySelectorAll('.card-image-wrap').forEach(el => el.classList.remove('highlighted'));
   const t = panel.querySelector(`[data-img-card="${CSS.escape(name)}"]`);
   if (t) { t.classList.add('highlighted'); t.scrollIntoView({ block:'nearest', behavior:'smooth' }); }
-}
-
-// ─── PHONE EDIT MODE ──────────────────────────────────────────────────────────
-// Letter sidebar (stub — full version can be added back later)
-function renderLetterSidebar() { /* placeholder — no letter-sidebar element in current HTML */ }
-
-let phoneEditEnabled = localStorage.getItem('jmp-phone-edit') === 'true';
-const SITE_URL = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
-
-function isMobileDevice() { return window.innerWidth <= 700; }
-
-function applyPhoneReadonlyState() {
-  if (!isMobileDevice()) return;
-  document.body.classList.toggle('phone-readonly', !phoneEditEnabled);
-  document.getElementById('phone-readonly-notice')?.classList.toggle('visible', !phoneEditEnabled);
-  const badge = document.getElementById('phone-edit-badge');
-  if (badge) badge.classList.toggle('visible', phoneEditEnabled);
-  const toggle = document.getElementById('phone-edit-toggle');
-  if (toggle) {
-    toggle.classList.toggle('enabled', phoneEditEnabled);
-    toggle.innerHTML = phoneEditEnabled ? '📱 Phone updates ON — tap to disable' : '📱 Enable phone updates';
-  }
-}
-
-async function autoResyncFromSite() {
-  try {
-    const res = await fetch(SITE_URL + '?v=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) return;
-    const text = await res.text();
-    const dm = text.match(/const OWNED_DATA = (\[.*?\]);/s);
-    const vm = text.match(/const OWNED_VERSION = "([^"]+)"/);
-    if (!dm) return;
-    const ro = JSON.parse(dm[1]);
-    const rv = vm ? vm[1] : '';
-    const lv = localStorage.getItem('jmp-owned-version') || '';
-    if (ro.length > 0 && rv !== lv) {
-      state.owned = new Set(ro);
-      try { const qm=text.match(/const OWNED_QTY = (\[.*?\]);/s); if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();} } catch(e){}
-      saveOwned(); localStorage.setItem('jmp-owned-version', rv);
-      renderGrid(); showToast(`✓ Collection synced — ${ro.length} variant${ro.length!==1?'s':''}`, 3000);
-    } else if (ro.length === 0) {
-      showToast(state.owned.size > 0 ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} (server has no data yet)` : '📦 No collection on server — push from laptop first', 4000);
-    } else {
-      showToast(`📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} — up to date`, 2500);
-    }
-  } catch(e) {
-    showToast(state.owned.size > 0 ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} loaded (offline)` : '⚠ Could not reach server', 3000);
-  }
-}
-
-// ─── COLLECTION SUMMARY ───────────────────────────────────────────────────────
-let summaryMode = 'decks';
-const COLOR_LABELS_S = {W:'White',U:'Blue',B:'Black',R:'Red',G:'Green',M:'Multi'};
-const COLOR_HEX_S    = {W:'#c5b87a',U:'#7ab4e8',B:'#b090e0',R:'#e88070',G:'#70d890',M:'#d4a030'};
-
-function renderCollectionSummary() {
-  const panel = document.getElementById('summary-panel');
-  if (!panel) return;
-  if (!state.showOwnedOnly || summaryMode !== 'stats') { panel.classList.remove('visible'); panel.innerHTML = ''; return; }
-  panel.classList.add('visible');
-  const cg = colors => colors.length > 1 ? 'M' : (colors[0] || '?');
-  let gu=0,gd=0,gt=0,out='';
-  for (const ed of liveData.editions) {
-    const rows={W:[0,0],U:[0,0],B:[0,0],R:[0,0],G:[0,0],M:[0,0]}; let edHas=false;
-    for (const deck of ed.decks) {
-      for (let vi=0;vi<deck.variants.length;vi++) {
-        if (!isVariantOwned(deck.id,vi)) continue;
-        edHas=true; const g=cg(deck.colors),qty=getOwnedQty(deck.id,vi);
-        rows[g][0]++; rows[g][1]+=qty;
-      }
-    }
-    if (!edHas) continue;
-    const eu=Object.values(rows).reduce((s,[u])=>s+u,0),et=Object.values(rows).reduce((s,[,t])=>s+t,0);
-    gu+=eu;gt+=et;gd+=et-eu;
-    out+=`<div class="summary-edition"><div class="summary-edition-name">${esc(ed.name)}<span style="font-size:.7rem;color:var(--text2);font-weight:400;margin-left:.4rem">${ed.code||ed.id.toUpperCase()}</span></div>
-    <table class="summary-table"><tr><th>Color</th><th>Unique</th><th>Dupes</th><th>Total</th></tr>`;
-    for (const [c,[u,t]] of Object.entries(rows)) {
-      if (!u) continue;
-      out+=`<tr><td><span class="summary-pip" style="background:${COLOR_HEX_S[c]}"></span>${COLOR_LABELS_S[c]}</td><td>${u}</td><td>${t-u||'—'}</td><td>${t}</td></tr>`;
-    }
-    out+=`<tr class="total-row"><td>Total</td><td>${eu}</td><td>${et-eu||'—'}</td><td>${et}</td></tr></table></div>`;
-  }
-  out+=`<div class="summary-grand"><div class="summary-grand-item"><span class="summary-grand-val">${gu}</span><span class="summary-grand-label">Unique Variants</span></div><div class="summary-grand-item"><span class="summary-grand-val">${gd}</span><span class="summary-grand-label">Duplicates</span></div><div class="summary-grand-item"><span class="summary-grand-val">${gt}</span><span class="summary-grand-label">Total Copies</span></div></div>`;
-  panel.innerHTML = out;
 }
 
 // ─── EVENTS ──────────────────────────────────────────────────────────────────
@@ -36566,6 +36459,26 @@ document.getElementById('save-rebuild-btn').addEventListener('click', () => {
   wipeAndRebuildFromSource();
 });
 
+document.getElementById('save-sync-collection-btn').addEventListener('click', () => {
+  document.getElementById('save-dropdown').classList.remove('open');
+  if (!OWNED_DATA || OWNED_DATA.length === 0) {
+    showToast('No collection data embedded in this file yet. Download after marking your collection on another device first.', 5000);
+    return;
+  }
+  const incoming = new Set(OWNED_DATA);
+  const merged   = new Set([...state.owned, ...incoming]);
+  const newCount = merged.size - state.owned.size;
+  if (newCount === 0 && incoming.size === state.owned.size) {
+    showToast('✓ Already up to date — nothing to merge.', 3000);
+    return;
+  }
+  if (!confirm(`Merge ${incoming.size} owned variants from the embedded file with your current ${state.owned.size} variants on this device? (${newCount} new items will be added.)`)) return;
+  state.owned = merged;
+  saveOwned();
+  renderGrid();
+  showToast(`✓ Merged: ${merged.size} total owned variants across all devices.`, 4000);
+});
+
 document.getElementById('save-reset-btn').addEventListener('click', () => {
   if (!confirm('Reset ALL data and settings including ownership? This cannot be undone.')) return;
   localStorage.clear();
@@ -36604,10 +36517,15 @@ async function wipeAndRebuildFromSource() {
   }
 
   setP(22, 'Filtering Jumpstart halfdecks…');
-  const jmpCodes = new Set(Object.keys(EDITION_CONFIG));
+  // Build lookup: taw set_code → our edition id (handles parent codes like 'bro' → 'jbro')
+  const tawCodeMap = {};
+  for (const [id, cfg] of Object.entries(EDITION_CONFIG)) {
+    tawCodeMap[id] = id;            // direct match (jmp, j22, etc.)
+    if (cfg.tawCode) tawCodeMap[cfg.tawCode] = id;  // parent code (bro → jbro, etc.)
+  }
   const jmpDecks = allTaw.filter(d => {
     const sc = (d.set_code || '').toLowerCase();
-    if (!jmpCodes.has(sc)) return false;
+    if (!tawCodeMap[sc]) return false;
     const n = (d.cards || []).reduce((s,c) => s + (c.count||1), 0);
     return n >= 12 && n <= 25;
   });
@@ -36617,7 +36535,7 @@ async function wipeAndRebuildFromSource() {
   const normName = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
   const grouped  = {};
   for (const d of jmpDecks) {
-    const sc  = d.set_code.toLowerCase();
+    const sc  = tawCodeMap[(d.set_code || '').toLowerCase()] || d.set_code.toLowerCase();
     const base = d.name.replace(/\s*\(\d+\)$/, '').replace(/\s+\d+$/, '').trim();
     const key  = sc + '|' + normName(base);
     if (!grouped[key]) grouped[key] = { sc, base, variants: [] };
@@ -36690,8 +36608,14 @@ async function wipeAndRebuildFromSource() {
 async function generateSelfContainedHtml() {
   const res = await fetch(location.href);
   let src = await res.text();
+  // Embed deck data
   const newDataBlock = `// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
-  return src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+  src = src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+  // Embed ownership — so any device loading this file sees your collection
+  const ownedArr = JSON.stringify([...state.owned]);
+  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\n// OWNED_DATA_END — do not remove this comment`;
+  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
+  return src;
 }
 
 // Add Deck button
@@ -37108,143 +37032,211 @@ async function bulkImportFromMtgjson() {
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ─── NEW FEATURE EVENT HANDLERS ──────────────────────────────────────────────
+// ─── PHONE EDIT MODE ──────────────────────────────────────────────────────────
+let phoneEditEnabled = localStorage.getItem('jmp-phone-edit') === 'true';
+const SITE_URL = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
 
-// Search clear button
+function isMobileDevice() { return window.innerWidth <= 700; }
+
+function applyPhoneReadonlyState() {
+  if (!isMobileDevice()) return;
+  document.body.classList.toggle('phone-readonly', !phoneEditEnabled);
+  document.getElementById('phone-readonly-notice')?.classList.toggle('visible', !phoneEditEnabled);
+  const badge = document.getElementById('phone-edit-badge');
+  if (badge) badge.classList.toggle('visible', phoneEditEnabled);
+  const toggle = document.getElementById('phone-edit-toggle');
+  if (toggle) {
+    toggle.classList.toggle('enabled', phoneEditEnabled);
+    toggle.innerHTML = phoneEditEnabled ? '📱 Phone updates ON — tap to disable' : '📱 Enable phone updates';
+  }
+}
+
+async function autoResyncFromSite() {
+  try {
+    const res = await fetch(SITE_URL + '?v=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const text = await res.text();
+    const dm = text.match(/const OWNED_DATA = (\[.*?\]);/s);
+    const vm = text.match(/const OWNED_VERSION = "([^"]+)"/);
+    if (!dm) return;
+    const ro = JSON.parse(dm[1]);
+    const rv = vm ? vm[1] : '', lv = localStorage.getItem('jmp-owned-version') || '';
+    if (ro.length > 0 && rv !== lv) {
+      state.owned = new Set(ro);
+      try { const qm=text.match(/const OWNED_QTY = (\[.*?\]);/s); if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();} } catch(e){}
+      saveOwned(); localStorage.setItem('jmp-owned-version', rv);
+      renderGrid(); showToast(`✓ Collection synced — ${ro.length} variant${ro.length!==1?'s':''}`, 3000);
+    } else if (ro.length === 0) {
+      showToast(state.owned.size > 0 ? `📦 ${state.owned.size} loaded (server empty)` : '📦 No collection on server — push from laptop first', 4000);
+    } else {
+      showToast(`📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} — up to date`, 2500);
+    }
+  } catch(e) {
+    showToast(state.owned.size > 0 ? `📦 ${state.owned.size} loaded (offline)` : '⚠ Could not reach server', 3000);
+  }
+}
+
+// ─── COLLECTION SUMMARY ───────────────────────────────────────────────────────
+let summaryMode = 'decks';
+function renderCollectionSummary() {
+  const panel = document.getElementById('summary-panel');
+  if (!panel) return;
+  if (!state.showOwnedOnly || summaryMode !== 'stats') { panel.classList.remove('visible'); panel.innerHTML=''; return; }
+  panel.classList.add('visible');
+  const cg = c => c.length>1?'M':(c[0]||'?');
+  const HEX = {W:'#c5b87a',U:'#7ab4e8',B:'#b090e0',R:'#e88070',G:'#70d890',M:'#d4a030'};
+  const LBL = {W:'White',U:'Blue',B:'Black',R:'Red',G:'Green',M:'Multi'};
+  let gu=0,gd=0,gt=0,out='';
+  for (const ed of liveData.editions) {
+    const rows={W:[0,0],U:[0,0],B:[0,0],R:[0,0],G:[0,0],M:[0,0]}; let has=false;
+    for (const dk of ed.decks) for (let vi=0;vi<dk.variants.length;vi++) {
+      if (!isVariantOwned(dk.id,vi)) continue;
+      has=true; const g=cg(dk.colors),q=getOwnedQty(dk.id,vi); rows[g][0]++; rows[g][1]+=q;
+    }
+    if (!has) continue;
+    const eu=Object.values(rows).reduce((s,[u])=>s+u,0),et=Object.values(rows).reduce((s,[,t])=>s+t,0);
+    gu+=eu;gt+=et;gd+=et-eu;
+    out+=`<div class="summary-edition"><div class="summary-edition-name">${esc(ed.name)} <span style="font-size:.7rem;color:var(--text2)">${ed.code||ed.id.toUpperCase()}</span></div><table class="summary-table"><tr><th>Color</th><th>Unique</th><th>Dupes</th><th>Total</th></tr>`;
+    for (const [c,[u,t]] of Object.entries(rows)) if(u) out+=`<tr><td><span class="summary-pip" style="background:${HEX[c]}"></span>${LBL[c]}</td><td>${u}</td><td>${t-u||'—'}</td><td>${t}</td></tr>`;
+    out+=`<tr class="total-row"><td>Total</td><td>${eu}</td><td>${et-eu||'—'}</td><td>${et}</td></tr></table></div>`;
+  }
+  out+=`<div class="summary-grand"><div class="summary-grand-item"><span class="summary-grand-val">${gu}</span><span class="summary-grand-label">Unique Variants</span></div><div class="summary-grand-item"><span class="summary-grand-val">${gd}</span><span class="summary-grand-label">Duplicates</span></div><div class="summary-grand-item"><span class="summary-grand-val">${gt}</span><span class="summary-grand-label">Total Copies</span></div></div>`;
+  panel.innerHTML = out;
+}
+
+// ─── NEW EVENT HANDLERS ───────────────────────────────────────────────────────
+
+// Search clear
 document.getElementById('search-clear-btn')?.addEventListener('click', () => {
-  document.getElementById('search-input').value = '';
-  document.getElementById('search-clear-btn').style.display = 'none';
-  state.search = ''; renderGrid();
-  document.getElementById('search-input').focus();
+  document.getElementById('search-input').value=''; document.getElementById('search-clear-btn').style.display='none';
+  state.search=''; renderGrid(); document.getElementById('search-input').focus();
 });
-document.getElementById('search-input')?.addEventListener('input', function() {
-  document.getElementById('search-clear-btn').style.display = this.value ? 'block' : 'none';
-});
+const origSearchHandler = document.getElementById('search-input');
+if (origSearchHandler) {
+  origSearchHandler.addEventListener('input', function() {
+    document.getElementById('search-clear-btn').style.display = this.value ? 'block' : 'none';
+  });
+}
 
 // Summary tabs
 document.getElementById('summary-decks-btn')?.addEventListener('click', () => {
-  summaryMode = 'decks';
-  document.getElementById('summary-decks-btn')?.classList.add('active');
+  summaryMode='decks'; document.getElementById('summary-decks-btn')?.classList.add('active');
   document.getElementById('summary-stats-btn')?.classList.remove('active');
-  document.getElementById('main-content').style.display = '';
-  renderCollectionSummary();
+  document.getElementById('main-content').style.display=''; renderCollectionSummary();
 });
 document.getElementById('summary-stats-btn')?.addEventListener('click', () => {
-  summaryMode = 'stats';
-  document.getElementById('summary-stats-btn')?.classList.add('active');
+  summaryMode='stats'; document.getElementById('summary-stats-btn')?.classList.add('active');
   document.getElementById('summary-decks-btn')?.classList.remove('active');
-  document.getElementById('main-content').style.display = 'none';
-  renderCollectionSummary();
+  document.getElementById('main-content').style.display='none'; renderCollectionSummary();
 });
 
 // Collection banner clear
 document.getElementById('collection-banner-clear')?.addEventListener('click', () => {
-  state.showOwnedOnly = false;
+  state.showOwnedOnly=false; state.search=''; state.edition='all'; state.colors.clear();
+  state.letterFilter=null; state.letterLocked=false;
   document.getElementById('owned-only-btn')?.classList.remove('active');
-  state.search = ''; state.edition = 'all'; state.colors.clear();
-  state.letterFilter = null; state.letterLocked = false;
-  document.getElementById('search-input').value = '';
-  document.getElementById('search-clear-btn').style.display = 'none';
-  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('search-input').value='';
+  document.getElementById('search-clear-btn').style.display='none';
+  document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
   document.getElementById('summary-tabs')?.classList.remove('visible');
-  const sp = document.getElementById('summary-panel'); if(sp){sp.classList.remove('visible');sp.innerHTML='';}
-  document.getElementById('main-content').style.display = '';
+  const sp=document.getElementById('summary-panel'); if(sp){sp.classList.remove('visible');sp.innerHTML='';}
+  document.getElementById('main-content').style.display='';
   renderGrid();
 });
 
-// Phone edit toggle (inside pw-modal)
+// Phone edit toggle
 document.getElementById('phone-edit-toggle')?.addEventListener('click', () => {
-  phoneEditEnabled = !phoneEditEnabled;
-  localStorage.setItem('jmp-phone-edit', String(phoneEditEnabled));
+  phoneEditEnabled=!phoneEditEnabled; localStorage.setItem('jmp-phone-edit',String(phoneEditEnabled));
   applyPhoneReadonlyState();
-  if (!phoneEditEnabled) { showToast('🔒 Phone updates disabled — resyncing…', 2500); setTimeout(autoResyncFromSite, 500); }
-  else showToast('📱 Phone updates enabled — you can now mark your collection', 3000);
+  if (!phoneEditEnabled){showToast('🔒 Phone updates disabled — resyncing…',2500);setTimeout(autoResyncFromSite,500);}
+  else showToast('📱 Phone updates enabled',3000);
 });
 
-// Edit button
+// Edit button — opens pw-modal; shows phone-edit section on mobile
 document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
   if (editMode) { exitEditMode(); return; }
   document.getElementById('pw-modal')?.classList.add('open');
-  const phoneSection = document.getElementById('phone-edit-section');
-  if (phoneSection) phoneSection.style.display = isMobileDevice() ? 'block' : 'none';
-  const toggle = document.getElementById('phone-edit-toggle');
-  if (toggle) { toggle.classList.toggle('enabled', phoneEditEnabled); toggle.innerHTML = phoneEditEnabled ? '📱 Phone updates ON — tap to disable' : '📱 Enable phone updates'; }
-  setTimeout(() => document.getElementById('pw-input')?.focus(), 50);
+  const ps=document.getElementById('phone-edit-section');
+  if (ps) ps.style.display=isMobileDevice()?'block':'none';
+  const tg=document.getElementById('phone-edit-toggle');
+  if (tg){tg.classList.toggle('enabled',phoneEditEnabled);tg.innerHTML=phoneEditEnabled?'📱 Phone updates ON — tap to disable':'📱 Enable phone updates';}
+  setTimeout(()=>document.getElementById('pw-input')?.focus(),50);
 });
 
-// Save: Download
+// Download
 document.getElementById('save-download-btn')?.addEventListener('click', () => {
-  const openEls = [...document.querySelectorAll('.open')];
-  openEls.forEach(el => el.classList.remove('open'));
+  const openEls=[...document.querySelectorAll('.open')];
+  openEls.forEach(el=>el.classList.remove('open'));
   document.body.classList.remove('edit-mode');
-  const badge = document.getElementById('edit-mode-badge'); badge?.classList.remove('visible');
-  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-  openEls.forEach(el => el.classList.add('open'));
-  if (editMode) { document.body.classList.add('edit-mode'); badge?.classList.add('visible'); }
-  const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
-  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
-  const ownedVer = Date.now().toString();
-  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${JSON.stringify([...state.owned])};\nconst OWNED_QTY = ${JSON.stringify([...state.ownedQty])};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
-  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
-  const blob = new Blob([src],{type:'text/html'}); const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download='index.html'; a.click(); URL.revokeObjectURL(url);
+  const badge=document.getElementById('edit-mode-badge'); badge?.classList.remove('visible');
+  document.getElementById('phone-edit-badge')?.classList.remove('visible');
+  document.getElementById('rebuild-overlay')?.classList.remove('open');
+  let src='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+  openEls.forEach(el=>el.classList.add('open'));
+  if (editMode){document.body.classList.add('edit-mode');badge?.classList.add('visible');}
+  src=src.replace(/\/\/\s*DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END[^\n]*/,
+    `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData,null,2)};\n// DECK_DATA_END — do not remove this comment`);
+  const ov=Date.now().toString();
+  src=src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/,
+    `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${JSON.stringify([...state.owned])};\nconst OWNED_QTY = ${JSON.stringify([...state.ownedQty])};\nconst OWNED_VERSION = "${ov}";\n// OWNED_DATA_END — do not remove this comment`);
+  const blob=new Blob([src],{type:'text/html'}),url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='index.html';a.click();URL.revokeObjectURL(url);
   document.getElementById('save-dropdown')?.classList.remove('open');
-  showToast('✓ Downloaded index.html', 3000);
+  showToast('✓ Downloaded index.html',3000);
 });
 
-// Save: Force resync
-document.getElementById('save-force-resync-btn')?.addEventListener('click', async () => {
+// Force resync
+document.getElementById('save-force-resync-btn')?.addEventListener('click',async()=>{
   document.getElementById('save-dropdown')?.classList.remove('open');
-  showToast('⏳ Fetching latest from GitHub…', 60000);
-  try {
-    const res = await fetch(SITE_URL + '?v=' + Date.now(), {cache:'no-store'});
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    const text = await res.text();
-    const dm = text.match(/const OWNED_DATA = (\[.*?\]);/s);
-    const vm = text.match(/const OWNED_VERSION = "([^"]+)"/);
-    if (!dm) throw new Error('Could not find OWNED_DATA');
-    const ro = JSON.parse(dm[1]);
-    if (ro.length===0) { showToast('⚠ GitHub file has 0 owned variants. Push from laptop first.', 8000); return; }
-    if (!confirm(`Found ${ro.length} owned variant(s) on GitHub. Replace local collection?`)) return;
-    state.owned = new Set(ro);
-    try { const qm=text.match(/const OWNED_QTY = (\[.*?\]);/s); if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();} } catch(e){}
-    saveOwned(); localStorage.setItem('jmp-owned-version', vm?vm[1]:Date.now().toString());
-    if (isMobileDevice()) { state.showOwnedOnly=true; document.getElementById('owned-only-btn')?.classList.add('active'); }
-    renderGrid(); showToast(`✓ Resynced — ${ro.length} owned variants`, 5000);
-  } catch(e) { showToast('⚠ Resync failed: '+e.message, 5000); }
+  showToast('⏳ Fetching latest from GitHub…',60000);
+  try{
+    const res=await fetch(SITE_URL+'?v='+Date.now(),{cache:'no-store'});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const text=await res.text();
+    const dm=text.match(/const OWNED_DATA = (\[.*?\]);/s),vm=text.match(/const OWNED_VERSION = "([^"]+)"/);
+    if(!dm)throw new Error('Could not find OWNED_DATA');
+    const ro=JSON.parse(dm[1]);
+    if(ro.length===0){showToast('⚠ GitHub file has 0 owned variants. Push from laptop first.',8000);return;}
+    if(!confirm(`Found ${ro.length} owned variant(s) on GitHub. Replace local collection?`))return;
+    state.owned=new Set(ro);
+    try{const qm=text.match(/const OWNED_QTY = (\[.*?\]);/s);if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();}}catch(e){}
+    saveOwned();localStorage.setItem('jmp-owned-version',vm?vm[1]:Date.now().toString());
+    if(isMobileDevice()){state.showOwnedOnly=true;document.getElementById('owned-only-btn')?.classList.add('active');}
+    renderGrid();showToast(`✓ Resynced — ${ro.length} owned variants`,5000);
+  }catch(e){showToast('⚠ Resync failed: '+e.message,5000);}
 });
 
-// Save: Sync from file
-document.getElementById('save-sync-collection-btn')?.addEventListener('click', () => {
+// Sync from file
+document.getElementById('save-sync-collection-btn')?.addEventListener('click',()=>{
   document.getElementById('save-dropdown')?.classList.remove('open');
-  if (!OWNED_DATA||OWNED_DATA.length===0) { showToast('No collection data in this file yet.', 5000); return; }
-  const merged = new Set([...state.owned,...OWNED_DATA]);
-  if (!confirm(`Merge ${OWNED_DATA.length} variants from file with your current ${state.owned.size}?`)) return;
-  state.owned=merged; saveOwned(); renderGrid(); showToast(`✓ Merged: ${merged.size} total owned variants`,4000);
+  if(!OWNED_DATA||OWNED_DATA.length===0){showToast('No collection data in this file yet.',5000);return;}
+  const merged=new Set([...state.owned,...OWNED_DATA]);
+  if(!confirm(`Merge ${OWNED_DATA.length} variants from file with your current ${state.owned.size}?`))return;
+  state.owned=merged;saveOwned();renderGrid();showToast(`✓ Merged: ${merged.size} total owned variants`,4000);
 });
 
-// Save: Rebuild
-document.getElementById('save-rebuild-btn')?.addEventListener('click', () => {
+// Rebuild
+document.getElementById('save-rebuild-btn')?.addEventListener('click',()=>{
   document.getElementById('save-dropdown')?.classList.remove('open');
-  if (!confirm('Wipe ALL deck data and rebuild from taw source? Ownership is preserved.')) return;
+  if(!confirm('Wipe ALL deck data and rebuild from taw source? Ownership is preserved.'))return;
   wipeAndRebuildFromSource();
 });
 
-// Save: Reset
-document.getElementById('save-reset-btn')?.addEventListener('click', () => {
-  if (!confirm('Reset ALL data and settings? Cannot be undone.')) return;
-  localStorage.clear(); state.owned=new Set(); state.ownedQty=new Map();
-  resetLiveData(); document.getElementById('save-dropdown')?.classList.remove('open');
-  renderTabs(); renderGrid(); showToast('All data cleared.');
+// Reset
+document.getElementById('save-reset-btn')?.addEventListener('click',()=>{
+  if(!confirm('Reset ALL data and settings? Cannot be undone.'))return;
+  localStorage.clear();state.owned=new Set();state.ownedQty=new Map();
+  resetLiveData();document.getElementById('save-dropdown')?.classList.remove('open');
+  renderTabs();renderGrid();showToast('All data cleared.');
 });
 
-// Help
-document.getElementById('help-btn')?.addEventListener('click', () => document.getElementById('help-modal')?.classList.add('open'));
-document.getElementById('help-close-btn')?.addEventListener('click', () => document.getElementById('help-modal')?.classList.remove('open'));
-document.getElementById('help-modal')?.addEventListener('click', e => { if(e.target===document.getElementById('help-modal')) document.getElementById('help-modal')?.classList.remove('open'); });
+// Help modal
+document.getElementById('help-btn')?.addEventListener('click',()=>document.getElementById('help-modal')?.classList.add('open'));
+document.getElementById('help-close-btn')?.addEventListener('click',()=>document.getElementById('help-modal')?.classList.remove('open'));
+document.getElementById('help-modal')?.addEventListener('click',e=>{if(e.target===document.getElementById('help-modal'))document.getElementById('help-modal')?.classList.remove('open');});
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 document.body.classList.remove('edit-mode');
 document.getElementById('edit-mode-badge')?.classList.remove('visible');
 document.getElementById('phone-edit-badge')?.classList.remove('visible');
@@ -37254,6 +37246,7 @@ editMode = false;
 if (isMobileDevice()) {
   state.showOwnedOnly = true;
   document.getElementById('owned-only-btn')?.classList.add('active');
+  document.getElementById('collection-banner')?.classList.add('visible');
   document.getElementById('summary-tabs')?.classList.add('visible');
   applyPhoneReadonlyState();
   if (!phoneEditEnabled) setTimeout(autoResyncFromSite, 600);
@@ -37264,7 +37257,6 @@ if (isMobileDevice()) {
 }
 renderTabs();
 renderGrid();
-
 </script>
 </body>
 </html>
