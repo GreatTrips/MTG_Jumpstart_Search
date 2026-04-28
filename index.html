@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jumpstart Deck Browser</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&amp;family=Crimson+Pro:ital,wght@0,300;0,400;1,300&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:#0c0c16; --bg2:#141428; --bg3:#1c1c38; --bg4:#22224a;
@@ -32,6 +33,8 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .search-wrap input:focus{border-color:var(--gold);background:rgba(255,255,255,.1)}
 .search-wrap input::placeholder{color:var(--text2)}
 .search-icon{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;font-size:.95rem}
+.search-clear-btn{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;line-height:1;padding:.15rem .25rem;border-radius:3px;transition:color .15s}
+.search-clear-btn:hover{color:var(--text)}
 /* ── Mobile header: stack search on its own row ── */
 @media(max-width:700px){
   .header-top{grid-template-columns:auto auto;grid-template-rows:auto auto;row-gap:.6rem;margin-bottom:.5rem}
@@ -40,9 +43,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
   .header-center{grid-column:1/-1;grid-row:2}
   .search-wrap{max-width:100%}
   .search-wrap input{font-size:16px;padding:.5rem 2.2rem}
-  .save-menu-btn span,.import-btn span{display:none}
   .save-menu-btn{font-size:.65rem;padding:.35rem .55rem}
-  .import-btn{font-size:.65rem;padding:.35rem .55rem}
   .edit-btn-header{font-size:.65rem;padding:.35rem .55rem}
   .owned-btn{font-size:.65rem;padding:.35rem .55rem}
 }
@@ -207,6 +208,8 @@ main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
 
 /* own toggle button */
 .own-toggle-btn{flex-shrink:0;margin-left:.75rem;align-items:center;border:1px solid var(--border);border-radius:6px;cursor:pointer;display:inline-flex;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;gap:.35rem;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap}
+body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:default}
+body.phone-readonly .qty-row{display:none !important}
 .own-toggle-btn.not-owned{background:none;color:var(--text2)}
 .own-toggle-btn.not-owned:hover{border-color:var(--own-color);color:var(--own-color)}
 .own-toggle-btn.is-owned{background:var(--own-glow);border-color:var(--own-color);color:var(--own-color)}
@@ -268,90 +271,6 @@ main{padding:1.5rem 1.25rem;max-width:1400px;margin:0 auto}
 .variant-card .edition-badge{font-size:.62rem;padding:.12rem .4rem;border-radius:10px;background:rgba(92,184,92,.1);color:var(--own-color);font-family:'Cinzel',serif;letter-spacing:.04em;display:inline-block;margin-bottom:.38rem}
 .owned-check-mark{font-size:.75rem;color:var(--own-color)}
 
-/* ── Import tool ── */
-.import-btn{align-items:center;background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.4rem .75rem;transition:all .2s;white-space:nowrap}
-.import-btn:hover{border-color:var(--border-hover);color:var(--text)}
-.import-modal{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.82);backdrop-filter:blur(4px)}
-.import-modal.open{display:flex;align-items:center;justify-content:center;padding:1rem}
-.import-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;max-width:760px;width:100%;height:min(620px,88vh);overflow:hidden}
-.import-header{border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.3rem;flex-shrink:0}
-.import-header h2{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1}
-/* MTGJSON fetch bar */
-.import-fetch-bar{background:rgba(201,168,76,.04);border-bottom:1px solid var(--border);padding:.7rem 1.3rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;flex-shrink:0}
-.import-fetch-bar .fetch-label{font-family:'Cinzel',serif;font-size:.7rem;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
-.fetch-load-btn{background:var(--bg4);border:1px solid var(--border-hover);border-radius:5px;color:var(--text);cursor:pointer;font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap}
-.fetch-load-btn:hover{border-color:var(--gold);color:var(--gold)}
-.fetch-load-btn:disabled{opacity:.4;cursor:default}
-.fetch-status{color:var(--text2);font-size:.78rem;font-style:italic}
-.fetch-deck-select{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.88rem;padding:.3rem .6rem;min-width:260px;flex:1;max-width:400px;outline:none;cursor:pointer}
-.fetch-deck-select:focus{border-color:var(--gold)}
-.fetch-search{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.88rem;padding:.3rem .6rem;width:180px;outline:none}
-.fetch-search:focus{border-color:var(--gold)}
-.fetch-search::placeholder{color:var(--text2)}
-/* main body grid */
-.import-body{display:grid;grid-template-columns:230px 1fr;flex:1;min-height:0;overflow:hidden;height:0}
-@media(max-width:780px){.import-body{grid-template-columns:1fr}}
-.import-col{display:flex;flex-direction:column;padding:.8rem 1rem;overflow-y:auto;min-height:0}
-.import-col:first-child{border-right:1px solid var(--border)}
-.import-col:last-child{border-right:none}
-@media(max-width:780px){.import-col{border-right:none;border-bottom:1px solid var(--border);max-height:none}}
-.import-col-head{font-family:'Cinzel',serif;font-size:.68rem;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.7rem;flex-shrink:0}
-/* form fields */
-.import-field{margin-bottom:.7rem}
-.import-field label{display:block;font-family:'Cinzel',serif;font-size:.67rem;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.28rem}
-.import-field input,.import-field select{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.9rem;outline:none;padding:.32rem .6rem;transition:border-color .2s;width:100%}
-.import-field input:focus,.import-field select:focus{border-color:var(--gold)}
-.import-field input::placeholder{color:var(--text2)}
-.import-field select option{background:var(--bg2)}
-/* mode toggle */
-.mode-toggle{display:flex;gap:.3rem}
-.mode-btn{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.67rem;font-weight:600;letter-spacing:.04em;padding:.28rem .65rem;transition:all .15s;white-space:nowrap}
-.mode-btn.active{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold)}
-/* color picker */
-.import-color-row{display:flex;gap:.3rem;flex-wrap:wrap}
-.import-color-pip{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s;flex-shrink:0;position:relative}
-.import-color-pip:hover{transform:scale(1.12)}
-.import-color-pip.selected::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8)}
-.import-color-pip[data-c="W"]{background:var(--mana-w)}.import-color-pip[data-c="W"].selected{border-color:var(--mana-w);filter:brightness(1.1)}
-.import-color-pip[data-c="U"]{background:var(--mana-u)}.import-color-pip[data-c="U"].selected{border-color:#78b4f0}
-.import-color-pip[data-c="B"]{background:var(--mana-b)}.import-color-pip[data-c="B"].selected{border-color:#c098f0}
-.import-color-pip[data-c="R"]{background:var(--mana-r)}.import-color-pip[data-c="R"].selected{border-color:#f09080}
-.import-color-pip[data-c="G"]{background:var(--mana-g)}.import-color-pip[data-c="G"].selected{border-color:#80e8a0}
-/* textarea + output */
-.import-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Crimson Pro',serif;font-size:.88rem;line-height:1.5;height:155px;outline:none;padding:.55rem .7rem;resize:none;transition:border-color .2s;width:100%}
-.import-textarea:focus{border-color:var(--gold)}
-.import-textarea::placeholder{color:var(--text2);font-size:.82rem}
-.import-output{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Courier New',monospace;font-size:.7rem;line-height:1.5;height:155px;overflow-y:auto;padding:.55rem .7rem;white-space:pre;user-select:all;margin-top:.6rem}
-.import-stats{background:rgba(92,184,92,.06);border:1px solid rgba(92,184,92,.2);border-radius:5px;color:var(--text2);font-size:.76rem;margin-top:.45rem;padding:.35rem .6rem}
-.import-hint{color:var(--text2);font-size:.75rem;margin-top:.4rem;line-height:1.4}
-/* actions */
-.import-actions{border-top:1px solid var(--border);display:flex;align-items:center;gap:.5rem;padding:.7rem 1.3rem;flex-shrink:0}
-.import-actions-left{flex:1;color:var(--text2);font-size:.76rem;font-style:italic}
-.import-copy-btn{background:var(--gold);border:none;border-radius:6px;color:#1a1000;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.04em;padding:.42rem 1.1rem;transition:opacity .2s}
-.import-copy-btn:hover{opacity:.85}
-.import-copy-btn:disabled{opacity:.35;cursor:default}
-.import-add-btn{background:var(--own-color);border:none;border-radius:6px;color:#fff;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.04em;padding:.42rem 1.1rem;transition:opacity .2s}
-.import-add-btn:hover{opacity:.85}
-.import-add-btn:disabled{opacity:.35;cursor:default}
-/* Toast */
-.toast{background:var(--bg4);border:1px solid var(--own-color);border-radius:8px;bottom:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.5);color:var(--text);font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;left:50%;padding:.6rem 1.2rem;position:fixed;transform:translateX(-50%) translateY(20px);transition:opacity .3s,transform .3s;opacity:0;pointer-events:none;z-index:900;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.rebuild-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;gap:.8rem}
-.rebuild-overlay.open{display:flex}
-.rebuild-title{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);font-weight:700;letter-spacing:.06em}
-.rebuild-status{color:var(--text);font-size:.88rem;max-width:440px;text-align:center;line-height:1.5}
-.rebuild-bar-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:20px;height:6px;overflow:hidden;width:320px}
-.rebuild-bar{background:var(--gold);border-radius:20px;height:100%;transition:width .25s;width:0%}
-.rebuild-detail{color:var(--text2);font-size:.76rem;max-width:440px;text-align:center;font-style:italic}
-/* Bulk import progress */
-.bulk-progress{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:.77rem;margin-top:.4rem;padding:.4rem .7rem;width:100%;display:none}
-.bulk-progress.visible{display:block}
-.bulk-import-btn{background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.45);border-radius:5px;color:var(--own-color);cursor:pointer;font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;letter-spacing:.04em;padding:.3rem .75rem;transition:all .2s;white-space:nowrap;display:none}
-.bulk-import-btn:hover{background:rgba(92,184,92,.22)}
-.bulk-import-btn:disabled{opacity:.4;cursor:default}
-.bulk-import-btn.visible{display:inline-block}
-.import-close-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;padding:.38rem .9rem;transition:color .2s,border-color .2s}
-.import-close-btn:hover{color:var(--text);border-color:var(--border-hover)}
 
 /* ── Edit Mode ── */
 .edit-mode-badge{align-items:center;background:rgba(255,160,30,.12);border:1px solid rgba(255,160,30,.45);border-radius:5px;color:#f0a020;display:none;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;gap:.35rem;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap}
@@ -421,7 +340,7 @@ body.edit-mode .add-deck-btn{display:flex}
 .gh-push-status.err{background:rgba(224,85,85,.1);color:#e07070;display:block}
 </style>
 </head>
-<body class="" style="">
+<body>
 
 <header class="site-header">
   <div class="header-top">
@@ -430,7 +349,8 @@ body.edit-mode .add-deck-btn{display:flex}
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
         <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false">
-        <span class="search-mode-badge" id="search-mode-badge" style="display: none;">CARD</span>
+        <button class="search-clear-btn" id="search-clear-btn" title="Clear search" style="display:none">✕</button>
+        <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
       </div>
     </div>
     <div class="header-right">
@@ -446,17 +366,18 @@ body.edit-mode .add-deck-btn{display:flex}
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
       </div>
-      <button class="owned-btn active" id="owned-only-btn" title="Show only decks you own">
+      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
         <span class="dot"></span>My Collection
       </button>
-      <button class="import-btn" id="import-btn" title="Import a card list into data.js format">
-        ＋ Import List
-      </button>
+
       <button class="edit-btn-header" id="edit-mode-btn" title="Toggle edit mode">✏ Edit</button>
       <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
     </div>
   </div>
-  <nav class="edition-tabs" id="edition-tabs" role="tablist"><button class="tab active" data-edition="all">All Editions</button><button class="tab" data-edition="jmp">JMP (2020)</button><button class="tab" data-edition="j21">Historic Horizons</button><button class="tab" data-edition="j22">JMP 2022</button><button class="tab" data-edition="j25">Foundations</button><button class="tab" data-edition="tie-ins">Set Tie-ins ↓</button></nav>
+  <nav class="edition-tabs" id="edition-tabs" role="tablist">
+    <button class="tab active" data-edition="all">All Editions</button>
+    <button class="tab" data-edition="tie-ins">Set Tie-ins ↓</button>
+  </nav>
 </header>
 
 <div class="filter-bar" role="toolbar">
@@ -468,529 +389,42 @@ body.edit-mode .add-deck-btn{display:flex}
   <button class="color-btn" data-c="R"><span class="pip" style="background:var(--mana-r)"></span>Red</button>
   <button class="color-btn" data-c="G"><span class="pip" style="background:var(--mana-g)"></span>Green</button>
   <button class="color-btn" data-c="M"><span class="pip" style="background:var(--mana-multi)"></span>Multi</button>
-  <span class="results-count" id="results-count">30 owned variants</span>
+  <span class="results-count" id="results-count"></span>
   <button class="add-deck-btn" id="add-deck-btn">＋ Add New Deck</button>
 </div>
 
-<div class="collection-banner visible" id="collection-banner">
+<div class="collection-banner" id="collection-banner">
   <span>📦 Filtered to My Collection</span>
   <button class="collection-banner-link" id="collection-banner-clear">Click here to clear all filters</button>
 </div>
-<div class="summary-tabs visible" id="summary-tabs">
+<div class="summary-tabs" id="summary-tabs">
   <button class="summary-tab-btn active" id="summary-decks-btn">🃏 Decks</button>
   <button class="summary-tab-btn" id="summary-stats-btn">📊 Summary</button>
 </div>
 <div class="summary-panel" id="summary-panel"></div>
-<main id="main-content"><section class="edition-section"><h2 class="edition-heading">Jumpstart <span class="deck-code-badge">JMP</span><span class="edition-count">11 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="jmp-abovetheclouds" data-ed="jmp" data-vi="3" tabindex="0">
-            <div class="deck-name">Above the Clouds</div><div class="variant-title">Above the Clouds (4)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-doctor" data-ed="jmp" data-vi="1" tabindex="0">
-            <div class="deck-name">Doctor</div><div class="variant-title">Doctor (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-featheredfriends" data-ed="jmp" data-vi="0" tabindex="0">
-            <div class="deck-name">Feathered Friends</div><div class="variant-title">Feathered Friends (1)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-legion" data-ed="jmp" data-vi="2" tabindex="0">
-            <div class="deck-name">Legion</div><div class="variant-title">Legion (3)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-lightning" data-ed="jmp" data-vi="1" tabindex="0">
-            <div class="deck-name">Lightning</div><div class="variant-title">Lightning (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-minions" data-ed="jmp" data-vi="3" tabindex="0">
-            <div class="deck-name">Minions</div><div class="variant-title">Minions (4)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-plusone" data-ed="jmp" data-vi="1" tabindex="0">
-            <div class="deck-name">Plus One</div><div class="variant-title">Plus One (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-plusone" data-ed="jmp" data-vi="3" tabindex="0">
-            <div class="deck-name">Plus One</div><div class="variant-title">Plus One (4)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-smashing" data-ed="jmp" data-vi="3" tabindex="0">
-            <div class="deck-name">Smashing</div><div class="variant-title">Smashing (4)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-spooky" data-ed="jmp" data-vi="3" tabindex="0">
-            <div class="deck-name">Spooky</div><div class="variant-title">Spooky (4)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-treehugging" data-ed="jmp" data-vi="2" tabindex="0">
-            <div class="deck-name">Tree-Hugging</div><div class="variant-title">Tree-Hugging (3)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jmp-vampires" data-ed="jmp" data-vi="2" tabindex="0">
-            <div class="deck-name">Vampires</div><div class="variant-title">Vampires (3)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">JMP</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Jumpstart 2022 <span class="deck-code-badge">J22</span><span class="edition-count">6 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="j22-cats" data-ed="j22" data-vi="3" tabindex="0">
-            <div class="deck-name">Cats</div><div class="variant-title">Cats 4</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-ferocious" data-ed="j22" data-vi="3" tabindex="0">
-            <div class="deck-name">Ferocious</div><div class="variant-title">Ferocious 4</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-fiery" data-ed="j22" data-vi="1" tabindex="0">
-            <div class="deck-name">Fiery</div><div class="variant-title">Fiery 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-goblins" data-ed="j22" data-vi="1" tabindex="0">
-            <div class="deck-name">Goblins</div><div class="variant-title">Goblins 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-insects" data-ed="j22" data-vi="0" tabindex="0">
-            <div class="deck-name">Insects</div><div class="variant-title">Insects 1</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j22-thinkagain" data-ed="j22" data-vi="1" tabindex="0">
-            <div class="deck-name">Think Again</div><div class="variant-title">Think Again 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J22</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Foundations Jumpstart <span class="deck-code-badge">J25</span><span class="edition-count">6 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="j25-armed" data-ed="j25" data-vi="0" tabindex="0">
-            <div class="deck-name">Armed</div><div class="variant-title">Armed (1)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-copied" data-ed="j25" data-vi="1" tabindex="0">
-            <div class="deck-name">Copied</div><div class="variant-title">Copied (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-R" title="Red"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-drowned" data-ed="j25" data-vi="0" tabindex="0">
-            <div class="deck-name">Drowned</div><div class="variant-title">Drowned (1)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-enchanted" data-ed="j25" data-vi="1" tabindex="0">
-            <div class="deck-name">Enchanted</div><div class="variant-title">Enchanted (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-explorers" data-ed="j25" data-vi="1" tabindex="0">
-            <div class="deck-name">Explorers</div><div class="variant-title">Explorers (2)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="j25-vampires" data-ed="j25" data-vi="2" tabindex="0">
-            <div class="deck-name">Vampires</div><div class="variant-title">Vampires (3)</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">J25</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Brothers' War Jumpstart <span class="deck-code-badge">BRO</span><span class="edition-count">4 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="jbro-infantry" data-ed="jbro" data-vi="1" tabindex="0">
-            <div class="deck-name">Infantry</div><div class="variant-title">Infantry 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">BRO</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-W" title="White"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jbro-powerstones" data-ed="jbro" data-vi="0" tabindex="0">
-            <div class="deck-name">Powerstones</div><div class="variant-title">Powerstones 1</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">BRO</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-U" title="Blue"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jbro-titanic" data-ed="jbro" data-vi="0" tabindex="0">
-            <div class="deck-name">Titanic</div><div class="variant-title">Titanic 1</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">BRO</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jbro-unearthed" data-ed="jbro" data-vi="0" tabindex="0">
-            <div class="deck-name">Unearthed</div><div class="variant-title">Unearthed 1</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">BRO</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section><section class="edition-section"><h2 class="edition-heading">Lord of the Rings Jumpstart <span class="deck-code-badge">LTR</span><span class="edition-count">2 themes</span></h2><div class="deck-grid grid-mode"><button class="deck-card variant-card owned-card" data-deck="jltr-journey" data-ed="jltr" data-vi="1" tabindex="0">
-            <div class="deck-name">Journey</div><div class="variant-title">Journey 2</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">LTR</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-G" title="Green"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button><button class="deck-card variant-card owned-card" data-deck="jltr-mordor" data-ed="jltr" data-vi="0" tabindex="0">
-            <div class="deck-name">Mordor</div><div class="variant-title">Mordor 1</div>
-            <div style="margin-bottom:.4rem"><span class="edition-badge">LTR</span></div>
-            <div class="deck-footer">
-              <div class="color-pips"><span class="color-pip pip-B" title="Black"></span></div>
-              <div class="deck-meta">
-                <span class="owned-check-mark">✓</span>
-                
-                <span class="has-list-badge">List ✓</span>
-              </div>
-            </div>
-          </button></div></section></main>
+<main id="main-content"></main>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
   <div class="modal" id="modal">
-    <div class="modal-header" id="modal-header">
-    <div class="modal-header-info">
-      <div class="modal-title">Spooky<span style="display:flex;gap:3px"><span class="color-pip pip-B" style="width:17px;height:17px" title="Black"></span></span></div>
-      <div class="modal-headliner">Bone Picker</div>
+    <div class="modal-header" id="modal-header"></div>
+    <div class="variant-row" id="variant-row" style="display:none">
+      <div class="variant-tabs" id="variant-tabs"></div>
+      <button class="own-toggle-btn not-owned" id="own-toggle-btn"></button>
     </div>
-    <button class="modal-close" id="modal-close-btn">✕</button></div>
-    <div class="variant-row" id="variant-row" style="display: flex;">
-      <div class="variant-tabs" id="variant-tabs"><button class="variant-tab" data-vi="0">
-        <span class="vtab-own-dot"></span>Spooky (1)
-      </button><button class="variant-tab" data-vi="1">
-        <span class="vtab-own-dot"></span>Spooky (2)
-      </button><button class="variant-tab" data-vi="2">
-        <span class="vtab-own-dot"></span>Spooky (3)
-      </button><button class="variant-tab active" data-vi="3">
-        <span class="vtab-own-dot owned"></span>Spooky (4)
-      </button></div>
-      <button class="own-toggle-btn is-owned" id="own-toggle-btn"><span class="own-check">✓</span> Owned</button><div id="qty-row" class="qty-row" style="display: flex;"><span class="qty-label">Qty</span>
-      <button class="qty-btn" id="qty-minus">−</button>
-      <span class="qty-val" id="qty-val">1</span>
-      <button class="qty-btn" id="qty-plus">＋</button></div>
-    </div>
-    <div class="modal-body" id="modal-body">
-    <div class="card-list-panel" id="card-list-panel"><h4>Card List (20)</h4><div class="card-row" data-card="Bone Picker"><span class="card-qty">1×</span><span class="card-name-list">Bone Picker</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Eternal Taskmaster"><span class="card-qty">1×</span><span class="card-name-list">Eternal Taskmaster</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Gristle Grinner"><span class="card-qty">1×</span><span class="card-name-list">Gristle Grinner</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Dutiful Attendant"><span class="card-qty">1×</span><span class="card-name-list">Dutiful Attendant</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Plagued Rusalka"><span class="card-qty">1×</span><span class="card-name-list">Plagued Rusalka</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Sanitarium Skeleton"><span class="card-qty">1×</span><span class="card-name-list">Sanitarium Skeleton</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Liliana's Devotee"><span class="card-qty">1×</span><span class="card-name-list">Liliana's Devotee</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Crypt Lurker"><span class="card-qty">1×</span><span class="card-name-list">Crypt Lurker</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Caged Zombie"><span class="card-qty">1×</span><span class="card-name-list">Caged Zombie</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Finishing Blow"><span class="card-qty">1×</span><span class="card-name-list">Finishing Blow</span><span class="rarity-badge rarity-c" title="Common">C</span></div><div class="card-row" data-card="Malefic Scythe"><span class="card-qty">1×</span><span class="card-name-list">Malefic Scythe</span><span class="rarity-badge rarity-u" title="Uncommon">U</span></div><div class="card-row" data-card="Black Market"><span class="card-qty">1×</span><span class="card-name-list">Black Market</span><span class="rarity-badge rarity-r" title="Rare">R</span></div><hr class="section-divider"><div class="card-row land" data-card="Thriving Moor"><span class="card-qty">1×</span><span class="card-name-list">Thriving Moor</span></div><div class="card-row land" data-card="Swamp"><span class="card-qty">2×</span><span class="card-name-list">Swamp</span></div><div class="card-row land" data-card="Swamp"><span class="card-qty">2×</span><span class="card-name-list">Swamp</span></div><div class="card-row land" data-card="Swamp"><span class="card-qty">2×</span><span class="card-name-list">Swamp</span></div><div class="card-row land" data-card="Swamp"><span class="card-qty">1×</span><span class="card-name-list">Swamp</span></div><div class="list-summary">20 cards · 12 spells · 8 lands</div></div>
-    <div class="card-images-panel" id="card-images-panel"><h4>Card Images</h4><div class="card-images-grid"><div class="card-image-wrap" data-img-card="Bone Picker" onclick="window.open('https://scryfall.com/card/2xm/78/bone-picker?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/f/7/f7de3d27-f3e0-4aea-a737-6577de1bd1c5.jpg?1598304462" alt="Bone Picker" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Bone Picker&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Eternal Taskmaster" onclick="window.open('https://scryfall.com/card/jmp/228/eternal-taskmaster?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/9/4/94a6644a-52e6-454e-a479-44b086240974.jpg?1600714420" alt="Eternal Taskmaster" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Eternal Taskmaster&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Gristle Grinner" onclick="window.open('https://scryfall.com/card/jmp/242/gristle-grinner?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/f/1/f1d6e32e-6479-48b3-93ae-da5378c09bb1.jpg?1600700508" alt="Gristle Grinner" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Gristle Grinner&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Dutiful Attendant" onclick="window.open('https://scryfall.com/card/jmp/226/dutiful-attendant?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/f/3/f35fd9cd-795f-4a8b-b2e9-648f6273927e.jpg?1600700106" alt="Dutiful Attendant" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Dutiful Attendant&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Plagued Rusalka" onclick="window.open('https://scryfall.com/card/jmp/268/plagued-rusalka?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/7/2/72bcfb24-1649-4c8f-ba76-346914d11572.jpg?1600714641" alt="Plagued Rusalka" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Plagued Rusalka&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Sanitarium Skeleton" onclick="window.open('https://scryfall.com/card/inr/129/sanitarium-skeleton?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/1/1/119020b3-9d26-4153-b7b9-28375f7fa915.jpg?1736468037" alt="Sanitarium Skeleton" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Sanitarium Skeleton&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Liliana's Devotee" onclick="window.open('https://scryfall.com/card/mic/122/lilianas-devotee?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/6/c/6cffbebb-db4c-4bbd-aa4d-9ddae4c88a44.jpg?1637630579" alt="Liliana's Devotee" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Liliana's Devotee&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Crypt Lurker" onclick="window.open('https://scryfall.com/card/m21/93/crypt-lurker?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/c/0/c0bba170-5176-4fab-a10d-e23d70128875.jpg?1594736052" alt="Crypt Lurker" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Crypt Lurker&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Caged Zombie" onclick="window.open('https://scryfall.com/card/m21/91/caged-zombie?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/f/8/f8067745-35b6-4abd-9ae9-712159a26c89.jpg?1594736024" alt="Caged Zombie" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Caged Zombie&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Finishing Blow" onclick="window.open('https://scryfall.com/card/m21/99/finishing-blow?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/2/b/2b85a552-2119-4d9c-b7c1-c09c2d9f2f38.jpg?1594736130" alt="Finishing Blow" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Finishing Blow&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Malefic Scythe" onclick="window.open('https://scryfall.com/card/m21/112/malefic-scythe?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/8/9/89e2bc57-8f18-4ba1-a11b-9d69d029f56a.jpg?1594736272" alt="Malefic Scythe" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Malefic Scythe&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Black Market" onclick="window.open('https://scryfall.com/card/clb/739/black-market?utm_source=api','_blank')">
-      <img src="https://cards.scryfall.io/normal/front/7/8/78c80c6d-f3ae-48d3-ba6a-b9b738e1affb.jpg?1674141496" alt="Black Market" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'card-placeholder\'&gt;&lt;span&gt;Black Market&lt;/span&gt;&lt;/div&gt;'">
-    </div><div class="card-image-wrap" data-img-card="Thriving Moor">
-      <div class="card-placeholder"><span>Thriving Moor</span></div>
-    </div><div class="card-image-wrap" data-img-card="Swamp"><div class="card-placeholder"><span>Swamp</span></div></div><div class="card-image-wrap" data-img-card="Swamp"><div class="card-placeholder"><span>Swamp</span></div></div><div class="card-image-wrap" data-img-card="Swamp"><div class="card-placeholder"><span>Swamp</span></div></div><div class="card-image-wrap" data-img-card="Swamp"><div class="card-placeholder"><span>Swamp</span></div></div></div></div></div>
+    <div class="modal-body" id="modal-body"></div>
     <div class="scryfall-credit">
       <span>Card images via <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a></span>
       <span style="display:flex;align-items:center;gap:.6rem">
         <button id="modal-add-variant-btn" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);cursor:pointer;font-family:'Cinzel',serif;font-size:.65rem;font-weight:600;letter-spacing:.04em;padding:.22rem .65rem;transition:all .2s" title="Open importer pre-filled for this deck">＋ Add Variant</button>
-        <span id="modal-edition-label">Jumpstart · 2020</span>
+        <span id="modal-edition-label"></span>
       </span>
     </div>
   </div>
 </div>
 
 <!-- Import Tool Modal -->
-<div class="import-modal" id="import-modal">
-  <div class="import-box">
-    <div class="import-header">
-      <h2>⚡ Decklist Importer</h2>
-      <button class="modal-close" id="import-close-btn">✕</button>
-    </div>
 
-    <!-- MTGJSON Auto-Fetch bar -->
-    <div class="import-fetch-bar">
-      <span class="fetch-label">MTGJSON Auto-Fetch</span>
-      <button class="fetch-load-btn" id="mtgjson-load-btn">Load Jumpstart Decks</button>
-      <input type="text" class="fetch-search" id="mtgjson-search" placeholder="Filter decks…" style="display:none">
-      <select class="fetch-deck-select" id="mtgjson-deck-select" style="display:none">
-        <option value="">— Select a deck to auto-fill —</option>
-      </select>
-      <button class="bulk-import-btn" id="mtgjson-bulk-btn" title="Fetch all decks and add card lists to the browser">⬇ Import All to Browser</button>
-      <span class="fetch-status" id="mtgjson-status"></span>
-    </div>
-    <div class="bulk-progress" id="bulk-progress"></div>
-    </div>
-
-    <!-- 3-column body -->
-    <div class="import-body">
-
-      <!-- Col 1: Metadata -->
-      <div class="import-col">
-        <div class="import-col-head">Deck Metadata</div>
-
-        <div class="import-field">
-          <label>Mode</label>
-          <div class="mode-toggle">
-            <button class="mode-btn active" data-mode="new" id="mode-new-btn">New Deck</button>
-            <button class="mode-btn" data-mode="add" id="mode-add-btn">Add Variant</button>
-          </div>
-        </div>
-
-        <div class="import-field" id="existing-deck-field" style="display:none">
-          <label>Existing Deck</label>
-          <select id="existing-deck-select">
-            <option value="">— Select deck —</option>
-          </select>
-        </div>
-
-        <div class="import-field" id="import-edition-field">
-          <label>Edition</label>
-          <select id="import-edition-select">
-            <option value="">— Select edition —</option>
-          </select>
-        </div>
-        <div class="import-field" id="import-edition-custom-field" style="display:none">
-          <label>Custom Edition Name</label>
-          <input type="text" id="import-edition-custom" placeholder="e.g. Unfinity Jumpstart">
-        </div>
-
-        <div class="import-field" id="deck-name-field">
-          <label>Deck Name</label>
-          <input type="text" id="import-deck-name" placeholder="e.g. Above the Clouds">
-        </div>
-
-        <div class="import-field" id="headliner-field">
-          <label>Headliner Card</label>
-          <input type="text" id="import-headliner" placeholder="e.g. Warden of Evos Isle">
-        </div>
-
-        <div class="import-field" id="colors-field">
-          <label>Colors</label>
-          <div class="import-color-row">
-            <span class="import-color-pip" data-c="W" title="White"></span>
-            <span class="import-color-pip" data-c="U" title="Blue"></span>
-            <span class="import-color-pip" data-c="B" title="Black"></span>
-            <span class="import-color-pip" data-c="R" title="Red"></span>
-            <span class="import-color-pip" data-c="G" title="Green"></span>
-          </div>
-        </div>
-
-        <div class="import-field">
-          <label>Variant Label</label>
-          <input type="text" id="import-variant-label" placeholder="e.g. Warden variant 1">
-        </div>
-
-        <div class="import-hint">All fields optional — only filled fields appear in output. Variant label defaults to deck name if blank.</div>
-      </div>
-
-      <!-- Col 2: Paste + Output stacked -->
-      <div class="import-col">
-        <div class="import-col-head">Paste Card List</div>
-        <textarea class="import-textarea" id="import-input" placeholder="Paste any standard decklist:
-
-1 Warden of Evos Isle
-1 Empyrean Eagle
-9 Plains
-1 Thriving Heath
-
-Works with Wizards.com, Scryfall,
-Moxfield, or plain card names."></textarea>
-        <div class="import-hint">Basic / Thriving / channel lands auto-tagged <code style="color:var(--gold)">basic:true</code>.</div>
-        <div class="import-col-head" style="margin-top:.65rem">Output</div>
-        <pre class="import-output" id="import-output">// Paste cards above to generate output.</pre>
-        <div class="import-stats" id="import-stats" style="display:none"></div>
-        <div class="import-hint" id="import-paste-hint" style="display:none"></div>
-      </div>
-
-    </div>
-
-    <div class="import-actions">
-      <span class="import-actions-left" id="import-actions-msg"></span>
-      <button class="import-close-btn" id="import-close-btn2">Close</button>
-      <button class="import-copy-btn" id="import-copy-btn" disabled="">Copy</button>
-      <button class="import-add-btn" id="import-add-btn">＋ Add to Browser</button>
-    </div>
-  </div>
-
-
-<div class="toast" id="toast">✓ Pushed to GitHub — rebuilding in ~30s</div>
 <div class="rebuild-overlay" id="rebuild-overlay">
   <div class="rebuild-title" id="rebuild-title">⟳ Rebuilding from Source</div>
   <div class="rebuild-status" id="rebuild-status">Fetching taw/magic-preconstructed-decks-data…</div>
@@ -1091,6 +525,16 @@ Moxfield, or plain card names."></textarea>
         <li><strong>↺ Reset all data &amp; settings</strong> — wipes everything including ownership and quantities. Only use this if something is badly broken.</li>
       </ul>
 
+      <h3>Force Resync from Website</h3>
+      <p>If your phone's collection is out of date or got overwritten, use this to pull the latest version directly from GitHub:</p>
+      <ol>
+        <li>Tap <code>💾 Save ▾</code> → <code>🔄 Force resync from website</code></li>
+        <li>It fetches the live file from GitHub, bypassing Chrome's cache entirely</li>
+        <li>If GitHub has your collection (you pushed from laptop), it replaces your local collection with it</li>
+        <li>If GitHub shows 0 owned variants, it means the laptop hasn't pushed yet — go push first</li>
+      </ol>
+      <div class="note-box">Force resync <strong>overwrites</strong> your local collection — use it only when you know GitHub has the correct version.</div>
+
       <h3>Tips &amp; Shortcuts</h3>
       <ul>
         <li>Click <strong>Jumpstart Deck Browser</strong> in the header to reset all filters and exit edit mode</li>
@@ -1108,7 +552,7 @@ Moxfield, or plain card names."></textarea>
   <div class="pw-box">
     <h3>🔐 Enter Edit Password</h3>
     <input type="password" id="pw-input" placeholder="Password" autocomplete="off">
-    <div class="pw-error" id="pw-error" style="display: none;">Incorrect password. Try again.</div>
+    <div class="pw-error" id="pw-error">Incorrect password. Try again.</div>
     <div class="pw-actions">
       <button class="btn-secondary" id="pw-cancel-btn">Cancel</button>
       <button class="btn-primary" id="pw-confirm-btn">Unlock</button>
@@ -1171,7 +615,7 @@ Moxfield, or plain card names."></textarea>
   <div class="gh-box">
     <h3>⬆ Push to GitHub</h3>
     <p class="gh-hint">
-      Enter your GitHub repo details and a <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=Jumpstart+Browser" target="_blank" rel="noopener">Personal Access Token</a> with <strong>repo</strong> write scope. These are stored only in your browser's localStorage.
+      Enter your GitHub repo details and a <a href="https://github.com/settings/tokens/new?scopes=repo&description=Jumpstart+Browser" target="_blank" rel="noopener">Personal Access Token</a> with <strong>repo</strong> write scope. These are stored only in your browser's localStorage.
     </p>
     <div class="edit-field" style="margin-bottom:.6rem">
       <label>Repo Owner (your GitHub username)</label>
@@ -1189,17 +633,17 @@ Moxfield, or plain card names."></textarea>
       <label>Personal Access Token</label>
       <input type="password" id="gh-token" placeholder="ghp_…">
     </div>
-    <div id="gh-push-status" class="gh-push-status" style="display: block;">⏳ Committing updated file…</div>
+    <div id="gh-push-status" class="gh-push-status"></div>
     <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.85rem">
       <button class="btn-secondary" id="gh-cancel-btn">Cancel</button>
-      <button class="btn-primary" id="gh-push-btn">Commit &amp; Push</button>
+      <button class="btn-primary" id="gh-push-btn">Commit & Push</button>
     </div>
   </div>
 </div>
 
 <script id="jmp-data-script">
 // DECK_VERSION — bump this when deck structure changes to force localStorage refresh
-const DECK_VERSION = "2025-06";
+const DECK_VERSION = "2026-04";
 // DECK_DATA_START — do not remove this comment (used by Download feature)
 const DECK_DATA = {
   "editions": [
@@ -30538,6 +29982,669 @@ const DECK_DATA = {
       ]
     },
     {
+      "id": "atj",
+      "name": "Avatar: The Last Airbender Jumpstart",
+      "year": 2025,
+      "code": "TLA",
+      "note": "Use ⟳ Rebuild to populate full card lists from taw source",
+      "decks": [
+        {
+          "id": "atj-airnomads",
+          "name": "Air Nomads",
+          "headliner": "Aang, Last Airbender",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Air Nomads",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-airbending",
+          "name": "Airbending",
+          "headliner": "Aang, Airbending Master",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Airbending",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-ambush",
+          "name": "Ambush",
+          "headliner": "Azula, Crown Princess",
+          "colors": [
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Ambush",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-assassins",
+          "name": "Assassins",
+          "headliner": "Mai, Jaded Edge",
+          "colors": [
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Assassins",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-badgermoles",
+          "name": "Badgermoles",
+          "headliner": "Toph, Unveiling the Earth",
+          "colors": [
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Badgermoles",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-beasts",
+          "name": "Beasts",
+          "headliner": "Bosco, Traveling Companion",
+          "colors": [
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Beasts",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-captured",
+          "name": "Captured",
+          "headliner": "Princess Azula",
+          "colors": [
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Captured",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-combustion",
+          "name": "Combustion",
+          "headliner": "Combustion Man",
+          "colors": [
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Combustion",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-creatures",
+          "name": "Creatures",
+          "headliner": "Appa, Loyal Sky Bison",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Creatures",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-cycling",
+          "name": "Cycling",
+          "headliner": "Aang, the Peacekeeper",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Cycling",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-daili",
+          "name": "Dai Li",
+          "headliner": "Long Feng, Grand Secretariat",
+          "colors": [
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Dai Li",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-darkness",
+          "name": "Darkness",
+          "headliner": "Fire Lord Ozai",
+          "colors": [
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Darkness",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-disguise",
+          "name": "Disguise",
+          "headliner": "Aang, Wandering Monk",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Disguise",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-dragons",
+          "name": "Dragons",
+          "headliner": "Ran and Shaw, the First",
+          "colors": [
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Dragons",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-earthkingdom",
+          "name": "Earth Kingdom",
+          "headliner": "King Bumi, of Omashu",
+          "colors": [
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Earth Kingdom",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-earthbending",
+          "name": "Earthbending",
+          "headliner": "Toph, the Blind Bandit",
+          "colors": [
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Earthbending",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-fauna",
+          "name": "Fauna",
+          "headliner": "Momo, Rambunctious Rascal",
+          "colors": [
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Fauna",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-firenation",
+          "name": "Fire Nation",
+          "headliner": "Fire Lord Ozai, Tyrant",
+          "colors": [
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Fire Nation",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-firenationcaptive",
+          "name": "Fire Nation Captive",
+          "headliner": "Zuko, Wandering Prince",
+          "colors": [
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Fire Nation Captive",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-firebending",
+          "name": "Firebending",
+          "headliner": "Jeong Jeong, the Deserter",
+          "colors": [
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Firebending",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-fogoflostsouls",
+          "name": "Fog of Lost Souls",
+          "headliner": "Huu, the Vine Master",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Fog of Lost Souls",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-fournations",
+          "name": "Four Nations",
+          "headliner": "Avatar Aang, Four Elements",
+          "colors": [
+            "W",
+            "U",
+            "B",
+            "R",
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Four Nations",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-knowledge",
+          "name": "Knowledge",
+          "headliner": "Wan Shi Tong, the Librarian",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Knowledge",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-kyoshiwarriors",
+          "name": "Kyoshi Warriors",
+          "headliner": "Suki, Kyoshi Warrior",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Kyoshi Warriors",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-lightning",
+          "name": "Lightning",
+          "headliner": "Azula, Firebending Prodigy",
+          "colors": [
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Lightning",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-lionturtle",
+          "name": "Lion Turtle",
+          "headliner": "Lion Turtle, Ancient One",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Lion Turtle",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-musicians",
+          "name": "Musicians",
+          "headliner": "Chong and Lily, Nomads",
+          "colors": [
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Musicians",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-northernwatertribe",
+          "name": "Northern Water Tribe",
+          "headliner": "Princess Yue",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Northern Water Tribe",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-omashu",
+          "name": "Omashu",
+          "headliner": "King Bumi, of Omashu",
+          "colors": [
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Omashu",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-pilgrimage",
+          "name": "Pilgrimage",
+          "headliner": "Aang, Avatar Unleashed",
+          "colors": [
+            "W",
+            "U",
+            "B",
+            "R",
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Pilgrimage",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-rebelling",
+          "name": "Rebelling",
+          "headliner": "Jet, Freedom Fighter",
+          "colors": [
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Rebelling",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-redemption",
+          "name": "Redemption",
+          "headliner": "Zuko, Seeking Honor",
+          "colors": [
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Redemption",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-sandbending",
+          "name": "Sandbending",
+          "headliner": "June and Nyla",
+          "colors": [
+            "B",
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Sandbending",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-siege",
+          "name": "Siege",
+          "headliner": "Bumi, Battle King",
+          "colors": [
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Siege",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-spiritworld",
+          "name": "Spirit World",
+          "headliner": "Iroh, Dragon of the West",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Spirit World",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-spirits",
+          "name": "Spirits",
+          "headliner": "Koh, the Face Stealer",
+          "colors": [
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Spirits",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-survival",
+          "name": "Survival",
+          "headliner": "Sokka, Survivalist",
+          "colors": [
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Survival",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-swampbending",
+          "name": "Swampbending",
+          "headliner": "Huu, the Vine Master",
+          "colors": [
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Swampbending",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-swamps",
+          "name": "Swamps",
+          "headliner": "Wan Shi Tong, the Librarian",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Swamps",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-swordmaster",
+          "name": "Swordmaster",
+          "headliner": "Sokka, Swordmaster",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Swordmaster",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-teamwork",
+          "name": "Teamwork",
+          "headliner": "Team Avatar",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Teamwork",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-trickery",
+          "name": "Trickery",
+          "headliner": "Sokka, Strategy Expert",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Trickery",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-volcanoes",
+          "name": "Volcanoes",
+          "headliner": "Roku, the Great Sage",
+          "colors": [
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Volcanoes",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-watertribe",
+          "name": "Water Tribe",
+          "headliner": "Katara, Water Bender",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Water Tribe",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-waterbending",
+          "name": "Waterbending",
+          "headliner": "Katara, Bending Prodigy",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Waterbending",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "atj-whitelotus",
+          "name": "White Lotus",
+          "headliner": "Iroh, Dragon of the West",
+          "colors": [
+            "W",
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "White Lotus",
+              "cards": []
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "jdmu",
       "name": "Dominaria United Jumpstart",
       "year": 2022,
@@ -34937,15 +35044,414 @@ const DECK_DATA = {
           ]
         }
       ]
+    },
+    {
+      "id": "msh",
+      "name": "Marvel Super Heroes Jumpstart",
+      "year": 2026,
+      "code": "MSH",
+      "note": "Releasing June 26, 2026 — card lists not yet available",
+      "decks": [
+        {
+          "id": "msh-antmanwasp",
+          "name": "Ant-Man & Wasp",
+          "headliner": "Ant-Man, Scott Lang",
+          "colors": [
+            "W",
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Ant-Man & Wasp",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-asgard",
+          "name": "Asgard",
+          "headliner": "Odin, the All-Father",
+          "colors": [
+            "W",
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Asgard",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-avengersassemble",
+          "name": "Avengers Assemble",
+          "headliner": "The Avengers United",
+          "colors": [
+            "W",
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Avengers Assemble",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-blackpanther",
+          "name": "Black Panther",
+          "headliner": "T'Challa, Black Panther",
+          "colors": [
+            "B",
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Black Panther",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-blackwidow",
+          "name": "Black Widow",
+          "headliner": "Black Widow, Red Room Spy",
+          "colors": [
+            "U",
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Black Widow",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-captainamerica",
+          "name": "Captain America",
+          "headliner": "Captain America, Man Out of Time",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Captain America",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-captainmarvel",
+          "name": "Captain Marvel",
+          "headliner": "Captain Marvel, Cosmic Hero",
+          "colors": [
+            "W",
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Captain Marvel",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-doctordoom",
+          "name": "Doctor Doom",
+          "headliner": "Doctor Doom, Lord of Latveria",
+          "colors": [
+            "U",
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Doctor Doom",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-doctorstrange",
+          "name": "Doctor Strange",
+          "headliner": "Doctor Strange, Sorcerer Supreme",
+          "colors": [
+            "U",
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Doctor Strange",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-fantasticfour",
+          "name": "Fantastic Four",
+          "headliner": "Mister Fantastic, Reed Richards",
+          "colors": [
+            "W",
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Fantastic Four",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-galactus",
+          "name": "Galactus",
+          "headliner": "Galactus, World Eater",
+          "colors": [
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Galactus",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-guardiansofthegalaxy",
+          "name": "Guardians of the Galaxy",
+          "headliner": "Star-Lord, Awesome Mix",
+          "colors": [
+            "R",
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Guardians of the Galaxy",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-hawkeye",
+          "name": "Hawkeye",
+          "headliner": "Hawkeye, Bullseye Shot",
+          "colors": [
+            "W"
+          ],
+          "variants": [
+            {
+              "label": "Hawkeye",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-heroesforhire",
+          "name": "Heroes for Hire",
+          "headliner": "Luke Cage, Power Man",
+          "colors": [
+            "B",
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Heroes for Hire",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-hulk",
+          "name": "Hulk",
+          "headliner": "Hulk, Strongest There Is",
+          "colors": [
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Hulk",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-ironman",
+          "name": "Iron Man",
+          "headliner": "Iron Man, Master of Machines",
+          "colors": [
+            "W",
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Iron Man",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-loki",
+          "name": "Loki",
+          "headliner": "Loki, God of Mischief",
+          "colors": [
+            "U",
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Loki",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-shield",
+          "name": "S.H.I.E.L.D.",
+          "headliner": "Nick Fury, Director",
+          "colors": [
+            "W",
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "S.H.I.E.L.D.",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-scarletwitch",
+          "name": "Scarlet Witch",
+          "headliner": "Scarlet Witch, Reality Warper",
+          "colors": [
+            "B",
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Scarlet Witch",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-spiderman",
+          "name": "Spider-Man",
+          "headliner": "Spider-Man, Friendly Neighbor",
+          "colors": [
+            "W",
+            "U"
+          ],
+          "variants": [
+            {
+              "label": "Spider-Man",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-spiderverse",
+          "name": "Spider-Verse",
+          "headliner": "Miles Morales, Spider-Man",
+          "colors": [
+            "U",
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "Spider-Verse",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-thanos",
+          "name": "Thanos",
+          "headliner": "Thanos, Infinity Seeker",
+          "colors": [
+            "W",
+            "U",
+            "B",
+            "R",
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Thanos",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-thor",
+          "name": "Thor",
+          "headliner": "Thor, Asgardian Avenger",
+          "colors": [
+            "W",
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Thor",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-thunderbolts",
+          "name": "Thunderbolts",
+          "headliner": "Baron Zemo, Thunderbolts Leader",
+          "colors": [
+            "B",
+            "R"
+          ],
+          "variants": [
+            {
+              "label": "Thunderbolts",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-wakanda",
+          "name": "Wakanda",
+          "headliner": "Wakanda, Nation of Vibranium",
+          "colors": [
+            "B",
+            "G"
+          ],
+          "variants": [
+            {
+              "label": "Wakanda",
+              "cards": []
+            }
+          ]
+        },
+        {
+          "id": "msh-xmenadjacent",
+          "name": "X-Men Adjacent",
+          "headliner": "Wolverine, Lone Mutant",
+          "colors": [
+            "W",
+            "U",
+            "B"
+          ],
+          "variants": [
+            {
+              "label": "X-Men Adjacent",
+              "cards": []
+            }
+          ]
+        }
+      ]
     }
   ]
 };
-// DECK_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment
+// DECK_DATA_END — do not remove this comment
 // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
-const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0","jbro-powerstones:0","jmp-vampires:2","jbro-titanic:0","jmp-featheredfriends:0","jmp-smashing:3","jmp-legion:2","jmp-doctor:1","jltr-journey:1","jmp-treehugging:2","j22-insects:0","jmp-plusone:3","jbro-infantry:1","jltr-mordor:0","jmp-plusone:1","jmp-spooky:3","jmp-minions:3","j22-cats:3","j25-explorers:1"];
-const OWNED_QTY = [["jmp-abovetheclouds:3",1],["jbro-powerstones:0",1],["jmp-vampires:2",1],["jbro-titanic:0",1],["jmp-featheredfriends:0",1],["jmp-smashing:3",1],["jmp-legion:2",1],["jmp-doctor:1",1],["jltr-journey:1",1],["jmp-treehugging:2",1],["j22-insects:0",1],["jmp-plusone:3",1],["jbro-infantry:1",1],["jltr-mordor:0",1],["jmp-plusone:1",1],["jmp-spooky:3",1],["jmp-minions:3",1],["j22-cats:3",1],["j25-explorers:1",1]];
-const OWNED_VERSION = "1777343816797";
-// OWNED_DATA_END — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment — do not remove this comment
+const OWNED_DATA = [];
+const OWNED_QTY = [];
+const OWNED_VERSION = "0";
+// OWNED_DATA_END — do not remove this comment
 </script>
 <script>
 // ─── EDIT PASSWORD (change this in the file to your preferred password) ───────
@@ -35111,7 +35617,8 @@ const EDITION_CONFIG = {
   j21:   { name:'Historic Horizons',          year:2021, tieIn:false, note:'Arena only' },
   j22:   { name:'Jumpstart 2022',             year:2022, tieIn:false },
   j25:   { name:'Foundations Jumpstart',      year:2024, tieIn:false },
-  atj:   { name:'Avatar: TLA Jumpstart',      year:2025, tieIn:false },
+  atj:   { name:'Avatar: The Last Airbender Jumpstart', year:2025, tieIn:false, tawCode:'tla' },
+  msh:   { name:'Marvel Super Heroes Jumpstart',       year:2026, tieIn:false },
   jdmu:  { name:'Dominaria United Jumpstart', year:2022, tieIn:true, tawCode:'dmu'  },
   jbro:  { name:"Brothers' War Jumpstart",    year:2022, tieIn:true, tawCode:'bro'  },
   jone:  { name:'Phyrexia: All Will Be One Jumpstart', year:2023, tieIn:true, tawCode:'one'  },
@@ -35124,7 +35631,7 @@ const EDITION_CONFIG = {
   jblb:  { name:'Bloomburrow Jumpstart',      year:2024, tieIn:true  },
   jdsk:  { name:'Duskmourn Jumpstart',        year:2024, tieIn:true  },
 };
-const MAIN_SET_ORDER = ['jmp','j21','j22','j25','atj'];
+const MAIN_SET_ORDER = ['jmp','j21','j22','j25','atj','msh'];
 function getTieInIds() {
   return new Set(liveData.editions.filter(e => {
     const cfg = EDITION_CONFIG[e.id];
@@ -35155,7 +35662,7 @@ function renderTabs() {
   const mainEds = liveData.editions
     .filter(e => !getTieInIds().has(e.id))
     .sort((a,b) => (EDITION_CONFIG[a.id]?.year||9999) - (EDITION_CONFIG[b.id]?.year||9999));
-  const TAB_LABELS = { jmp:'JMP (2020)', j21:'Historic Horizons', j22:'JMP 2022', j25:'Foundations', atj:'Avatar' };
+  const TAB_LABELS = { jmp:'JMP (2020)', j21:'Historic Horizons', j22:'JMP 2022', j25:'Foundations', atj:'Avatar: TLA', msh:'Marvel Heroes' };
   for (const ed of mainEds) {
     nav.appendChild(makeTab(ed.id, TAB_LABELS[ed.id] || `${ed.name} (${ed.year||'?'})`));
   }
@@ -35300,12 +35807,12 @@ function openDeck(deckId, editionId, vi = 0) {
   state.openDeckId = deckId; state.openEditionId = editionId;
   state.openVariant = Math.min(vi, deck.variants.length - 1);
   renderModal(deck, ed);
-  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-overlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-overlay')?.classList.remove('open');
   document.body.style.overflow = '';
   state.openDeckId = null;
 }
@@ -35322,7 +35829,7 @@ function renderModal(deck, ed) {
       ${deck.headliner ? `<div class="modal-headliner">${esc(deck.headliner)}</div>` : ''}
     </div>
     <button class="modal-close" id="modal-close-btn">✕</button>`;
-  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  document.getElementById('modal-close-btn')?.addEventListener('click', closeModal);
   document.getElementById('modal-edition-label').textContent = `${ed.name} · ${ed.year}`;
 
   // Variant row
@@ -35532,7 +36039,7 @@ document.querySelectorAll('.color-btn').forEach(btn => {
 });
 
 let searchTimer;
-document.getElementById('search-input').addEventListener('input', e => {
+document.getElementById('search-input')?.addEventListener('input', e => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { state.search = e.target.value.trim(); renderGrid(); }, 180);
 });
@@ -35587,27 +36094,27 @@ function renderCollectionSummary() {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('summary-decks-btn')?.addEventListener('click', () => {
     summaryMode = 'decks';
-    document.getElementById('summary-decks-btn').classList.add('active');
-    document.getElementById('summary-stats-btn').classList.remove('active');
+    document.getElementById('summary-decks-btn')?.classList.add('active');
+    document.getElementById('summary-stats-btn')?.classList.remove('active');
     document.getElementById('main-content').style.display = '';
     renderCollectionSummary();
   });
   document.getElementById('summary-stats-btn')?.addEventListener('click', () => {
     summaryMode = 'stats';
-    document.getElementById('summary-stats-btn').classList.add('active');
-    document.getElementById('summary-decks-btn').classList.remove('active');
+    document.getElementById('summary-stats-btn')?.classList.add('active');
+    document.getElementById('summary-decks-btn')?.classList.remove('active');
     document.getElementById('main-content').style.display = 'none';
     renderCollectionSummary();
   });
 });
 
-document.getElementById('owned-only-btn').addEventListener('click', () => {
+document.getElementById('owned-only-btn')?.addEventListener('click', () => {
   state.showOwnedOnly = !state.showOwnedOnly;
-  document.getElementById('owned-only-btn').classList.toggle('active', state.showOwnedOnly);
+  document.getElementById('owned-only-btn')?.classList.toggle('active', state.showOwnedOnly);
   renderGrid();
 });
 
-document.getElementById('modal-overlay').addEventListener('click', e => {
+document.getElementById('modal-overlay')?.addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 });
 
@@ -35618,968 +36125,25 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ─── IMPORT TOOL ──────────────────────────────────────────────────────────────
-const BASIC_LAND_NAMES = new Set(['Plains','Island','Swamp','Mountain','Forest',
-  'Snow-Covered Plains','Snow-Covered Island','Snow-Covered Swamp','Snow-Covered Mountain','Snow-Covered Forest']);
-const THRIVING_LAND_NAMES = new Set(['Thriving Heath','Thriving Isle','Thriving Moor','Thriving Bluff','Thriving Grove']);
-const CHANNEL_LAND_NAMES = new Set(['The Fair Basilica','The Hunter Maze','The Lair of the Hydra',
-  'Forgotten Cave','Secluded Steppe','Barren Moor','Lonely Sandbar','Tranquil Thicket',
-  'Leechridden Swamp','Blighted Fen','Shimmerdrift Vale','Blasted Landscape']);
-function isBasicCard(name) {
-  return BASIC_LAND_NAMES.has(name)||THRIVING_LAND_NAMES.has(name)||CHANNEL_LAND_NAMES.has(name);
-}
-
-// ── Import state ──────────────────────────────────────────────────
-const importState = {
-  mode: 'new', // 'new' | 'add'
-  colors: new Set(),
-  prefill: null   // {deckId, editionId} when opened from a deck modal
-};
-let lastSnippet = '';
-let mtgjsonDeckList = null;  // cached DeckList.json data
-
-// ── Populate dropdowns ─────────────────────────────────────────────
-function populateImportDropdowns() {
-  // Edition dropdown
-  const edSel = document.getElementById('import-edition-select');
-  edSel.innerHTML = '<option value="">— Select edition —</option>';
-  for (const ed of liveData.editions) {
-    const opt = document.createElement('option');
-    opt.value = ed.id;
-    opt.textContent = `${ed.name} (${ed.year})`;
-    edSel.appendChild(opt);
-  }
-  const customOpt = document.createElement('option');
-  customOpt.value = '__custom__';
-  customOpt.textContent = '✏ New edition…';
-  edSel.appendChild(customOpt);
-
-  // Existing deck dropdown (for "Add Variant" mode)
-  const dkSel = document.getElementById('existing-deck-select');
-  dkSel.innerHTML = '<option value="">— Select deck —</option>';
-  for (const ed of liveData.editions) {
-    const grp = document.createElement('optgroup');
-    grp.label = `${ed.name} (${ed.year})`;
-    for (const deck of ed.decks) {
-      const opt = document.createElement('option');
-      opt.value = `${ed.id}|${deck.id}`;
-      opt.textContent = deck.name;
-      grp.appendChild(opt);
-    }
-    dkSel.appendChild(grp);
-  }
-}
-
-// ── Mode toggle ────────────────────────────────────────────────────
-function setImportMode(mode) {
-  importState.mode = mode;
-  document.getElementById('mode-new-btn').classList.toggle('active', mode === 'new');
-  document.getElementById('mode-add-btn').classList.toggle('active', mode === 'add');
-  document.getElementById('existing-deck-field').style.display = mode === 'add' ? '' : 'none';
-  document.getElementById('deck-name-field').style.display   = mode === 'new' ? '' : 'none';
-  document.getElementById('headliner-field').style.display   = mode === 'new' ? '' : 'none';
-  document.getElementById('colors-field').style.display      = mode === 'new' ? '' : 'none';
-  document.getElementById('import-edition-field').style.display = mode === 'new' ? '' : 'none';
-  document.getElementById('import-edition-custom-field').style.display = 'none';
-  rebuildOutput();
-}
-document.getElementById('mode-new-btn').addEventListener('click', () => setImportMode('new'));
-document.getElementById('mode-add-btn').addEventListener('click', () => setImportMode('add'));
-
-// ── Edition selector ───────────────────────────────────────────────
-document.getElementById('import-edition-select').addEventListener('change', function() {
-  document.getElementById('import-edition-custom-field').style.display = this.value === '__custom__' ? '' : 'none';
-  rebuildOutput();
-});
-document.getElementById('import-edition-custom').addEventListener('input', rebuildOutput);
-
-// ── Existing deck selector ─────────────────────────────────────────
-document.getElementById('existing-deck-select').addEventListener('change', function() {
-  if (!this.value) return;
-  const [edId, deckId] = this.value.split('|');
-  const ed = liveData.editions.find(e => e.id === edId);
-  const deck = ed && ed.decks.find(d => d.id === deckId);
-  if (deck) {
-    document.getElementById('import-variant-label').value = '';
-    document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
-  }
-  rebuildOutput();
-});
-
-// ── Color pips ─────────────────────────────────────────────────────
-document.querySelectorAll('.import-color-pip').forEach(pip => {
-  pip.addEventListener('click', () => {
-    const c = pip.dataset.c;
-    if (importState.colors.has(c)) { importState.colors.delete(c); pip.classList.remove('selected'); }
-    else { importState.colors.add(c); pip.classList.add('selected'); }
-    rebuildOutput();
-  });
-});
-
-// ── Text fields ────────────────────────────────────────────────────
-['import-deck-name','import-headliner','import-variant-label'].forEach(id => {
-  document.getElementById(id).addEventListener('input', rebuildOutput);
-});
-
-// ── Card list parser ───────────────────────────────────────────────
-function parseDecklist(raw) {
-  const cards = [];
-  for (const line of raw.split('\n')) {
-    const t = line.trim();
-    if (!t || /^[/#]/.test(t) || /^(Deck|Sideboard|Commander|About)/i.test(t)) continue;
-    const m = t.match(/^(\d+)x?\s+(.+?)(?:\s+\(.{2,6}\)\s+\d+)?$/);
-    if (m) {
-      const name = m[2].replace(/\s*\/\/.*$/, '').trim(); // strip // DFC half
-      if (name) cards.push({ name, qty: parseInt(m[1]) });
-    } else if (/^[A-ZÀ-Ö]/.test(t)) {
-      const name = t.replace(/\s*\(.{2,6}\)\s*\d*$/, '').replace(/\s*\/\/.*$/, '').trim();
-      if (name) cards.push({ name, qty: 1 });
-    }
-  }
-  const merged = [];
-  for (const c of cards) {
-    const e = merged.find(x => x.name === c.name);
-    if (e) e.qty += c.qty; else merged.push({ ...c });
-  }
-  return merged;
-}
-
-function formatCard(c) {
-  const basic = isBasicCard(c.name) ? ',basic:true' : '';
-  return `      {name:'${c.name.replace(/'/g,"\\'")}',qty:${c.qty}${basic}}`;
-}
-
-function slugify(s) {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
-
-// ── Main output builder ────────────────────────────────────────────
-function rebuildOutput() {
-  const rawText = document.getElementById('import-input').value;
-  const cards = parseDecklist(rawText);
-  const variantLabel = document.getElementById('import-variant-label').value.trim();
-  const output = document.getElementById('import-output');
-  const stats  = document.getElementById('import-stats');
-  const hint   = document.getElementById('import-paste-hint');
-  const copyBtn = document.getElementById('import-copy-btn');
-  const actMsg  = document.getElementById('import-actions-msg');
-
-  const spells = cards.filter(c => !isBasicCard(c.name));
-  const lands  = cards.filter(c =>  isBasicCard(c.name));
-  const total  = cards.reduce((s,c) => s+c.qty, 0);
-
-  let lines = [];
-
-  if (importState.mode === 'new') {
-    const deckName = document.getElementById('import-deck-name').value.trim();
-    const headliner = document.getElementById('import-headliner').value.trim();
-    const colors = [...importState.colors];
-    const edSel = document.getElementById('import-edition-select').value;
-    const edCustom = document.getElementById('import-edition-custom').value.trim();
-    const edId = edSel === '__custom__' ? slugify(edCustom) : edSel;
-    const deckId = edId && deckName ? `${edId}-${slugify(deckName)}` : 'EDITION_ID-DECK_ID';
-    const label = variantLabel || deckName || 'Variant 1';
-
-    const colorStr = colors.length ? `['${colors.join("','")}']` : `['W']`;
-    const headStr  = headliner ? `headliner:'${headliner.replace(/'/g,"\\'")}', ` : '';
-
-    if (cards.length > 0) {
-      const cardLines = [...spells, ...lands].map(formatCard).join(',\n');
-      lines = [
-        `{ id:'${deckId}', name:'${(deckName||'Deck Name').replace(/'/g,"\\'")}', colors:${colorStr}, ${headStr}variants:[`,
-        `  { label:'${label.replace(/'/g,"\\'")}', cards:[`,
-        cardLines,
-        `  ]}`,
-        `]}`
-      ];
-    } else {
-      lines = [
-        `{ id:'${deckId}', name:'${(deckName||'Deck Name').replace(/'/g,"\\'")}', colors:${colorStr}, ${headStr}variants:[`,
-        `  { label:'${label.replace(/'/g,"\\'")}', cards:[] }`,
-        `]}`
-      ];
-    }
-  } else {
-    // Add Variant mode
-    const label = variantLabel || 'Variant';
-    const cardLines = cards.length
-      ? [...spells, ...lands].map(formatCard).join(',\n')
-      : '';
-    lines = [
-      `{ label:'${label.replace(/'/g,"\\'")}', cards:[`,
-      cardLines,
-      `]}`
-    ];
-
-    const selVal = document.getElementById('existing-deck-select').value;
-    if (selVal) {
-      const [edId, deckId] = selVal.split('|');
-      const ed = liveData.editions.find(e => e.id === edId);
-      const deck = ed && ed.decks.find(d => d.id === deckId);
-      if (deck) actMsg.textContent = `Paste into ${deck.name}'s variants[] array in data.js`;
-      else actMsg.textContent = '';
-    } else actMsg.textContent = '';
-  }
-
-  const snippet = lines.join('\n');
-  lastSnippet = snippet;
-  output.textContent = snippet;
-
-  if (cards.length > 0) {
-    stats.style.display = 'block';
-    stats.textContent = `✓ ${cards.length} unique cards · ${total} total · ${spells.length} spell types · ${lands.length} land types`;
-    hint.style.display = 'none';
-    copyBtn.disabled = false;
-  } else {
-    stats.style.display = 'none';
-    hint.style.display = 'block';
-    hint.textContent = 'Paste a card list in the middle column to generate the cards[] array.';
-    copyBtn.disabled = false; // allow copy of empty stub
-  }
-}
-
-document.getElementById('import-input').addEventListener('input', rebuildOutput);
-
-// ── Open / close import modal ──────────────────────────────────────
-function openImport(prefill = null) {
-  populateImportDropdowns();
-  importState.prefill = prefill;
-
-  if (prefill) {
-    setImportMode('add');
-    const sel = document.getElementById('existing-deck-select');
-    const targetVal = `${prefill.editionId}|${prefill.deckId}`;
-    for (const opt of sel.options) {
-      if (opt.value === targetVal) { sel.value = targetVal; break; }
-    }
-    // Also try to prefill deck name / headliner for reference
-    const ed = liveData.editions.find(e => e.id === prefill.editionId);
-    const deck = ed && ed.decks.find(d => d.id === prefill.deckId);
-    if (deck) {
-      document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
-      document.getElementById('import-actions-msg').textContent = `Adding variant to: ${deck.name}`;
-    }
-  } else {
-    setImportMode('new');
-    document.getElementById('import-actions-msg').textContent = '';
-  }
-
-  rebuildOutput();
-  document.getElementById('import-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  setTimeout(() => document.getElementById('import-input').focus(), 80);
-}
-
-function closeImport() {
-  document.getElementById('import-modal').classList.remove('open');
-  document.body.style.overflow = '';
-  // reset
-  document.getElementById('import-input').value = '';
-  document.getElementById('import-deck-name').value = '';
-  document.getElementById('import-headliner').value = '';
-  document.getElementById('import-variant-label').value = '';
-  document.getElementById('import-edition-select').value = '';
-  document.getElementById('import-edition-custom').value = '';
-  importState.colors.clear();
-  document.querySelectorAll('.import-color-pip').forEach(p => p.classList.remove('selected'));
-  document.getElementById('import-edition-custom-field').style.display = 'none';
-  setImportMode('new');
-}
-
-document.getElementById('import-btn').addEventListener('click', () => openImport());
-document.getElementById('import-close-btn').addEventListener('click', closeImport);
-document.getElementById('import-close-btn2').addEventListener('click', closeImport);
-document.getElementById('import-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('import-modal')) closeImport();
-});
-
-document.getElementById('import-copy-btn').addEventListener('click', () => {
-  if (!lastSnippet) return;
-  navigator.clipboard.writeText(lastSnippet).then(() => {
-    const btn = document.getElementById('import-copy-btn');
-    const orig = btn.textContent;
-    btn.textContent = 'Copied ✓';
-    setTimeout(() => btn.textContent = orig, 1800);
-  }).catch(() => { /* fallback silent */ });
-});
-
-// ── "+ Add Variant" from deck modal ───────────────────────────────
-document.getElementById('modal-add-variant-btn').addEventListener('click', () => {
-  if (state.openDeckId && state.openEditionId) {
-    closeModal();
-    setTimeout(() => openImport({ deckId: state.openDeckId, editionId: state.openEditionId }), 120);
-  }
-});
-
-// ── MTGJSON auto-fetcher ───────────────────────────────────────────
-const JMP_SET_CODES = new Set(['JMP','J21','J22','J25','JDMU','JBRO','JONE','JMOM','JLTR','JLTR2','ATJ']);
-const MTGJSON_BASE = 'https://mtgjson.com/api/v5';
-let allMtgjsonDecks = [];
-
-async function loadMtgjsonList() {
-  const btn = document.getElementById('mtgjson-load-btn');
-  const status = document.getElementById('mtgjson-status');
-  if (mtgjsonDeckList) { populateMtgjsonSelect(mtgjsonDeckList); return; }
-  btn.disabled = true;
-  status.textContent = 'Fetching deck list…';
-  try {
-    const r = await fetch(`${MTGJSON_BASE}/DeckList.json`);
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const json = await r.json();
-    mtgjsonDeckList = json.data || [];
-    allMtgjsonDecks = mtgjsonDeckList.filter(d => JMP_SET_CODES.has(d.code));
-    if (allMtgjsonDecks.length === 0) {
-      // MTGJSON may use different codes — show all if filter returns nothing
-      allMtgjsonDecks = mtgjsonDeckList.filter(d =>
-        (d.fileName || '').match(/JMP|J22|J25|J21|JDMU|JBRO|JONE|JMOM|JLTR/i)
-      );
-    }
-    status.textContent = allMtgjsonDecks.length > 0
-      ? `${allMtgjsonDecks.length} Jumpstart decks found`
-      : `${mtgjsonDeckList.length} total decks loaded (no Jumpstart filter match — showing all)`;
-    if (allMtgjsonDecks.length === 0) allMtgjsonDecks = mtgjsonDeckList;
-    populateMtgjsonSelect(allMtgjsonDecks);
-    document.getElementById('mtgjson-search').style.display = '';
-    document.getElementById('mtgjson-deck-select').style.display = '';
-    document.getElementById('mtgjson-bulk-btn').classList.add('visible');
-  } catch(e) {
-    status.textContent = `⚠ Could not reach MTGJSON (${e.message}). Use manual paste instead.`;
-    btn.disabled = false;
-  }
-}
-
-function populateMtgjsonSelect(decks) {
-  const sel = document.getElementById('mtgjson-deck-select');
-  sel.innerHTML = '<option value="">— Select a deck to auto-fill —</option>';
-  for (const d of decks) {
-    const opt = document.createElement('option');
-    opt.value = d.fileName;
-    opt.textContent = `${d.name} (${d.code})`;
-    sel.appendChild(opt);
-  }
-}
-
-document.getElementById('mtgjson-load-btn').addEventListener('click', loadMtgjsonList);
-
-document.getElementById('mtgjson-search').addEventListener('input', function() {
-  const q = this.value.toLowerCase();
-  const filtered = allMtgjsonDecks.filter(d =>
-    d.name.toLowerCase().includes(q) || d.code.toLowerCase().includes(q)
-  );
-  populateMtgjsonSelect(filtered);
-});
-
-document.getElementById('mtgjson-deck-select').addEventListener('change', async function() {
-  const fileName = this.value;
-  if (!fileName) return;
-  const status = document.getElementById('mtgjson-status');
-  status.textContent = 'Fetching deck…';
-  try {
-    const r = await fetch(`${MTGJSON_BASE}/decks/${fileName}.json`);
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const json = await r.json();
-    const deck = json.data;
-    if (!deck) throw new Error('No data');
-
-    // Auto-fill metadata fields
-    const rawName = deck.name || fileName.replace(/_[A-Z0-9]+$/, '').replace(/\d+$/, '').replace(/([A-Z])/g, ' $1').trim();
-    document.getElementById('import-deck-name').value = rawName;
-
-    // Build card list from mainBoard
-    const mainBoard = deck.mainBoard || [];
-    let listText = '';
-    const spells = mainBoard.filter(c => !isBasicCard(c.name));
-    const lands  = mainBoard.filter(c =>  isBasicCard(c.name));
-    for (const c of [...spells, ...lands]) {
-      listText += `${c.count} ${c.name}\n`;
-    }
-    document.getElementById('import-input').value = listText.trim();
-
-    // Try to detect colors from card colors
-    const colorSet = new Set();
-    for (const c of spells) {
-      if (c.colors) for (const cl of c.colors) colorSet.add(cl);
-    }
-    importState.colors.clear();
-    document.querySelectorAll('.import-color-pip').forEach(p => {
-      p.classList.remove('selected');
-      if (colorSet.has(p.dataset.c)) {
-        importState.colors.add(p.dataset.c);
-        p.classList.add('selected');
-      }
-    });
-
-    // Variant label: include variant number from fileName
-    const varNum = (fileName.match(/(\d+)_[A-Z0-9]+$/) || [])[1];
-    if (varNum) document.getElementById('import-variant-label').value = `Variant ${varNum}`;
-
-    status.textContent = `✓ ${deck.name} — ${mainBoard.length} cards loaded`;
-    rebuildOutput();
-  } catch(e) {
-    status.textContent = `⚠ Could not fetch ${fileName}: ${e.message}`;
-  }
-});
-
-// ─── EDIT MODE ────────────────────────────────────────────────────────────────
-let editMode = false;
-
-function enterEditMode() {
-  editMode = true;
-  document.body.classList.add('edit-mode');
-  document.getElementById('edit-mode-badge').classList.add('visible');
-  renderGrid();
-}
-function exitEditMode() {
-  editMode = false;
-  document.body.classList.remove('edit-mode');
-  document.getElementById('edit-mode-badge').classList.remove('visible');
-  renderGrid();
-}
-
-// Password modal
-// Help modal
-document.getElementById('help-btn').addEventListener('click', () => {
-  document.getElementById('help-modal').classList.add('open');
-});
-document.getElementById('help-close-btn').addEventListener('click', () => {
-  document.getElementById('help-modal').classList.remove('open');
-});
-document.getElementById('help-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('help-modal'))
-    document.getElementById('help-modal').classList.remove('open');
-});
-
-// Logo: reset everything to home state
-document.getElementById('site-logo-btn').addEventListener('click', () => {
-  // 1. Reset all state
-  state.search = '';
-  state.edition = 'all';
-  state.colors.clear();
-  state.letterFilter = null;
-  state.letterLocked = false;
-  state.showOwnedOnly = false;
-  // 2. Exit edit mode first (it calls renderGrid internally, that's fine)
-  if (editMode) exitEditMode();
-  // 3. Reset all UI elements AFTER exitEditMode so nothing gets re-highlighted
-  const searchInput = document.getElementById('search-input');
-  if (searchInput) searchInput.value = '';
-  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-  const allBtn = document.querySelector('.color-btn[data-c="all"]');
-  if (allBtn) allBtn.classList.add('active');
-  document.getElementById('owned-only-btn')?.classList.remove('active');
-  document.getElementById('edit-mode-badge')?.classList.remove('visible');
-  document.body.classList.remove('edit-mode');
-  // 4. Final render
-  renderGrid();
-});
-
-document.getElementById('collection-banner-clear').addEventListener('click', () => {
-  state.showOwnedOnly = false;
-  document.getElementById('owned-only-btn')?.classList.remove('active');
-  state.search = '';
-  state.edition = 'all';
-  state.colors.clear();
-  state.letterFilter = null;
-  state.letterLocked = false;
-  document.getElementById('search-input').value = '';
-  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
-  renderGrid();
-});
-
-document.getElementById('edit-mode-btn').addEventListener('click', () => {
-  if (editMode) { exitEditMode(); return; }
-  document.getElementById('pw-input').value = '';
-  document.getElementById('pw-error').style.display = 'none';
-  document.getElementById('pw-modal').classList.add('open');
-  setTimeout(() => document.getElementById('pw-input').focus(), 60);
-});
-function closePwModal() { document.getElementById('pw-modal').classList.remove('open'); }
-document.getElementById('pw-cancel-btn').addEventListener('click', closePwModal);
-document.getElementById('pw-confirm-btn').addEventListener('click', () => {
-  const val = document.getElementById('pw-input').value;
-  if (val === EDIT_PASSWORD) { closePwModal(); enterEditMode(); }
-  else { document.getElementById('pw-error').style.display = 'block'; document.getElementById('pw-input').value = ''; document.getElementById('pw-input').focus(); }
-});
-document.getElementById('pw-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('pw-confirm-btn').click();
-});
-
-// Save / Export dropdown
-document.getElementById('save-menu-btn').addEventListener('click', e => {
-  e.stopPropagation();
-  document.getElementById('save-dropdown').classList.toggle('open');
-});
-document.addEventListener('click', () => document.getElementById('save-dropdown').classList.remove('open'));
-
-// Download complete self-contained index.html
-document.getElementById('save-download-btn').addEventListener('click', () => {
-  // Close all open modals/dropdowns before serialising the DOM
-  const openEls = [...document.querySelectorAll('.open')];
-  openEls.forEach(el => el.classList.remove('open'));
-  document.body.classList.remove('edit-mode');
-  const badge = document.getElementById('edit-mode-badge');
-  badge?.classList.remove('visible');
-
-  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-
-  // Restore current session state
-  openEls.forEach(el => el.classList.add('open'));
-  if (editMode) {
-    document.body.classList.add('edit-mode');
-    badge?.classList.add('visible');
-  }
-
-  // Swap in live deck data + version
-  const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
-  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
-
-  // Embed current ownership so other devices pick it up
-  const ownedArr = JSON.stringify([...state.owned]);
-  const ownedQtyArr = JSON.stringify([...state.ownedQty]);
-  const ownedVer = Date.now().toString();
-  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\nconst OWNED_QTY = ${ownedQtyArr};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
-  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
-
-  const blob = new Blob([src], { type: 'text/html' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
-  URL.revokeObjectURL(url);
-  document.getElementById('save-dropdown').classList.remove('open');
-  showToast('✓ Downloaded index.html — ready to push to GitHub', 3000);
-});
-
-// Reset
-document.getElementById('save-rebuild-btn').addEventListener('click', () => {
-  document.getElementById('save-dropdown').classList.remove('open');
-  if (!confirm('Wipe ALL deck data and rebuild from taw/magic-preconstructed-decks-data?\n\nYour ownership marks will be kept. This will correctly populate all editions including all 46 Historic Horizons themes.')) return;
-  wipeAndRebuildFromSource();
-});
-
-document.getElementById('save-sync-collection-btn').addEventListener('click', () => {
-  document.getElementById('save-dropdown').classList.remove('open');
-  if (!OWNED_DATA || OWNED_DATA.length === 0) {
-    showToast('No collection data embedded in this file yet. Download after marking your collection on another device first.', 5000);
-    return;
-  }
-  const incoming = new Set(OWNED_DATA);
-  const merged   = new Set([...state.owned, ...incoming]);
-  const newCount = merged.size - state.owned.size;
-  if (newCount === 0 && incoming.size === state.owned.size) {
-    showToast('✓ Already up to date — nothing to merge.', 3000);
-    return;
-  }
-  if (!confirm(`Merge ${incoming.size} owned variants from the embedded file with your current ${state.owned.size} variants on this device? (${newCount} new items will be added.)`)) return;
-  state.owned = merged;
-  saveOwned();
-  renderGrid();
-  showToast(`✓ Merged: ${merged.size} total owned variants across all devices.`, 4000);
-});
-
-document.getElementById('save-force-resync-btn').addEventListener('click', async () => {
-  document.getElementById('save-dropdown').classList.remove('open');
-  const siteUrl = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
-
-  showToast('⏳ Fetching latest from GitHub…', 60000);
-  try {
-    const res = await fetch(siteUrl + '?v=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
-
-    const dataMatch = text.match(/const OWNED_DATA = (\[.*?\]);/s);
-    const verMatch  = text.match(/const OWNED_VERSION = "([^"]+)"/);
-    if (!dataMatch) throw new Error('Could not find OWNED_DATA in fetched file.');
-
-    const remoteOwned   = JSON.parse(dataMatch[1]);
-    const remoteVersion = verMatch ? verMatch[1] : Date.now().toString();
-
-    // If remote is empty, warn — this means the laptop hasn't pushed its collection yet
-    if (remoteOwned.length === 0) {
-      showToast('⚠ GitHub file has 0 owned variants. On your laptop: Download → Push first, then retry.', 8000);
-      return;
-    }
-
-    if (!confirm(`Found ${remoteOwned.length} owned variant(s) on GitHub.\nReplace your local collection with this? (Local changes will be overwritten)`)) return;
-
-    state.owned = new Set(remoteOwned);
-    try {
-      const qm = text.match(/const OWNED_QTY = (\[.*?\]);/s);
-      if (qm) { state.ownedQty = new Map(JSON.parse(qm[1])); saveOwnedQty(); }
-    } catch(e) {}
-    saveOwned();
-    localStorage.setItem('jmp-owned-version', remoteVersion);
-
-    // On mobile, switch to My Collection view after sync so they see results immediately
-    if (window.innerWidth <= 700) {
-      state.showOwnedOnly = true;
-      document.getElementById('owned-only-btn')?.classList.add('active');
-    }
-    renderGrid();
-    showToast(`✓ Resynced — ${remoteOwned.length} owned variants loaded from GitHub`, 5000);
-  } catch(e) {
-    showToast(`⚠ Resync failed: ${e.message}`, 5000);
-  }
-});
-
-document.getElementById('save-reset-btn').addEventListener('click', () => {
-  if (!confirm('Reset ALL data and settings including ownership? This cannot be undone.')) return;
-  localStorage.clear();
-  state.owned = new Set();
-  resetLiveData();
-  document.getElementById('save-dropdown').classList.remove('open');
-  renderTabs();
-  renderGrid();
-  showToast('All data and settings cleared.');
-});
-
-// ── Wipe & Rebuild from taw source ──────────────────────────────────────────
-async function wipeAndRebuildFromSource() {
-  const overlay  = document.getElementById('rebuild-overlay');
-  const statusEl = document.getElementById('rebuild-status');
-  const barEl    = document.getElementById('rebuild-bar');
-  const detailEl = document.getElementById('rebuild-detail');
-  const setP     = (pct, msg, detail='') => {
-    barEl.style.width = pct + '%';
-    statusEl.textContent = msg;
-    detailEl.textContent = detail;
-  };
-  overlay.classList.add('open');
-  setP(0, 'Fetching taw/magic-preconstructed-decks-data…', 'One request · no duplicates possible');
-
-  let allTaw;
-  try {
-    const r = await fetch('https://raw.githubusercontent.com/taw/magic-preconstructed-decks-data/master/decks_v2.json');
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    setP(12, 'Parsing JSON…');
-    allTaw = await r.json();
-  } catch(e) {
-    overlay.classList.remove('open');
-    showToast('⚠ Fetch failed: ' + e.message, 5000);
-    return;
-  }
-
-  setP(22, 'Filtering Jumpstart halfdecks…');
-  // Build lookup: taw set_code → our edition id (handles parent codes like 'bro' → 'jbro')
-  const tawCodeMap = {};
-  for (const [id, cfg] of Object.entries(EDITION_CONFIG)) {
-    tawCodeMap[id] = id;            // direct match (jmp, j22, etc.)
-    if (cfg.tawCode) tawCodeMap[cfg.tawCode] = id;  // parent code (bro → jbro, etc.)
-  }
-  const jmpDecks = allTaw.filter(d => {
-    const sc = (d.set_code || '').toLowerCase();
-    if (!tawCodeMap[sc]) return false;
-    const n = (d.cards || []).reduce((s,c) => s + (c.count||1), 0);
-    return n >= 12 && n <= 25;
-  });
-  setP(30, `Found ${jmpDecks.length} halfdecks across ${new Set(jmpDecks.map(d=>d.set_code.toLowerCase())).size} sets. Grouping themes…`);
-
-  // Group by setCode + baseName (strip variant number suffix)
-  const normName = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const grouped  = {};
-  for (const d of jmpDecks) {
-    const sc  = tawCodeMap[(d.set_code || '').toLowerCase()] || d.set_code.toLowerCase();
-    const base = d.name.replace(/\s*\(\d+\)$/, '').replace(/\s+\d+$/, '').trim();
-    const key  = sc + '|' + normName(base);
-    if (!grouped[key]) grouped[key] = { sc, base, variants: [] };
-    grouped[key].variants.push(d);
-  }
-  for (const g of Object.values(grouped)) {
-    g.variants.sort((a,b) => {
-      const na = parseInt((a.name.match(/\((\d+)\)$/) || [0,0])[1]) || 0;
-      const nb = parseInt((b.name.match(/\((\d+)\)$/) || [0,0])[1]) || 0;
-      return na - nb;
-    });
-  }
-
-  setP(45, 'Building editions…');
-  const edMap = {};
-  const entries = Object.values(grouped);
-  for (let i = 0; i < entries.length; i++) {
-    const { sc, base, variants } = entries[i];
-    if (i % 20 === 0) {
-      setP(45 + Math.round(40 * i / entries.length), 'Building editions…', `${sc.toUpperCase()}: ${base}`);
-      await new Promise(r => setTimeout(r, 0)); // yield to UI
-    }
-    if (!edMap[sc]) {
-      const cfg = EDITION_CONFIG[sc] || {};
-      edMap[sc] = { id: sc, name: cfg.name || sc.toUpperCase(), year: cfg.year || null,
-                    code: sc.toUpperCase(), note: cfg.note || (cfg.tieIn ? 'Set tie-in' : undefined), decks: [] };
-    }
-    const builtVariants = variants.map(td => ({
-      label: td.name,
-      cards: (td.cards || []).map(c => ({
-        name: c.name, qty: c.count || 1,
-        ...(isBasicCard(c.name) ? { basic: true } : {})
-      }))
-    }));
-    const allCards = builtVariants.flatMap(v => v.cards);
-    let headliner;
-    for (const v of builtVariants) { const c = v.cards.find(x=>!x.basic); if(c){headliner=c.name;break;} }
-    edMap[sc].decks.push({
-      id: sc + '-' + normName(base), name: base, headliner,
-      colors: detectColors(allCards), variants: builtVariants
-    });
-  }
-
-  setP(88, 'Sorting and saving…');
-  const mainOrder = ['jmp','j21','j22','j25','atj'];
-  const editions  = [
-    ...mainOrder.filter(id => edMap[id]).map(id => edMap[id]),
-    ...Object.values(edMap).filter(e => !mainOrder.includes(e.id)).sort((a,b) => (a.year||9999)-(b.year||9999))
-  ];
-  for (const ed of editions) ed.decks.sort((a,b) => a.name.localeCompare(b.name));
-
-  const savedOwned = [...state.owned];
-  liveData = { editions };
-  saveLiveData();
-  state.owned = new Set(savedOwned);
-  saveOwned();
-
-  setP(100, 'Done!');
-  await new Promise(r => setTimeout(r, 350));
-  overlay.classList.remove('open');
-
-  const totD = editions.reduce((s,e) => s + e.decks.length, 0);
-  const totV = editions.reduce((s,e) => e.decks.reduce((s2,d) => s2 + d.variants.length, 0) + s, 0);
-  renderTabs();
-  renderGrid();
-  showToast(`✓ ${editions.length} sets · ${totD} themes · ${totV} variants loaded from source`, 6000);
-}
-
-// Generate self-contained HTML content (used by GitHub push)
-async function generateSelfContainedHtml() {
-  // Close every open modal/dropdown before serialising — otherwise they get
-  // baked into the saved file and appear open on load for other devices.
-  const openEls = [...document.querySelectorAll('.open')];
-  openEls.forEach(el => el.classList.remove('open'));
-  document.body.classList.remove('edit-mode');
-  // Also strip visible from edit-mode-badge so it doesn't show on load
-  const badge = document.getElementById('edit-mode-badge');
-  badge?.classList.remove('visible');
-
-  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-
-  // Restore current session state
-  openEls.forEach(el => el.classList.add('open'));
-  if (editMode) {
-    document.body.classList.add('edit-mode');
-    badge?.classList.add('visible');
-  }
-
-  // Embed live deck data + version
-  const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
-  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
-
-  // Embed current ownership so other devices pick it up
-  const ownedArr = JSON.stringify([...state.owned]);
-  const ownedQtyArr = JSON.stringify([...state.ownedQty]);
-  const ownedVer = Date.now().toString();
-  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\nconst OWNED_QTY = ${ownedQtyArr};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
-  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
-  return src;
-}
-
-// Add Deck button
-document.getElementById('add-deck-btn').addEventListener('click', () => {
-  openEditDeckModal(null, null);
-});
-
-// ─── EDIT DECK MODAL ──────────────────────────────────────────────────────────
-let editingColors = new Set();
-let editingVariants = []; // [{label, cards}]
-
-function openEditDeckModal(deckId, editionId) {
-  const isNew = !deckId;
-  document.getElementById('edit-deck-modal-title').textContent = isNew ? '＋ New Deck' : 'Edit Deck';
-  document.getElementById('edit-deck-id').value = deckId || '';
-  document.getElementById('edit-edition-id').value = editionId || '';
-
-  // Populate edition dropdown
-  const edSel = document.getElementById('edit-edition-select');
-  edSel.innerHTML = '<option value="">— Select edition —</option>';
-  for (const ed of liveData.editions) {
-    const o = document.createElement('option'); o.value = ed.id;
-    o.textContent = `${ed.name} (${ed.year})`;
-    edSel.appendChild(o);
-  }
-
-  // Fill fields
-  editingColors.clear();
-  document.querySelectorAll('.edit-color-pip').forEach(p => p.classList.remove('selected'));
-
-  if (!isNew) {
-    const { deck, edition } = findDeck(deckId) || {};
-    if (!deck) return;
-    document.getElementById('edit-deck-name').value = deck.name || '';
-    document.getElementById('edit-deck-headliner').value = deck.headliner || '';
-    edSel.value = edition.id;
-    for (const c of (deck.colors || [])) {
-      editingColors.add(c);
-      document.querySelector(`.edit-color-pip[data-c="${c}"]`)?.classList.add('selected');
-    }
-    editingVariants = deepClone(deck.variants || []);
-  } else {
-    document.getElementById('edit-deck-name').value = '';
-    document.getElementById('edit-deck-headliner').value = '';
-    edSel.value = '';
-    editingVariants = [{ label: 'Variant 1', cards: [] }];
-  }
-
-  renderVariantList();
-  document.getElementById('edit-delete-deck-btn').style.display = isNew ? 'none' : '';
-  document.getElementById('edit-deck-modal').classList.add('open');
-}
-
-function closeEditDeckModal() { document.getElementById('edit-deck-modal').classList.remove('open'); }
-document.getElementById('edit-deck-close-btn').addEventListener('click', closeEditDeckModal);
-document.getElementById('edit-deck-cancel-btn').addEventListener('click', closeEditDeckModal);
-
-document.querySelectorAll('.edit-color-pip').forEach(pip => {
-  pip.addEventListener('click', () => {
-    const c = pip.dataset.c;
-    if (editingColors.has(c)) { editingColors.delete(c); pip.classList.remove('selected'); }
-    else { editingColors.add(c); pip.classList.add('selected'); }
-  });
-});
-
-function renderVariantList() {
-  const container = document.getElementById('edit-variants-list');
-  container.innerHTML = '';
-  editingVariants.forEach((v, i) => {
-    const row = document.createElement('div');
-    row.className = 'variant-row-edit';
-    row.innerHTML = `
-      <input type="text" value="${esc(v.label)}" placeholder="Variant name" data-vi="${i}">
-      <button class="vr-edit-cards" data-vi="${i}" title="Edit card list for this variant">✏ Cards (${(v.cards||[]).filter(c=>!c.basic).length})</button>
-      <button class="vr-del" data-vi="${i}" title="Delete variant">✕</button>`;
-    container.appendChild(row);
-    row.querySelector('input').addEventListener('input', e => { editingVariants[i].label = e.target.value; });
-    row.querySelector('.vr-edit-cards').addEventListener('click', () => editVariantCards(i));
-    row.querySelector('.vr-del').addEventListener('click', () => {
-      if (editingVariants.length === 1 && !confirm('Remove the only variant?')) return;
-      editingVariants.splice(i, 1);
-      renderVariantList();
-    });
-  });
-}
-
-document.getElementById('edit-add-variant-btn').addEventListener('click', () => {
-  editingVariants.push({ label: `Variant ${editingVariants.length + 1}`, cards: [] });
-  renderVariantList();
-});
-
-function editVariantCards(vi) {
-  // Open importer in Add Variant mode, pre-fill card list from existing cards
-  const variant = editingVariants[vi];
-  const cardText = (variant.cards || []).map(c => `${c.qty} ${c.name}`).join('\n');
-  closeEditDeckModal();
-  openImport({ _editVariant: true, vi, variantLabel: variant.label });
-  setTimeout(() => {
-    document.getElementById('import-input').value = cardText;
-    document.getElementById('import-variant-label').value = variant.label;
-    rebuildOutput();
-    // Add "Apply Cards" button
-    const actMsg = document.getElementById('import-actions-msg');
-    actMsg.textContent = `Editing cards for variant: ${variant.label}`;
-    const applyBtn = document.getElementById('import-apply-btn') || (() => {
-      const b = document.createElement('button');
-      b.id = 'import-apply-btn';
-      b.className = 'btn-primary';
-      b.textContent = '✓ Apply to Deck';
-      b.style.cssText = 'margin-right:.5rem';
-      document.getElementById('import-copy-btn').before(b);
-      return b;
-    })();
-    applyBtn.style.display = '';
-    applyBtn.onclick = () => {
-      const raw = document.getElementById('import-input').value;
-      const cards = parseDecklist(raw);
-      editingVariants[vi].cards = cards;
-      editingVariants[vi].label = document.getElementById('import-variant-label').value || variant.label;
-      closeImport();
-      openEditDeckModal(
-        document.getElementById('edit-deck-id').value || null,
-        document.getElementById('edit-edition-id').value || null
-      );
-    };
-  }, 100);
-}
-
-// Save deck changes
-document.getElementById('edit-deck-save-btn').addEventListener('click', () => {
-  const deckId = document.getElementById('edit-deck-id').value;
-  const editionId = document.getElementById('edit-edition-select').value;
-  const name = document.getElementById('edit-deck-name').value.trim();
-  const headliner = document.getElementById('edit-deck-headliner').value.trim();
-  const colors = [...editingColors];
-  if (!name) { alert('Deck name is required.'); return; }
-  if (!editionId) { alert('Please select an edition.'); return; }
-
-  const ed = liveData.editions.find(e => e.id === editionId);
-  if (!ed) { alert('Edition not found.'); return; }
-
-  if (deckId) {
-    // Update existing deck
-    const deck = ed.decks.find(d => d.id === deckId);
-    if (!deck) {
-      // Deck moved to different edition — remove from old, add to new
-      for (const e of liveData.editions) {
-        const idx = e.decks.findIndex(d => d.id === deckId);
-        if (idx !== -1) { e.decks.splice(idx, 1); break; }
-      }
-      ed.decks.push({ id: deckId, name, headliner: headliner || undefined, colors, variants: editingVariants });
-    } else {
-      deck.name = name;
-      deck.headliner = headliner || undefined;
-      deck.colors = colors;
-      deck.variants = editingVariants;
-    }
-  } else {
-    // New deck
-    const id = `${editionId}-${name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}`;
-    if (ed.decks.find(d => d.id === id)) {
-      if (!confirm(`A deck with ID "${id}" already exists. Add anyway?`)) return;
-    }
-    ed.decks.push({ id, name, headliner: headliner || undefined, colors, variants: editingVariants });
-  }
-
-  saveLiveData();
-  closeEditDeckModal();
-  renderGrid();
-});
-
-// Delete deck
-document.getElementById('edit-delete-deck-btn').addEventListener('click', () => {
-  const deckId = document.getElementById('edit-deck-id').value;
-  if (!deckId || !confirm('Permanently delete this deck from your data?')) return;
-  for (const ed of liveData.editions) {
-    const idx = ed.decks.findIndex(d => d.id === deckId);
-    if (idx !== -1) { ed.decks.splice(idx, 1); break; }
-  }
-  saveLiveData();
-  closeEditDeckModal();
-  renderGrid();
-});
-
 // ─── GITHUB PUSH ──────────────────────────────────────────────────────────────
 function openGhModal() {
   document.getElementById('gh-owner').value = localStorage.getItem('gh-owner') || '';
-  document.getElementById('gh-repo').value  = localStorage.getItem('gh-repo')  || '';
-  document.getElementById('gh-path').value  = localStorage.getItem('gh-path')  || 'data.js';
+  document.getElementById('gh-repo').value = localStorage.getItem('gh-repo')  || '';
+  document.getElementById('gh-path').value = localStorage.getItem('gh-path')  || 'data.js';
   document.getElementById('gh-token').value = localStorage.getItem('gh-token') || '';
   document.getElementById('gh-push-status').className = 'gh-push-status';
   document.getElementById('gh-push-status').textContent = '';
-  document.getElementById('gh-modal').classList.add('open');
-  document.getElementById('save-dropdown').classList.remove('open');
+  document.getElementById('gh-modal')?.classList.add('open');
+  document.getElementById('save-dropdown')?.classList.remove('open');
 }
-document.getElementById('save-github-btn').addEventListener('click', openGhModal);
-document.getElementById('gh-cancel-btn').addEventListener('click', () => document.getElementById('gh-modal').classList.remove('open'));
+document.getElementById('save-github-btn')?.addEventListener('click', openGhModal);
+document.getElementById('gh-cancel-btn')?.addEventListener('click', () => document.getElementById('gh-modal')?.classList.remove('open'));
 
-document.getElementById('gh-push-btn').addEventListener('click', async () => {
-  const owner = document.getElementById('gh-owner').value.trim();
-  const repo  = document.getElementById('gh-repo').value.trim();
-  const path  = document.getElementById('gh-path').value.trim() || 'data.js';
-  const token = document.getElementById('gh-token').value.trim();
+document.getElementById('gh-push-btn')?.addEventListener('click', async () => {
+  const owner = document.getElementById('gh-owner')?.value.trim();
+  const repo  = document.getElementById('gh-repo')?.value.trim();
+  const path  = document.getElementById('gh-path')?.value.trim() || 'data.js';
+  const token = document.getElementById('gh-token')?.value.trim();
   const status = document.getElementById('gh-push-status');
   if (!owner || !repo || !token) { status.className = 'gh-push-status err'; status.textContent = '⚠ Owner, repo, and token are all required.'; return; }
   // Save settings
@@ -36604,7 +36168,7 @@ document.getElementById('gh-push-btn').addEventListener('click', async () => {
     status.className = 'gh-push-status ok';
     status.textContent = `✓ Pushed successfully! GitHub Pages will rebuild in ~30 seconds.`;
     // Auto-close the modal after 2s so it doesn't get baked into next save's outerHTML
-    setTimeout(() => document.getElementById('gh-modal').classList.remove('open'), 2000);
+    setTimeout(() => document.getElementById('gh-modal')?.classList.remove('open'), 2000);
     showToast('✓ Pushed to GitHub — rebuilding in ~30s', 4000);
   } catch(e) {
     status.className = 'gh-push-status err';
@@ -36635,16 +36199,16 @@ function detectColors(cards) {
 }
 
 // ── "Add to Browser" from importer ────────────────────────────────
-document.getElementById('import-add-btn').addEventListener('click', () => {
-  const raw = document.getElementById('import-input').value;
+document.getElementById('import-add-btn')?.addEventListener('click', () => {
+  const raw = document.getElementById('import-input')?.value;
   const cards = parseDecklist(raw);
-  const variantLabel = document.getElementById('import-variant-label').value.trim();
+  const variantLabel = document.getElementById('import-variant-label')?.value.trim();
 
   if (importState.mode === 'new') {
-    const deckName  = document.getElementById('import-deck-name').value.trim();
-    const headliner = document.getElementById('import-headliner').value.trim();
-    const edSel     = document.getElementById('import-edition-select').value;
-    const edCustom  = document.getElementById('import-edition-custom').value.trim();
+    const deckName  = document.getElementById('import-deck-name')?.value.trim();
+    const headliner = document.getElementById('import-headliner')?.value.trim();
+    const edSel     = document.getElementById('import-edition-select')?.value;
+    const edCustom  = document.getElementById('import-edition-custom')?.value.trim();
     const colors    = [...importState.colors];
 
     if (!deckName) { showToast('⚠ Enter a deck name first.'); return; }
@@ -36675,7 +36239,7 @@ document.getElementById('import-add-btn').addEventListener('click', () => {
 
   } else {
     // Add Variant mode
-    const selVal = document.getElementById('existing-deck-select').value;
+    const selVal = document.getElementById('existing-deck-select')?.value;
     if (!selVal) { showToast('⚠ Select an existing deck first.'); return; }
     const [edId, deckId] = selVal.split('|');
     const ed   = liveData.editions.find(e => e.id === edId);
@@ -36695,7 +36259,7 @@ document.getElementById('import-add-btn').addEventListener('click', () => {
 });
 
 // ── MTGJSON Bulk Import ────────────────────────────────────────────
-document.getElementById('mtgjson-bulk-btn').addEventListener('click', bulkImportFromMtgjson);
+document.getElementById('mtgjson-bulk-btn')?.addEventListener('click', bulkImportFromMtgjson);
 
 async function bulkImportFromMtgjson() {
   if (!allMtgjsonDecks.length) { showToast('⚠ Load deck list first.'); return; }
@@ -36799,20 +36363,17 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 document.body.classList.remove('edit-mode');
 document.getElementById('edit-mode-badge')?.classList.remove('visible');
 editMode = false;
-// Mobile: always default to My Collection view
-// Desktop: always default to full unfiltered view
-const isMobile = window.innerWidth <= 700;
-if (isMobile) {
+// Mobile: My Collection + auto-resync (unless phone edit enabled)
+// Desktop: full unfiltered view
+if (isMobileDevice()) {
   state.showOwnedOnly = true;
   document.getElementById('owned-only-btn')?.classList.add('active');
-  // Show diagnostic toast so user knows what was loaded
-  setTimeout(() => {
-    if (state.owned.size > 0) {
-      showToast(`📦 ${state.owned.size} owned variant${state.owned.size !== 1 ? 's' : ''} loaded`, 3000);
-    } else {
-      showToast('📦 No collection yet — push from laptop first, then Force Resync', 5000);
-    }
-  }, 800);
+  applyPhoneReadonlyState();
+  if (!phoneEditEnabled) {
+    setTimeout(autoResyncFromSite, 600);
+  } else {
+    showToast(`📱 Phone updates ON — ${state.owned.size} variant${state.owned.size!==1?'s':''} in local cache`, 3000);
+  }
 } else {
   state.showOwnedOnly = false;
   document.getElementById('owned-only-btn')?.classList.remove('active');
@@ -36820,6 +36381,5 @@ if (isMobile) {
 renderTabs();
 renderGrid();
 </script>
-
-
-<div id="1p-menu-live-region" role="status" aria-live="polite" aria-atomic="true" aria-relevant="all" style="clip: rect(0px, 0px, 0px, 0px); clip-path: inset(50%); height: 1px; overflow: hidden; position: fixed; top: 0px; left: 0px; white-space: nowrap; width: 1px; overflow-wrap: normal;">1Password menu is available. Press down arrow to select.</div></body></html>
+</body>
+</html>
