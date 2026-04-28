@@ -20,8 +20,16 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 /* ── Header ── */
 .site-header{background:linear-gradient(180deg,#08081a 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
 .header-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;margin-bottom:1rem}
-.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap}
+.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap;background:none;border:none;padding:0;cursor:pointer;text-align:left}
+.site-logo:hover span{color:var(--text)}
 .site-logo span{color:var(--text2);font-weight:400}
+@media(max-width:700px){
+  .header-top{grid-template-columns:1fr auto;grid-template-rows:auto auto;row-gap:.5rem}
+  .header-center{grid-column:1/-1;grid-row:2}
+  .search-wrap{max-width:100%}
+  .search-wrap input{font-size:16px}
+  .save-menu-btn,.edit-btn-header,.owned-btn,.help-btn{font-size:.62rem;padding:.3rem .5rem}
+}
 .header-center{display:flex;align-items:center;justify-content:center}
 .header-right{display:flex;align-items:center;gap:.6rem;justify-content:flex-end}
 .search-wrap{position:relative;width:100%;max-width:420px}
@@ -397,7 +405,7 @@ body.phone-readonly .qty-row{display:none !important}
 
 <header class="site-header">
   <div class="header-top">
-    <div class="site-logo">Jumpstart <span>Deck Browser</span></div>
+    <button class="site-logo" id="site-logo-btn" title="Reset all filters">Jumpstart <span>Deck Browser</span></button>
     <div class="header-center">
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
@@ -407,8 +415,11 @@ body.phone-readonly .qty-row{display:none !important}
       </div>
     </div>
     <div class="header-right">
+      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
+        <span class="dot"></span>My Collection
+      </button>
       <span class="phone-edit-badge" id="phone-edit-badge">📱 PHONE EDIT</span>
-      <span class="edit-mode-badge" id="edit-mode-badge">🔓 EDIT MODE</span>
+      <span class="edit-mode-badge" id="edit-mode-badge" title="Click to exit edit mode" style="cursor:pointer">🔓 EDIT MODE</span>
       <div class="save-menu-wrap">
         <button class="save-menu-btn" id="save-menu-btn">💾 Save ▾</button>
         <div class="save-dropdown" id="save-dropdown">
@@ -416,16 +427,12 @@ body.phone-readonly .qty-row{display:none !important}
           <button class="save-dropdown-item" id="save-github-btn">⬆ Push to GitHub…</button>
           <button class="save-dropdown-item" id="save-rebuild-btn">⟳ Wipe &amp; Rebuild from Source</button>
           <button class="save-dropdown-item" id="save-sync-collection-btn">📲 Sync collection from file</button>
+          <button class="save-dropdown-item" id="save-force-resync-btn">🔄 Force resync from website</button>
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
       </div>
-      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
-        <span class="dot"></span>My Collection
-      </button>
-      <button class="import-btn" id="import-btn" title="Import a card list into data.js format">
-        ＋ Import List
-      </button>
-      <button class="edit-btn-header" id="edit-mode-btn" title="Toggle edit mode">✏ Edit</button>
+      <button class="edit-btn-header" id="edit-mode-btn" title="Enter/exit edit mode">✏ Edit</button>
+      <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
     </div>
   </div>
   <nav class="edition-tabs" id="edition-tabs" role="tablist">
@@ -37235,6 +37242,31 @@ document.getElementById('save-reset-btn')?.addEventListener('click',()=>{
 document.getElementById('help-btn')?.addEventListener('click',()=>document.getElementById('help-modal')?.classList.add('open'));
 document.getElementById('help-close-btn')?.addEventListener('click',()=>document.getElementById('help-modal')?.classList.remove('open'));
 document.getElementById('help-modal')?.addEventListener('click',e=>{if(e.target===document.getElementById('help-modal'))document.getElementById('help-modal')?.classList.remove('open');});
+
+// Logo button — reset all filters
+document.getElementById('site-logo-btn')?.addEventListener('click', () => {
+  if (editMode) exitEditMode();
+  state.search = ''; state.edition = 'all'; state.colors.clear();
+  state.letterFilter = null; state.letterLocked = false; state.showOwnedOnly = false;
+  const si = document.getElementById('search-input'); if(si) si.value = '';
+  document.getElementById('search-clear-btn').style.display = 'none';
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
+  document.getElementById('owned-only-btn')?.classList.remove('active');
+  document.getElementById('edit-mode-badge')?.classList.remove('visible');
+  document.getElementById('phone-edit-badge')?.classList.remove('visible');
+  document.body.classList.remove('edit-mode');
+  const st=document.getElementById('summary-tabs'); if(st) st.classList.remove('visible');
+  const sp=document.getElementById('summary-panel'); if(sp){sp.classList.remove('visible');sp.innerHTML='';}
+  document.getElementById('main-content').style.display = '';
+  summaryMode = 'decks';
+  renderGrid();
+});
+
+// Edit Mode badge — click to exit edit mode
+document.getElementById('edit-mode-badge')?.addEventListener('click', () => {
+  if (editMode) exitEditMode();
+});
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 document.body.classList.remove('edit-mode');
