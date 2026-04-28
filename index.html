@@ -396,6 +396,7 @@ body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:defau
 </style>
 </head>
 <body>
+<input type="file" id="collection-file-input" accept=".json" style="display:none">
 
 <header class="site-header">
   <div class="header-top">
@@ -418,9 +419,10 @@ body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:defau
         <button class="save-menu-btn" id="save-menu-btn">💾 Save ▾</button>
         <div class="save-dropdown" id="save-dropdown">
           <button class="save-dropdown-item" id="save-download-btn">⬇ Download index.html</button>
+          <button class="save-dropdown-item" id="save-export-collection-btn">📤 Export collection.json</button>
+          <button class="save-dropdown-item" id="save-import-collection-btn">📥 Import collection.json</button>
           <button class="save-dropdown-item" id="save-github-btn">⬆ Push to GitHub…</button>
           <button class="save-dropdown-item" id="save-rebuild-btn">⟳ Wipe &amp; Rebuild from Source</button>
-          <button class="save-dropdown-item" id="save-sync-collection-btn">📲 Sync collection from file</button>
           <button class="save-dropdown-item" id="save-force-resync-btn">🔄 Force resync from website</button>
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
@@ -37182,6 +37184,89 @@ document.getElementById('edit-mode-btn')?.addEventListener('click',()=>{
   setTimeout(()=>document.getElementById('pw-input')?.focus(),50);
 });
 
+// ─── COLLECTION FILE HANDLERS ────────────────────────────────────────────────
+
+// Export collection.json
+document.getElementById('save-export-collection-btn')?.addEventListener('click', () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  const collection = {
+    version: Date.now().toString(),
+    exportedAt: new Date().toISOString(),
+    owned: [...state.owned],
+    ownedQty: [...state.ownedQty]
+  };
+  const blob = new Blob([JSON.stringify(collection, null, 2)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'collection.json'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Exported collection.json — upload this to your GitHub repo', 4000);
+});
+
+// Import collection.json from file
+document.getElementById('save-import-collection-btn')?.addEventListener('click', () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  document.getElementById('collection-file-input').click();
+});
+
+document.getElementById('collection-file-input')?.addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.owned || !Array.isArray(data.owned)) throw new Error('Invalid collection file');
+      const incoming = new Set(data.owned);
+      const merged   = new Set([...state.owned, ...incoming]);
+      const added    = merged.size - state.owned.size;
+      if (!confirm(`Merge ${incoming.size} owned variants from file with your current ${state.owned.size}?
+(${added} new items will be added)`)) return;
+      state.owned = merged;
+      if (data.ownedQty) {
+        const qmap = new Map(data.ownedQty);
+        for (const [k, v] of qmap) state.ownedQty.set(k, v);
+        saveOwnedQty();
+      }
+      saveOwned();
+      renderGrid();
+      showToast(`✓ Merged: ${merged.size} total owned variants`, 4000);
+    } catch(err) {
+      showToast('⚠ Could not read collection file: ' + err.message, 5000);
+    }
+  };
+  reader.readAsText(file);
+  this.value = ''; // reset so same file can be re-imported
+});
+
+// Auto-load collection.json from GitHub on page load
+async function autoLoadCollectionJson() {
+  const collectionUrl = 'https://greattrips.github.io/MTG_Jumpstart_Search/collection.json';
+  try {
+    const res = await fetch(collectionUrl + '?v=' + Date.now(), {cache:'no-store'});
+    if (!res.ok) return; // file doesn't exist yet — that's fine
+    const data = await res.json();
+    if (!data.owned || !Array.isArray(data.owned)) return;
+    const remoteVer = data.version || '';
+    const localVer  = localStorage.getItem('jmp-collection-version') || '';
+    if (remoteVer === localVer) return; // already have this version
+    // Merge remote into local
+    const merged = new Set([...state.owned, ...data.owned]);
+    if (data.ownedQty) {
+      const qmap = new Map(data.ownedQty);
+      for (const [k,v] of qmap) state.ownedQty.set(k, v);
+      saveOwnedQty();
+    }
+    state.owned = merged;
+    saveOwned();
+    localStorage.setItem('jmp-collection-version', remoteVer);
+    renderGrid();
+    showToast(`✓ Collection loaded from collection.json (${merged.size} variants)`, 3000);
+  } catch(e) {
+    // Silently ignore — collection.json may not exist yet
+  }
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 document.body.classList.remove('edit-mode');
 document.getElementById('edit-mode-badge')?.classList.remove('visible');
@@ -37202,6 +37287,8 @@ if(isMobileDevice()){
 }
 renderTabs();
 renderGrid();
+// Auto-load collection.json from GitHub (silently, on every page load)
+setTimeout(autoLoadCollectionJson, 1000);
 
 </script>
 
