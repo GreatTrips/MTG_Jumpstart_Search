@@ -29,6 +29,11 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
   .search-wrap{max-width:100%}
   .search-wrap input{font-size:16px}
   .save-menu-btn,.edit-btn-header,.owned-btn,.help-btn{font-size:.62rem;padding:.3rem .5rem}
+  /* Color buttons: show pip only on mobile to save space */
+  .color-btn .pip{margin-right:0}
+  .filter-label{display:none}
+  .color-btn{padding:.28rem .45rem;font-size:.65rem}
+  .color-btn.all{padding:.28rem .55rem}
 }
 .header-center{display:flex;align-items:center;justify-content:center}
 .header-right{display:flex;align-items:center;gap:.6rem;justify-content:flex-end}
@@ -455,6 +460,12 @@ body.phone-readonly .qty-row{display:none !important}
 </div>
 
 <main id="main-content"></main>
+<footer style="text-align:center;padding:1.5rem 1.25rem 2rem;color:var(--text2);font-family:'Crimson Pro',serif;font-size:.82rem;border-top:1px solid var(--border);margin-top:2rem">
+  Card data sourced from <a href="https://github.com/taw/magic-preconstructed-decks-data" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">taw/magic-preconstructed-decks-data</a>
+  (upstream of <a href="https://mtgjson.com" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">MTGJSON</a>).
+  Card images via <a href="https://scryfall.com" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">Scryfall</a>.
+  Magic: The Gathering is © Wizards of the Coast.
+</footer>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
@@ -36436,15 +36447,34 @@ document.getElementById('save-menu-btn')?.addEventListener('click', e => {
 document.addEventListener('click', () => document.getElementById('save-dropdown').classList.remove('open'));
 
 // Download complete self-contained index.html
-document.getElementById('save-download-btn')?.addEventListener('click', async () => {
-  try {
-    // Fetch current page source
-    const res = await fetch(location.href);
-    let src = await res.text();
-    // Replace inline data block with current liveData
-    const newDataBlock = `// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
-    src = src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
-    const blob = new Blob([src], { type: 'text/html' });
+document.getElementById('save-download-btn')?.addEventListener('click', () => {
+  const openEls = [...document.querySelectorAll('.open')];
+  openEls.forEach(el => el.classList.remove('open'));
+  document.body.classList.remove('edit-mode');
+  const badge = document.getElementById('edit-mode-badge');
+  badge?.classList.remove('visible');
+  document.getElementById('phone-edit-badge')?.classList.remove('visible');
+  document.getElementById('rebuild-overlay')?.classList.remove('open');
+
+  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+  openEls.forEach(el => el.classList.add('open'));
+  if (editMode) { document.body.classList.add('edit-mode'); badge?.classList.add('visible'); }
+
+  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END[^\n]*/,
+    `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`);
+
+  const ownedVer = Date.now().toString();
+  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/,
+    `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${JSON.stringify([...state.owned])};\nconst OWNED_QTY = ${JSON.stringify([...state.ownedQty])};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`);
+
+  const blob = new Blob([src], { type: 'text/html' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  showToast('✓ Downloaded index.html', 3000);
+});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
     URL.revokeObjectURL(url);
@@ -37239,9 +37269,15 @@ document.getElementById('save-reset-btn')?.addEventListener('click',()=>{
 });
 
 // Help modal
-document.getElementById('help-btn')?.addEventListener('click',()=>document.getElementById('help-modal')?.classList.add('open'));
-document.getElementById('help-close-btn')?.addEventListener('click',()=>document.getElementById('help-modal')?.classList.remove('open'));
-document.getElementById('help-modal')?.addEventListener('click',e=>{if(e.target===document.getElementById('help-modal'))document.getElementById('help-modal')?.classList.remove('open');});
+document.getElementById('help-btn')?.addEventListener('click', () => {
+  const m = document.getElementById('help-modal'); if(m) m.style.display='flex';
+});
+document.getElementById('help-close-btn')?.addEventListener('click', () => {
+  const m = document.getElementById('help-modal'); if(m) m.style.display='none';
+});
+document.getElementById('help-modal')?.addEventListener('click', e => {
+  if(e.target===document.getElementById('help-modal')) document.getElementById('help-modal').style.display='none';
+});
 
 // Logo button — reset all filters
 document.getElementById('site-logo-btn')?.addEventListener('click', () => {
@@ -37290,5 +37326,63 @@ if (isMobileDevice()) {
 renderTabs();
 renderGrid();
 </script>
+<div class="help-modal" id="help-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column">
+    <div style="border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)">
+      <h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;letter-spacing:.06em;margin:0">📖 Help &amp; Sync Guide</h2>
+      <button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem" title="Close">✕</button>
+    </div>
+    <div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)">
+      <h3 style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:0 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem">Marking Your Collection</h3>
+      <ol style="margin:.4rem 0 .8rem 1.2rem;padding:0">
+        <li style="margin:.3rem 0">Click any deck card to open it</li>
+        <li style="margin:.3rem 0">Select the variant tab you own, click <strong>Mark Owned</strong></li>
+        <li style="margin:.3rem 0">Use <strong>Qty ＋/−</strong> to track duplicate copies</li>
+      </ol>
+      <h3 style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:1.2rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem">My Collection View</h3>
+      <ul style="margin:.4rem 0 .8rem 1.2rem;padding:0">
+        <li style="margin:.3rem 0"><strong>🃏 Decks</strong> — one tile per owned variant (×N badge for duplicates)</li>
+        <li style="margin:.3rem 0"><strong>📊 Summary</strong> — color breakdown per release with unique/duplicate/total counts</li>
+      </ul>
+      <h3 style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:1.2rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem">Saving &amp; Syncing — The Golden Rule</h3>
+      <p style="margin:.4rem 0">On your laptop: <strong>💾 Save ▾ → ⬇ Download index.html</strong> → upload to GitHub. This bakes your collection into the file.</p>
+      <p style="margin:.4rem 0">On your phone: refresh the page. Your collection loads automatically from the file.</p>
+      <p style="margin:.4rem 0">If the phone shows the wrong collection: <strong>💾 Save ▾ → 🔄 Force resync from website</strong></p>
+      <h3 style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:1.2rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem">Multiple Devices / People</h3>
+      <ol style="margin:.4rem 0 .8rem 1.2rem;padding:0">
+        <li style="margin:.3rem 0">Each device: <strong>Download index.html</strong></li>
+        <li style="margin:.3rem 0">Laptop: open downloaded file → <strong>📲 Sync collection from file</strong> to merge</li>
+        <li style="margin:.3rem 0">Push merged file to GitHub; each phone Force Resyncs</li>
+      </ol>
+      <h3 style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:1.2rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem">After Claude Code Updates</h3>
+      <ol style="margin:.4rem 0 .8rem 1.2rem;padding:0">
+        <li style="margin:.3rem 0">Download the new file from Claude</li>
+        <li style="margin:.3rem 0">Open locally in browser → Download again (this re-bakes your collection)</li>
+        <li style="margin:.3rem 0">Push that second download to GitHub</li>
+      </ol>
+      <h3 style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:1.2rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem">GitHub Push Setup (One-time)</h3>
+      <ol style="margin:.4rem 0 .8rem 1.2rem;padding:0">
+        <li style="margin:.3rem 0">github.com → Profile → Settings → Developer settings → Fine-grained tokens → Generate</li>
+        <li style="margin:.3rem 0">Select repo <code style="color:var(--gold)">MTG_Jumpstart_Search</code>, Contents: Read and write</li>
+        <li style="margin:.3rem 0">In app: 💾 Save ▾ → ⬆ Push to GitHub… → fill in Owner/Repo/Path/Token</li>
+      </ol>
+      <h3 style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:1.2rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem">Tips</h3>
+      <ul style="margin:.4rem 0 .8rem 1.2rem;padding:0">
+        <li style="margin:.3rem 0">Click <strong>Jumpstart Deck Browser</strong> to reset all filters</li>
+        <li style="margin:.3rem 0">Click <strong>🔓 EDIT MODE</strong> badge to exit edit mode</li>
+        <li style="margin:.3rem 0">Search works across all editions including Set Tie-ins</li>
+        <li style="margin:.3rem 0">Edit mode password: <code style="color:var(--gold)">jumpstart</code></li>
+        <li style="margin:.3rem 0">⟳ Rebuild fetches fresh deck lists; ↺ Reset clears everything</li>
+      </ul>
+      <h3 style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin:1.2rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.35rem">Force Resync from Website</h3>
+      <ol style="margin:.4rem 0 .8rem 1.2rem;padding:0">
+        <li style="margin:.3rem 0">Tap <strong>💾 Save ▾ → 🔄 Force resync from website</strong></li>
+        <li style="margin:.3rem 0">Fetches live file from GitHub, bypasses cache</li>
+        <li style="margin:.3rem 0">If it shows 0 variants: push from laptop first</li>
+        <li style="margin:.3rem 0"><em>Warning: overwrites local collection</em></li>
+      </ol>
+    </div>
+  </div>
+</div>
 </body>
 </html>
