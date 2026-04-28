@@ -36460,13 +36460,6 @@ function exitEditMode() {
 }
 
 // Password modal
-document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
-  if (editMode) { exitEditMode(); return; }
-  document.getElementById('pw-input').value = '';
-  document.getElementById('pw-error').style.display = 'none';
-  document.getElementById('pw-modal').classList.add('open');
-  setTimeout(() => document.getElementById('pw-input').focus(), 60);
-});
 function closePwModal() { document.getElementById('pw-modal').classList.remove('open'); }
 document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal);
 document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
@@ -37268,9 +37261,11 @@ document.getElementById('save-push-collection-btn')?.addEventListener('click', a
   const token = localStorage.getItem('gh-token')  || '';
 
   if (!token) {
-    showToast('⚠ No GitHub token saved — set it up via ⬆ Push to GitHub… first', 5000);
+    showToast('⚠ No GitHub token found. Use ⬆ Push to GitHub… first to save your token.', 6000);
     return;
   }
+  // Debug: show what we're pushing to
+  console.log('Pushing collection.json to:', owner+'/'+repo);
 
   const collection = {
     version: Date.now().toString(),
