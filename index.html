@@ -420,6 +420,7 @@ body.phone-readonly .own-toggle-btn{opacity:.35;pointer-events:none;cursor:defau
         <div class="save-dropdown" id="save-dropdown">
           <button class="save-dropdown-item" id="save-download-btn">⬇ Download index.html</button>
           <button class="save-dropdown-item" id="save-export-collection-btn">📤 Export collection.json</button>
+          <button class="save-dropdown-item" id="save-push-collection-btn">⬆ Push collection.json to GitHub</button>
           <button class="save-dropdown-item" id="save-import-collection-btn">📥 Import collection.json</button>
           <button class="save-dropdown-item" id="save-github-btn">⬆ Push to GitHub…</button>
           <button class="save-dropdown-item" id="save-rebuild-btn">⟳ Wipe &amp; Rebuild from Source</button>
@@ -37203,6 +37204,55 @@ document.getElementById('save-export-collection-btn')?.addEventListener('click',
   showToast('✓ Exported collection.json — upload this to your GitHub repo', 4000);
 });
 
+// Push collection.json directly to GitHub
+document.getElementById('save-push-collection-btn')?.addEventListener('click', async () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
+
+  // Reuse saved GitHub settings from the Push to GitHub modal
+  const owner = localStorage.getItem('gh-owner') || 'greattrips';
+  const repo  = localStorage.getItem('gh-repo')  || 'MTG_Jumpstart_Search';
+  const token = localStorage.getItem('gh-token')  || '';
+
+  if (!token) {
+    showToast('⚠ No GitHub token saved — set it up via ⬆ Push to GitHub… first', 5000);
+    return;
+  }
+
+  const collection = {
+    version: Date.now().toString(),
+    exportedAt: new Date().toISOString(),
+    owned: [...state.owned],
+    ownedQty: [...state.ownedQty]
+  };
+  const content  = JSON.stringify(collection, null, 2);
+  const encoded  = btoa(unescape(encodeURIComponent(content)));
+  const apiUrl   = `https://api.github.com/repos/${owner}/${repo}/contents/collection.json`;
+
+  showToast('⏳ Pushing collection.json to GitHub…', 30000);
+  try {
+    // Get current SHA (needed to update an existing file)
+    let sha = null;
+    const getRes = await fetch(apiUrl, {headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}});
+    if (getRes.ok) { const j = await getRes.json(); sha = j.sha; }
+
+    const body = {message:'Update collection.json', content: encoded};
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if (!putRes.ok) {
+      const err = await putRes.json();
+      throw new Error(err.message || putRes.status);
+    }
+    showToast(`✓ collection.json pushed — ${collection.owned.length} variants on GitHub`, 4000);
+  } catch(e) {
+    showToast('⚠ Push failed: ' + e.message, 5000);
+  }
+});
+
 // Import collection.json from file
 document.getElementById('save-import-collection-btn')?.addEventListener('click', () => {
   document.getElementById('save-dropdown')?.classList.remove('open');
@@ -37292,5 +37342,30 @@ setTimeout(autoLoadCollectionJson, 1000);
 
 </script>
 
+<div id="help-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column">
+    <div style="border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)">
+      <h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">📖 Help &amp; Sync Guide</h2>
+      <button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">✕</button>
+    </div>
+    <div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)">
+      <p><strong style="color:var(--gold)">Mark owned:</strong> click any deck → select variant → Mark Owned. Use Qty ＋/− for duplicates.</p>
+      <p><strong style="color:var(--gold)">Sync collection (easiest):</strong> 💾 Save ▾ → ⬆ Push collection.json to GitHub → phone auto-loads it on next refresh.</p>
+      <p><strong style="color:var(--gold)">Full file sync:</strong> 💾 Save ▾ → ⬇ Download index.html → upload to GitHub repo. Use this for code updates.</p>
+      <p><strong style="color:var(--gold)">After Claude code updates:</strong> download new file → open locally in browser → 💾 Download again (re-bakes your collection) → push that second file.</p>
+      <p><strong style="color:var(--gold)">Multiple devices / people:</strong> each exports collection.json → laptop opens each → 📥 Import collection.json to merge → push merged result.</p>
+      <p><strong style="color:var(--gold)">Phone not updating?</strong> 💾 Save ▾ → 🔄 Force resync from website.</p>
+      <p><strong style="color:var(--gold)">GitHub Push setup:</strong> github.com → Settings → Developer settings → Fine-grained tokens → generate with Contents read/write on MTG_Jumpstart_Search. Then fill in 💾 Save ▾ → ⬆ Push to GitHub…</p>
+      <p><strong style="color:var(--gold)">My Collection view:</strong> 🃏 Decks tab shows owned tiles (×N badge for duplicates). 📊 Summary tab shows color breakdown per release.</p>
+      <p><strong style="color:var(--gold)">Tips:</strong> click "Jumpstart Deck Browser" to reset all filters · click 🔓 EDIT MODE badge to exit · Edit password: <code style="color:var(--gold)">jumpstart</code> · ⟳ Rebuild fetches fresh deck lists · ↺ Reset clears everything.</p>
+    </div>
+  </div>
+</div>
+<footer style="text-align:center;padding:1.5rem 1.25rem 2rem;color:var(--text2);font-family:'Crimson Pro',serif;font-size:.82rem;border-top:1px solid var(--border);margin-top:2rem">
+  Card data sourced from <a href="https://github.com/taw/magic-preconstructed-decks-data" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">taw/magic-preconstructed-decks-data</a>
+  (upstream of <a href="https://mtgjson.com" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">MTGJSON</a>).
+  Card images via <a href="https://scryfall.com" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">Scryfall</a>.
+  Magic: The Gathering is © Wizards of the Coast.
+</footer>
 </body>
 </html>
