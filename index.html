@@ -35476,33 +35476,28 @@ const EDIT_PASSWORD = 'jumpstart';
 function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
 let liveData = (() => {
   try {
-    const saved     = localStorage.getItem('jmp-live-data');
-    const savedVer  = localStorage.getItem('jmp-data-version');
-    if (saved && savedVer === DECK_VERSION) {
+    const saved = localStorage.getItem('jmp-live-data');
+    if (saved) {
       const loaded = JSON.parse(saved);
-      // Always ensure every edition in DECK_DATA exists in liveData
-      // (handles rebuilds that added new sets, or stale localStorage)
-      const loadedMap = new Map(loaded.editions.map(e => [e.id, e]));
-      const finalEds = DECK_DATA.editions.map(ded => {
-        // If this edition exists in localStorage, keep localStorage version (has user's data)
-        // but guarantee all editions from DECK_DATA are represented
-        return loadedMap.get(ded.id) || deepClone(ded);
-      });
-      // Also keep any editions that were added by a rebuild but aren't in static DECK_DATA
-      const staticIds = new Set(DECK_DATA.editions.map(e => e.id));
-      for (const [id, ed] of loadedMap) {
-        if (!staticIds.has(id)) finalEds.push(ed);
+      // Merge any editions in DECK_DATA not in localStorage (e.g. J21 after taw rebuild)
+      const loadedIds = new Set(loaded.editions.map(e => e.id));
+      for (const ed of DECK_DATA.editions) {
+        if (!loadedIds.has(ed.id)) {
+          const idx = DECK_DATA.editions.indexOf(ed);
+          const insertBefore = loaded.editions.findIndex(le =>
+            DECK_DATA.editions.findIndex(de => de.id === le.id) > idx
+          );
+          if (insertBefore === -1) loaded.editions.push(deepClone(ed));
+          else loaded.editions.splice(insertBefore, 0, deepClone(ed));
+        }
       }
-      loaded.editions = finalEds;
       return loaded;
     }
   } catch(e) {}
-  // No saved data, wrong version, or error — start fresh from DECK_DATA
   return deepClone(DECK_DATA);
 })();
 function saveLiveData() {
   localStorage.setItem('jmp-live-data', JSON.stringify(liveData));
-  localStorage.setItem('jmp-data-version', DECK_VERSION);
 }
 function resetLiveData() {
   liveData = deepClone(DECK_DATA);
@@ -35519,60 +35514,18 @@ function findDeck(deckId) {
 
 // ─── OWNERSHIP (localStorage) ─────────────────────────────────────────────────
 function loadOwned() {
-  try {
-    // Always merge OWNED_DATA from file into localStorage — this is how cross-device sync works.
-    // OWNED_VERSION tracks which version of OWNED_DATA has already been merged,
-    // so we don't re-merge the same data repeatedly.
-    const mergedVersion = localStorage.getItem('jmp-owned-version');
-    const local = new Set(JSON.parse(localStorage.getItem('jmp-owned') || '[]'));
-
-    if (OWNED_DATA && OWNED_DATA.length > 0 && mergedVersion !== OWNED_VERSION) {
-      // New OWNED_DATA from a push — merge into local (additive, never removes)
-      const merged = new Set([...local, ...OWNED_DATA]);
-      localStorage.setItem('jmp-owned', JSON.stringify([...merged]));
-      localStorage.setItem('jmp-owned-version', OWNED_VERSION);
-      return merged;
-    }
-    return local;
-  } catch { return new Set(); }
+  try { return new Set(JSON.parse(localStorage.getItem('jmp-owned') || '[]')); }
+  catch { return new Set(); }
 }
 function saveOwned() {
   localStorage.setItem('jmp-owned', JSON.stringify([...state.owned]));
-}
-function loadOwnedQty() {
-  try {
-    const saved = localStorage.getItem('jmp-owned-qty');
-    if (saved) return new Map(JSON.parse(saved));
-    if (typeof OWNED_QTY !== 'undefined' && OWNED_QTY.length > 0) {
-      localStorage.setItem('jmp-owned-qty', JSON.stringify(OWNED_QTY));
-      return new Map(OWNED_QTY);
-    }
-    return new Map();
-  } catch { return new Map(); }
-}
-function saveOwnedQty() {
-  localStorage.setItem('jmp-owned-qty', JSON.stringify([...state.ownedQty]));
-}
-function getOwnedQty(deckId, vi) { return state.ownedQty.get(ownedKey(deckId, vi)) || 1; }
-function setOwnedQty(deckId, vi, qty) {
-  const k = ownedKey(deckId, vi);
-  if (qty <= 0) state.ownedQty.delete(k); else state.ownedQty.set(k, qty);
-  saveOwnedQty();
 }
 function ownedKey(deckId, vi) { return `${deckId}:${vi}`; }
 function isVariantOwned(deckId, vi) { return state.owned.has(ownedKey(deckId, vi)); }
 function isDeckOwned(deck) { return deck.variants.some((_, i) => isVariantOwned(deck.id, i)); }
 function toggleOwned(deckId, vi) {
   const k = ownedKey(deckId, vi);
-  if (state.owned.has(k)) {
-    state.owned.delete(k);
-    state.ownedQty.delete(k);
-    saveOwnedQty();
-  } else {
-    state.owned.add(k);
-    if (!state.ownedQty.has(k)) state.ownedQty.set(k, 1);
-    saveOwnedQty();
-  }
+  state.owned.has(k) ? state.owned.delete(k) : state.owned.add(k);
   saveOwned();
 }
 
@@ -35580,7 +35533,7 @@ function toggleOwned(deckId, vi) {
 const state = {
   edition: 'all', colors: new Set(), search: '',
   openDeckId: null, openEditionId: null, openVariant: 0,
-  cardCache: {}, owned: loadOwned(), ownedQty: loadOwnedQty(), showOwnedOnly: false
+  cardCache: {}, owned: loadOwned(), showOwnedOnly: false
 };
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -35632,13 +35585,12 @@ const EDITION_CONFIG = {
   j21:   { name:'Historic Horizons',          year:2021, tieIn:false, note:'Arena only' },
   j22:   { name:'Jumpstart 2022',             year:2022, tieIn:false },
   j25:   { name:'Foundations Jumpstart',      year:2024, tieIn:false },
-  atj:   { name:'Avatar: The Last Airbender Jumpstart', year:2025, tieIn:false, tawCode:'tla' },
-  msh:   { name:'Marvel Super Heroes Jumpstart',       year:2026, tieIn:false },
-  jdmu:  { name:'Dominaria United Jumpstart', year:2022, tieIn:true, tawCode:'dmu'  },
-  jbro:  { name:"Brothers' War Jumpstart",    year:2022, tieIn:true, tawCode:'bro'  },
-  jone:  { name:'Phyrexia: All Will Be One Jumpstart', year:2023, tieIn:true, tawCode:'one'  },
-  jmom:  { name:'March of the Machine Jumpstart', year:2023, tieIn:true, tawCode:'mom'  },
-  jltr:  { name:'Lord of the Rings Jumpstart', year:2023, tieIn:true, tawCode:'ltr'  },
+  atj:   { name:'Avatar: TLA Jumpstart',      year:2025, tieIn:false },
+  jdmu:  { name:'Dominaria United Jumpstart', year:2022, tieIn:true  },
+  jbro:  { name:"Brothers' War Jumpstart",    year:2022, tieIn:true  },
+  jone:  { name:'Phyrexia: ONE Jumpstart',    year:2023, tieIn:true  },
+  jmom:  { name:'March of Machine Jumpstart', year:2023, tieIn:true  },
+  jltr:  { name:'LotR Jumpstart Vol.1',       year:2023, tieIn:true  },
   jltr2: { name:'LotR Jumpstart Vol.2',       year:2023, tieIn:true  },
   jwoe:  { name:'Wilds of Eldraine Jumpstart',year:2023, tieIn:true  },
   jlci:  { name:'Lost Caverns Jumpstart',     year:2023, tieIn:true  },
@@ -35646,7 +35598,7 @@ const EDITION_CONFIG = {
   jblb:  { name:'Bloomburrow Jumpstart',      year:2024, tieIn:true  },
   jdsk:  { name:'Duskmourn Jumpstart',        year:2024, tieIn:true  },
 };
-const MAIN_SET_ORDER = ['jmp','j21','j22','j25','atj','msh'];
+const MAIN_SET_ORDER = ['jmp','j21','j22','j25','atj'];
 function getTieInIds() {
   return new Set(liveData.editions.filter(e => {
     const cfg = EDITION_CONFIG[e.id];
@@ -35677,7 +35629,7 @@ function renderTabs() {
   const mainEds = liveData.editions
     .filter(e => !getTieInIds().has(e.id))
     .sort((a,b) => (EDITION_CONFIG[a.id]?.year||9999) - (EDITION_CONFIG[b.id]?.year||9999));
-  const TAB_LABELS = { jmp:'JMP (2020)', j21:'Historic Horizons', j22:'JMP 2022', j25:'Foundations', atj:'Avatar: TLA', msh:'Marvel Heroes' };
+  const TAB_LABELS = { jmp:'JMP (2020)', j21:'Historic Horizons', j22:'JMP 2022', j25:'Foundations', atj:'Avatar' };
   for (const ed of mainEds) {
     nav.appendChild(makeTab(ed.id, TAB_LABELS[ed.id] || `${ed.name} (${ed.year||'?'})`));
   }
@@ -35692,7 +35644,7 @@ function getFilteredData() {
     const isTieIn = getTieInIds().has(ed.id);
     if (state.edition === 'tie-ins' && !isTieIn) continue;
     if (state.edition !== 'all' && state.edition !== 'tie-ins' && ed.id !== state.edition) continue;
-    // tie-ins are included in 'all' so search finds them everywhere
+    if (state.edition === 'all' && isTieIn) continue; // hide tie-ins from "all" unless selected
     const q = state.search;
     const filteredDecks = [];
     for (const deck of ed.decks) {
@@ -35708,19 +35660,6 @@ function getFilteredData() {
 }
 
 function renderGrid() {
-  // Show/hide My Collection banner
-  const banner = document.getElementById('collection-banner');
-  if (banner) banner.classList.toggle('visible', state.showOwnedOnly);
-  document.getElementById('summary-tabs')?.classList.toggle('visible', state.showOwnedOnly);
-  if (!state.showOwnedOnly) {
-    summaryMode = 'decks';
-    document.getElementById('summary-decks-btn')?.classList.add('active');
-    document.getElementById('summary-stats-btn')?.classList.remove('active');
-    document.getElementById('main-content').style.display = '';
-    const sp = document.getElementById('summary-panel');
-    if (sp) { sp.classList.remove('visible'); sp.innerHTML = ''; }
-  }
-  renderCollectionSummary();
   const main = document.getElementById('main-content');
   const { groups, total } = getFilteredData();
   const badge = document.getElementById('search-mode-badge');
@@ -35741,10 +35680,11 @@ function renderGrid() {
   const showEdHead = state.edition === 'all' || groups.length > 1;
 
   for (const { edition, decks } of groups) {
+    const isAllView = state.edition === 'all' || state.edition === 'tie-ins';
+    const gridClass = isAllView ? 'deck-grid grid-mode' : 'deck-grid';
     const codeLabel = `<span class="deck-code-badge">${esc(edition.code || edition.id.toUpperCase())}</span>`;
-    const yearLine = `<div class="edition-year">Released ${edition.year || '?'} · ${edition.code || edition.id.toUpperCase()}${edition.note ? ' · <em>' + esc(edition.note) + '</em>' : ''}</div>`;
-    if (showEdHead) html += `<section class="edition-section"><h2 class="edition-heading">${esc(edition.name)} ${codeLabel}<span class="edition-count">${decks.length} theme${decks.length !== 1 ? 's' : ''}</span></h2>${state.edition !== 'all' ? yearLine : ''}<div class="deck-grid grid-mode">`;
-    else html += `<section class="edition-section">${yearLine}<div class="deck-grid grid-mode">`;
+    if (showEdHead) html += `<section class="edition-section"><h2 class="edition-heading">${esc(edition.name)} ${codeLabel}<span class="edition-count">${decks.length} theme${decks.length !== 1 ? 's' : ''}</span></h2><div class="${gridClass}">`;
+    else html += `<section class="edition-section"><div class="${gridClass}">`;
 
     for (const { deck, searchResult } of decks) {
       if (state.showOwnedOnly) {
@@ -35762,7 +35702,6 @@ function renderGrid() {
               <div class="color-pips">${pips}</div>
               <div class="deck-meta">
                 <span class="owned-check-mark">✓</span>
-                ${getOwnedQty(deck.id, vi) > 1 ? `<span class="qty-badge">×${getOwnedQty(deck.id, vi)}</span>` : ''}
                 ${hasCards ? `<span class="has-list-badge">List ✓</span>` : `<span class="no-list-badge">No list</span>`}
               </div>
             </div>
@@ -35822,12 +35761,12 @@ function openDeck(deckId, editionId, vi = 0) {
   state.openDeckId = deckId; state.openEditionId = editionId;
   state.openVariant = Math.min(vi, deck.variants.length - 1);
   renderModal(deck, ed);
-  document.getElementById('modal-overlay')?.classList.add('open');
+  document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
-  document.getElementById('modal-overlay')?.classList.remove('open');
+  document.getElementById('modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
   state.openDeckId = null;
 }
@@ -35844,7 +35783,7 @@ function renderModal(deck, ed) {
       ${deck.headliner ? `<div class="modal-headliner">${esc(deck.headliner)}</div>` : ''}
     </div>
     <button class="modal-close" id="modal-close-btn">✕</button>`;
-  document.getElementById('modal-close-btn')?.addEventListener('click', closeModal);
+  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
   document.getElementById('modal-edition-label').textContent = `${ed.name} · ${ed.year}`;
 
   // Variant row
@@ -35866,43 +35805,18 @@ function renderModal(deck, ed) {
     vtabs.innerHTML = '';
   }
 
-  // Own toggle button + qty controls
+  // Own toggle button
   const ownBtn = document.getElementById('own-toggle-btn');
   const ownedNow = isVariantOwned(deck.id, vi);
   ownBtn.className = `own-toggle-btn ${ownedNow ? 'is-owned' : 'not-owned'}`;
   ownBtn.innerHTML = ownedNow
     ? `<span class="own-check">✓</span> Owned`
     : `<span class="own-check">○</span> Mark Owned`;
-  ownBtn.onclick = () => { toggleOwned(deck.id, vi); renderModal(deck, ed); renderGrid(); };
-
-  // Qty row
-  let qtyRow = document.getElementById('qty-row');
-  if (!qtyRow) {
-    qtyRow = document.createElement('div');
-    qtyRow.id = 'qty-row'; qtyRow.className = 'qty-row';
-    ownBtn.parentNode.insertBefore(qtyRow, ownBtn.nextSibling);
-  }
-  if (ownedNow) {
-    const cq = getOwnedQty(deck.id, vi);
-    qtyRow.style.display = 'flex';
-    qtyRow.innerHTML = `<span class="qty-label">Qty</span>
-      <button class="qty-btn" id="qty-minus">−</button>
-      <span class="qty-val" id="qty-val">${cq}</span>
-      <button class="qty-btn" id="qty-plus">＋</button>`;
-    document.getElementById('qty-minus').onclick = () => {
-      const q = getOwnedQty(deck.id, vi);
-      if (q <= 1) { toggleOwned(deck.id, vi); renderModal(deck, ed); renderGrid(); return; }
-      setOwnedQty(deck.id, vi, q - 1);
-      document.getElementById('qty-val').textContent = q - 1;
-      renderGrid();
-    };
-    document.getElementById('qty-plus').onclick = () => {
-      const q = getOwnedQty(deck.id, vi);
-      setOwnedQty(deck.id, vi, q + 1);
-      document.getElementById('qty-val').textContent = q + 1;
-      renderGrid();
-    };
-  } else { qtyRow.style.display = 'none'; qtyRow.innerHTML = ''; }
+  ownBtn.onclick = () => {
+    toggleOwned(deck.id, vi);
+    renderModal(deck, ed);
+    renderGrid();
+  };
 
   // Body
   const body = document.getElementById('modal-body');
@@ -35922,11 +35836,7 @@ function renderModal(deck, ed) {
   const edObj = liveData.editions.find(e => e.id === state.openEditionId);
   const tieInNote = edObj?.note ? `<div class="tie-in-notice">⚠ ${esc(edObj.note)}</div>` : '';
 
-  const randomNote = variant.randomNote || '';
-  let listHtml = `${tieInNote}<h4>Card List (${total}${randomNote ? ' + 1 random' : ''})</h4>`;
-  if (randomNote) {
-    listHtml += `<div class="random-note-row"><span class="random-note-icon">🎲</span><span class="random-note-text">${esc(randomNote)}</span></div>`;
-  }
+  let listHtml = `${tieInNote}<h4>Card List (${total})</h4>`;
   spells.forEach(c => { listHtml += `<div class="card-row" data-card="${esc(c.name)}"><span class="card-qty">${c.qty}×</span><span class="card-name-list">${esc(c.name)}</span></div>`; });
   if (lands.length) {
     listHtml += `<hr class="section-divider">`;
@@ -36033,22 +35943,10 @@ function highlightImg(name) {
   if (t) { t.classList.add('highlighted'); t.scrollIntoView({ block:'nearest', behavior:'smooth' }); }
 }
 
-// ─── EDIT MODE ────────────────────────────────────────────────────────────────
-let editMode = false;
-function enterEditMode() {
-  editMode = true;
-  document.body.classList.add('edit-mode');
-  document.getElementById('edit-mode-badge')?.classList.add('visible');
-  renderGrid();
-}
-function exitEditMode() {
-  editMode = false;
-  document.body.classList.remove('edit-mode');
-  document.getElementById('edit-mode-badge')?.classList.remove('visible');
-  renderGrid();
-}
-
 // ─── PHONE EDIT MODE ──────────────────────────────────────────────────────────
+// Letter sidebar (stub — full version can be added back later)
+function renderLetterSidebar() { /* placeholder — no letter-sidebar element in current HTML */ }
+
 let phoneEditEnabled = localStorage.getItem('jmp-phone-edit') === 'true';
 const SITE_URL = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
 
@@ -36056,17 +35954,14 @@ function isMobileDevice() { return window.innerWidth <= 700; }
 
 function applyPhoneReadonlyState() {
   if (!isMobileDevice()) return;
-  const isReadOnly = !phoneEditEnabled;
-  document.body.classList.toggle('phone-readonly', isReadOnly);
-  document.getElementById('phone-readonly-notice')?.classList.toggle('visible', isReadOnly);
+  document.body.classList.toggle('phone-readonly', !phoneEditEnabled);
+  document.getElementById('phone-readonly-notice')?.classList.toggle('visible', !phoneEditEnabled);
   const badge = document.getElementById('phone-edit-badge');
   if (badge) badge.classList.toggle('visible', phoneEditEnabled);
   const toggle = document.getElementById('phone-edit-toggle');
   if (toggle) {
     toggle.classList.toggle('enabled', phoneEditEnabled);
-    toggle.innerHTML = phoneEditEnabled
-      ? '📱 Phone updates ON — tap to disable'
-      : '📱 Enable phone updates';
+    toggle.innerHTML = phoneEditEnabled ? '📱 Phone updates ON — tap to disable' : '📱 Enable phone updates';
   }
 }
 
@@ -36075,37 +35970,61 @@ async function autoResyncFromSite() {
     const res = await fetch(SITE_URL + '?v=' + Date.now(), { cache: 'no-store' });
     if (!res.ok) return;
     const text = await res.text();
-    const dataMatch = text.match(/const OWNED_DATA = (\[.*?\]);/s);
-    const verMatch  = text.match(/const OWNED_VERSION = "([^"]+)"/);
-    if (!dataMatch) return;
-    const remoteOwned = JSON.parse(dataMatch[1]);
-    const remoteVer   = verMatch ? verMatch[1] : '';
-    const localVer    = localStorage.getItem('jmp-owned-version') || '';
-    if (remoteOwned.length > 0 && remoteVer !== localVer) {
-      state.owned = new Set(remoteOwned);
-      try { const qm = text.match(/const OWNED_QTY = (\[.*?\]);/s); if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();} } catch(e){}
-      saveOwned();
-      localStorage.setItem('jmp-owned-version', remoteVer);
-      renderGrid();
-      showToast(`✓ Collection synced — ${remoteOwned.length} variant${remoteOwned.length!==1?'s':''}`, 3000);
-    } else if (remoteOwned.length === 0) {
-      showToast(state.owned.size > 0
-        ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} (server has no data yet)`
-        : '📦 No collection on server — push from laptop first', 4000);
+    const dm = text.match(/const OWNED_DATA = (\[.*?\]);/s);
+    const vm = text.match(/const OWNED_VERSION = "([^"]+)"/);
+    if (!dm) return;
+    const ro = JSON.parse(dm[1]);
+    const rv = vm ? vm[1] : '';
+    const lv = localStorage.getItem('jmp-owned-version') || '';
+    if (ro.length > 0 && rv !== lv) {
+      state.owned = new Set(ro);
+      try { const qm=text.match(/const OWNED_QTY = (\[.*?\]);/s); if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();} } catch(e){}
+      saveOwned(); localStorage.setItem('jmp-owned-version', rv);
+      renderGrid(); showToast(`✓ Collection synced — ${ro.length} variant${ro.length!==1?'s':''}`, 3000);
+    } else if (ro.length === 0) {
+      showToast(state.owned.size > 0 ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} (server has no data yet)` : '📦 No collection on server — push from laptop first', 4000);
     } else {
       showToast(`📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} — up to date`, 2500);
     }
   } catch(e) {
-    showToast(state.owned.size > 0
-      ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} loaded (offline)`
-      : '⚠ Could not reach server', 3000);
+    showToast(state.owned.size > 0 ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} loaded (offline)` : '⚠ Could not reach server', 3000);
   }
 }
 
-function closePwModal() {
-  document.getElementById('pw-modal')?.classList.remove('open');
-  document.getElementById('pw-input').value = '';
-  document.getElementById('pw-error').style.display = 'none';
+// ─── COLLECTION SUMMARY ───────────────────────────────────────────────────────
+let summaryMode = 'decks';
+const COLOR_LABELS_S = {W:'White',U:'Blue',B:'Black',R:'Red',G:'Green',M:'Multi'};
+const COLOR_HEX_S    = {W:'#c5b87a',U:'#7ab4e8',B:'#b090e0',R:'#e88070',G:'#70d890',M:'#d4a030'};
+
+function renderCollectionSummary() {
+  const panel = document.getElementById('summary-panel');
+  if (!panel) return;
+  if (!state.showOwnedOnly || summaryMode !== 'stats') { panel.classList.remove('visible'); panel.innerHTML = ''; return; }
+  panel.classList.add('visible');
+  const cg = colors => colors.length > 1 ? 'M' : (colors[0] || '?');
+  let gu=0,gd=0,gt=0,out='';
+  for (const ed of liveData.editions) {
+    const rows={W:[0,0],U:[0,0],B:[0,0],R:[0,0],G:[0,0],M:[0,0]}; let edHas=false;
+    for (const deck of ed.decks) {
+      for (let vi=0;vi<deck.variants.length;vi++) {
+        if (!isVariantOwned(deck.id,vi)) continue;
+        edHas=true; const g=cg(deck.colors),qty=getOwnedQty(deck.id,vi);
+        rows[g][0]++; rows[g][1]+=qty;
+      }
+    }
+    if (!edHas) continue;
+    const eu=Object.values(rows).reduce((s,[u])=>s+u,0),et=Object.values(rows).reduce((s,[,t])=>s+t,0);
+    gu+=eu;gt+=et;gd+=et-eu;
+    out+=`<div class="summary-edition"><div class="summary-edition-name">${esc(ed.name)}<span style="font-size:.7rem;color:var(--text2);font-weight:400;margin-left:.4rem">${ed.code||ed.id.toUpperCase()}</span></div>
+    <table class="summary-table"><tr><th>Color</th><th>Unique</th><th>Dupes</th><th>Total</th></tr>`;
+    for (const [c,[u,t]] of Object.entries(rows)) {
+      if (!u) continue;
+      out+=`<tr><td><span class="summary-pip" style="background:${COLOR_HEX_S[c]}"></span>${COLOR_LABELS_S[c]}</td><td>${u}</td><td>${t-u||'—'}</td><td>${t}</td></tr>`;
+    }
+    out+=`<tr class="total-row"><td>Total</td><td>${eu}</td><td>${et-eu||'—'}</td><td>${et}</td></tr></table></div>`;
+  }
+  out+=`<div class="summary-grand"><div class="summary-grand-item"><span class="summary-grand-val">${gu}</span><span class="summary-grand-label">Unique Variants</span></div><div class="summary-grand-item"><span class="summary-grand-val">${gd}</span><span class="summary-grand-label">Duplicates</span></div><div class="summary-grand-item"><span class="summary-grand-val">${gt}</span><span class="summary-grand-label">Total Copies</span></div></div>`;
+  panel.innerHTML = out;
 }
 
 // ─── EVENTS ──────────────────────────────────────────────────────────────────
@@ -36129,82 +36048,18 @@ document.querySelectorAll('.color-btn').forEach(btn => {
 });
 
 let searchTimer;
-document.getElementById('search-input')?.addEventListener('input', e => {
+document.getElementById('search-input').addEventListener('input', e => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { state.search = e.target.value.trim(); renderGrid(); }, 180);
 });
 
-// ── Collection summary ───────────────────────────────────────────────────────
-let summaryMode = 'decks';
-const COLOR_LABELS_S = {W:'White',U:'Blue',B:'Black',R:'Red',G:'Green',M:'Multi'};
-const COLOR_HEX_S    = {W:'#c5b87a',U:'#7ab4e8',B:'#b090e0',R:'#e88070',G:'#70d890',M:'#d4a030'};
-
-function renderCollectionSummary() {
-  const panel = document.getElementById('summary-panel');
-  if (!panel) return;
-  if (!state.showOwnedOnly || summaryMode !== 'stats') {
-    panel.classList.remove('visible'); panel.innerHTML = ''; return;
-  }
-  panel.classList.add('visible');
-  const colorGroup = colors => colors.length > 1 ? 'M' : (colors[0] || '?');
-  let grandUnique = 0, grandDupe = 0, grandTotal = 0;
-  let out = '';
-  for (const ed of liveData.editions) {
-    const rows = {W:[0,0],U:[0,0],B:[0,0],R:[0,0],G:[0,0],M:[0,0]};
-    let edHas = false;
-    for (const deck of ed.decks) {
-      for (let vi = 0; vi < deck.variants.length; vi++) {
-        if (!isVariantOwned(deck.id, vi)) continue;
-        edHas = true;
-        const g = colorGroup(deck.colors);
-        const qty = getOwnedQty(deck.id, vi);
-        rows[g][0]++; rows[g][1] += qty;
-      }
-    }
-    if (!edHas) continue;
-    const eu = Object.values(rows).reduce((s,[u])=>s+u,0);
-    const et = Object.values(rows).reduce((s,[,t])=>s+t,0);
-    grandUnique+=eu; grandTotal+=et; grandDupe+=et-eu;
-    out += `<div class="summary-edition"><div class="summary-edition-name">${esc(ed.name)}<span style="font-size:.7rem;color:var(--text2);font-weight:400;margin-left:.4rem">${ed.code||ed.id.toUpperCase()}</span></div>
-    <table class="summary-table"><tr><th>Color</th><th>Unique</th><th>Dupes</th><th>Total</th></tr>`;
-    for (const [c,[u,t]] of Object.entries(rows)) {
-      if (!u) continue;
-      out += `<tr><td><span class="summary-pip" style="background:${COLOR_HEX_S[c]}"></span>${COLOR_LABELS_S[c]}</td><td>${u}</td><td>${t-u||'—'}</td><td>${t}</td></tr>`;
-    }
-    out += `<tr class="total-row"><td>Total</td><td>${eu}</td><td>${et-eu||'—'}</td><td>${et}</td></tr></table></div>`;
-  }
-  out += `<div class="summary-grand">
-    <div class="summary-grand-item"><span class="summary-grand-val">${grandUnique}</span><span class="summary-grand-label">Unique Variants</span></div>
-    <div class="summary-grand-item"><span class="summary-grand-val">${grandDupe}</span><span class="summary-grand-label">Duplicates</span></div>
-    <div class="summary-grand-item"><span class="summary-grand-val">${grandTotal}</span><span class="summary-grand-label">Total Copies</span></div>
-  </div>`;
-  panel.innerHTML = out;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('summary-decks-btn')?.addEventListener('click', () => {
-    summaryMode = 'decks';
-    document.getElementById('summary-decks-btn')?.classList.add('active');
-    document.getElementById('summary-stats-btn')?.classList.remove('active');
-    document.getElementById('main-content').style.display = '';
-    renderCollectionSummary();
-  });
-  document.getElementById('summary-stats-btn')?.addEventListener('click', () => {
-    summaryMode = 'stats';
-    document.getElementById('summary-stats-btn')?.classList.add('active');
-    document.getElementById('summary-decks-btn')?.classList.remove('active');
-    document.getElementById('main-content').style.display = 'none';
-    renderCollectionSummary();
-  });
-});
-
-document.getElementById('owned-only-btn')?.addEventListener('click', () => {
+document.getElementById('owned-only-btn').addEventListener('click', () => {
   state.showOwnedOnly = !state.showOwnedOnly;
-  document.getElementById('owned-only-btn')?.classList.toggle('active', state.showOwnedOnly);
+  document.getElementById('owned-only-btn').classList.toggle('active', state.showOwnedOnly);
   renderGrid();
 });
 
-document.getElementById('modal-overlay')?.addEventListener('click', e => {
+document.getElementById('modal-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 });
 
@@ -36215,74 +36070,533 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ─── DOWNLOAD ─────────────────────────────────────────────────────────────────
-document.getElementById('save-download-btn')?.addEventListener('click', () => {
-  const openEls = [...document.querySelectorAll('.open')];
-  openEls.forEach(el => el.classList.remove('open'));
-  document.body.classList.remove('edit-mode');
-  const badge = document.getElementById('edit-mode-badge');
-  badge?.classList.remove('visible');
+// ─── IMPORT TOOL ──────────────────────────────────────────────────────────────
+const BASIC_LAND_NAMES = new Set(['Plains','Island','Swamp','Mountain','Forest',
+  'Snow-Covered Plains','Snow-Covered Island','Snow-Covered Swamp','Snow-Covered Mountain','Snow-Covered Forest']);
+const THRIVING_LAND_NAMES = new Set(['Thriving Heath','Thriving Isle','Thriving Moor','Thriving Bluff','Thriving Grove']);
+const CHANNEL_LAND_NAMES = new Set(['The Fair Basilica','The Hunter Maze','The Lair of the Hydra',
+  'Forgotten Cave','Secluded Steppe','Barren Moor','Lonely Sandbar','Tranquil Thicket',
+  'Leechridden Swamp','Blighted Fen','Shimmerdrift Vale','Blasted Landscape']);
+function isBasicCard(name) {
+  return BASIC_LAND_NAMES.has(name)||THRIVING_LAND_NAMES.has(name)||CHANNEL_LAND_NAMES.has(name);
+}
 
-  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+// ── Import state ──────────────────────────────────────────────────
+const importState = {
+  mode: 'new', // 'new' | 'add'
+  colors: new Set(),
+  prefill: null   // {deckId, editionId} when opened from a deck modal
+};
+let lastSnippet = '';
+let mtgjsonDeckList = null;  // cached DeckList.json data
 
-  openEls.forEach(el => el.classList.add('open'));
-  if (editMode) { document.body.classList.add('edit-mode'); badge?.classList.add('visible'); }
+// ── Populate dropdowns ─────────────────────────────────────────────
+function populateImportDropdowns() {
+  // Edition dropdown
+  const edSel = document.getElementById('import-edition-select');
+  edSel.innerHTML = '<option value="">— Select edition —</option>';
+  for (const ed of liveData.editions) {
+    const opt = document.createElement('option');
+    opt.value = ed.id;
+    opt.textContent = `${ed.name} (${ed.year})`;
+    edSel.appendChild(opt);
+  }
+  const customOpt = document.createElement('option');
+  customOpt.value = '__custom__';
+  customOpt.textContent = '✏ New edition…';
+  edSel.appendChild(customOpt);
 
-  const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
-  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+  // Existing deck dropdown (for "Add Variant" mode)
+  const dkSel = document.getElementById('existing-deck-select');
+  dkSel.innerHTML = '<option value="">— Select deck —</option>';
+  for (const ed of liveData.editions) {
+    const grp = document.createElement('optgroup');
+    grp.label = `${ed.name} (${ed.year})`;
+    for (const deck of ed.decks) {
+      const opt = document.createElement('option');
+      opt.value = `${ed.id}|${deck.id}`;
+      opt.textContent = deck.name;
+      grp.appendChild(opt);
+    }
+    dkSel.appendChild(grp);
+  }
+}
 
-  const ownedArr = JSON.stringify([...state.owned]);
-  const ownedQtyArr = JSON.stringify([...state.ownedQty]);
-  const ownedVer = Date.now().toString();
-  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\nconst OWNED_QTY = ${ownedQtyArr};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
-  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
+// ── Mode toggle ────────────────────────────────────────────────────
+function setImportMode(mode) {
+  importState.mode = mode;
+  document.getElementById('mode-new-btn').classList.toggle('active', mode === 'new');
+  document.getElementById('mode-add-btn').classList.toggle('active', mode === 'add');
+  document.getElementById('existing-deck-field').style.display = mode === 'add' ? '' : 'none';
+  document.getElementById('deck-name-field').style.display   = mode === 'new' ? '' : 'none';
+  document.getElementById('headliner-field').style.display   = mode === 'new' ? '' : 'none';
+  document.getElementById('colors-field').style.display      = mode === 'new' ? '' : 'none';
+  document.getElementById('import-edition-field').style.display = mode === 'new' ? '' : 'none';
+  document.getElementById('import-edition-custom-field').style.display = 'none';
+  rebuildOutput();
+}
+document.getElementById('mode-new-btn').addEventListener('click', () => setImportMode('new'));
+document.getElementById('mode-add-btn').addEventListener('click', () => setImportMode('add'));
 
-  const blob = new Blob([src], { type: 'text/html' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
-  URL.revokeObjectURL(url);
-  document.getElementById('save-dropdown')?.classList.remove('open');
-  showToast('✓ Downloaded index.html — ready to push to GitHub', 3000);
+// ── Edition selector ───────────────────────────────────────────────
+document.getElementById('import-edition-select').addEventListener('change', function() {
+  document.getElementById('import-edition-custom-field').style.display = this.value === '__custom__' ? '' : 'none';
+  rebuildOutput();
+});
+document.getElementById('import-edition-custom').addEventListener('input', rebuildOutput);
+
+// ── Existing deck selector ─────────────────────────────────────────
+document.getElementById('existing-deck-select').addEventListener('change', function() {
+  if (!this.value) return;
+  const [edId, deckId] = this.value.split('|');
+  const ed = liveData.editions.find(e => e.id === edId);
+  const deck = ed && ed.decks.find(d => d.id === deckId);
+  if (deck) {
+    document.getElementById('import-variant-label').value = '';
+    document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
+  }
+  rebuildOutput();
 });
 
-document.getElementById('save-rebuild-btn')?.addEventListener('click', () => {
-  document.getElementById('save-dropdown')?.classList.remove('open');
-  if (!confirm('Wipe ALL deck data and rebuild from taw/magic-preconstructed-decks-data?\n\nYour ownership marks will be kept.')) return;
+// ── Color pips ─────────────────────────────────────────────────────
+document.querySelectorAll('.import-color-pip').forEach(pip => {
+  pip.addEventListener('click', () => {
+    const c = pip.dataset.c;
+    if (importState.colors.has(c)) { importState.colors.delete(c); pip.classList.remove('selected'); }
+    else { importState.colors.add(c); pip.classList.add('selected'); }
+    rebuildOutput();
+  });
+});
+
+// ── Text fields ────────────────────────────────────────────────────
+['import-deck-name','import-headliner','import-variant-label'].forEach(id => {
+  document.getElementById(id).addEventListener('input', rebuildOutput);
+});
+
+// ── Card list parser ───────────────────────────────────────────────
+function parseDecklist(raw) {
+  const cards = [];
+  for (const line of raw.split('\n')) {
+    const t = line.trim();
+    if (!t || /^[/#]/.test(t) || /^(Deck|Sideboard|Commander|About)/i.test(t)) continue;
+    const m = t.match(/^(\d+)x?\s+(.+?)(?:\s+\(.{2,6}\)\s+\d+)?$/);
+    if (m) {
+      const name = m[2].replace(/\s*\/\/.*$/, '').trim(); // strip // DFC half
+      if (name) cards.push({ name, qty: parseInt(m[1]) });
+    } else if (/^[A-ZÀ-Ö]/.test(t)) {
+      const name = t.replace(/\s*\(.{2,6}\)\s*\d*$/, '').replace(/\s*\/\/.*$/, '').trim();
+      if (name) cards.push({ name, qty: 1 });
+    }
+  }
+  const merged = [];
+  for (const c of cards) {
+    const e = merged.find(x => x.name === c.name);
+    if (e) e.qty += c.qty; else merged.push({ ...c });
+  }
+  return merged;
+}
+
+function formatCard(c) {
+  const basic = isBasicCard(c.name) ? ',basic:true' : '';
+  return `      {name:'${c.name.replace(/'/g,"\\'")}',qty:${c.qty}${basic}}`;
+}
+
+function slugify(s) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+// ── Main output builder ────────────────────────────────────────────
+function rebuildOutput() {
+  const rawText = document.getElementById('import-input').value;
+  const cards = parseDecklist(rawText);
+  const variantLabel = document.getElementById('import-variant-label').value.trim();
+  const output = document.getElementById('import-output');
+  const stats  = document.getElementById('import-stats');
+  const hint   = document.getElementById('import-paste-hint');
+  const copyBtn = document.getElementById('import-copy-btn');
+  const actMsg  = document.getElementById('import-actions-msg');
+
+  const spells = cards.filter(c => !isBasicCard(c.name));
+  const lands  = cards.filter(c =>  isBasicCard(c.name));
+  const total  = cards.reduce((s,c) => s+c.qty, 0);
+
+  let lines = [];
+
+  if (importState.mode === 'new') {
+    const deckName = document.getElementById('import-deck-name').value.trim();
+    const headliner = document.getElementById('import-headliner').value.trim();
+    const colors = [...importState.colors];
+    const edSel = document.getElementById('import-edition-select').value;
+    const edCustom = document.getElementById('import-edition-custom').value.trim();
+    const edId = edSel === '__custom__' ? slugify(edCustom) : edSel;
+    const deckId = edId && deckName ? `${edId}-${slugify(deckName)}` : 'EDITION_ID-DECK_ID';
+    const label = variantLabel || deckName || 'Variant 1';
+
+    const colorStr = colors.length ? `['${colors.join("','")}']` : `['W']`;
+    const headStr  = headliner ? `headliner:'${headliner.replace(/'/g,"\\'")}', ` : '';
+
+    if (cards.length > 0) {
+      const cardLines = [...spells, ...lands].map(formatCard).join(',\n');
+      lines = [
+        `{ id:'${deckId}', name:'${(deckName||'Deck Name').replace(/'/g,"\\'")}', colors:${colorStr}, ${headStr}variants:[`,
+        `  { label:'${label.replace(/'/g,"\\'")}', cards:[`,
+        cardLines,
+        `  ]}`,
+        `]}`
+      ];
+    } else {
+      lines = [
+        `{ id:'${deckId}', name:'${(deckName||'Deck Name').replace(/'/g,"\\'")}', colors:${colorStr}, ${headStr}variants:[`,
+        `  { label:'${label.replace(/'/g,"\\'")}', cards:[] }`,
+        `]}`
+      ];
+    }
+  } else {
+    // Add Variant mode
+    const label = variantLabel || 'Variant';
+    const cardLines = cards.length
+      ? [...spells, ...lands].map(formatCard).join(',\n')
+      : '';
+    lines = [
+      `{ label:'${label.replace(/'/g,"\\'")}', cards:[`,
+      cardLines,
+      `]}`
+    ];
+
+    const selVal = document.getElementById('existing-deck-select').value;
+    if (selVal) {
+      const [edId, deckId] = selVal.split('|');
+      const ed = liveData.editions.find(e => e.id === edId);
+      const deck = ed && ed.decks.find(d => d.id === deckId);
+      if (deck) actMsg.textContent = `Paste into ${deck.name}'s variants[] array in data.js`;
+      else actMsg.textContent = '';
+    } else actMsg.textContent = '';
+  }
+
+  const snippet = lines.join('\n');
+  lastSnippet = snippet;
+  output.textContent = snippet;
+
+  if (cards.length > 0) {
+    stats.style.display = 'block';
+    stats.textContent = `✓ ${cards.length} unique cards · ${total} total · ${spells.length} spell types · ${lands.length} land types`;
+    hint.style.display = 'none';
+    copyBtn.disabled = false;
+  } else {
+    stats.style.display = 'none';
+    hint.style.display = 'block';
+    hint.textContent = 'Paste a card list in the middle column to generate the cards[] array.';
+    copyBtn.disabled = false; // allow copy of empty stub
+  }
+}
+
+document.getElementById('import-input').addEventListener('input', rebuildOutput);
+
+// ── Open / close import modal ──────────────────────────────────────
+function openImport(prefill = null) {
+  populateImportDropdowns();
+  importState.prefill = prefill;
+
+  if (prefill) {
+    setImportMode('add');
+    const sel = document.getElementById('existing-deck-select');
+    const targetVal = `${prefill.editionId}|${prefill.deckId}`;
+    for (const opt of sel.options) {
+      if (opt.value === targetVal) { sel.value = targetVal; break; }
+    }
+    // Also try to prefill deck name / headliner for reference
+    const ed = liveData.editions.find(e => e.id === prefill.editionId);
+    const deck = ed && ed.decks.find(d => d.id === prefill.deckId);
+    if (deck) {
+      document.getElementById('import-variant-label').placeholder = `e.g. ${deck.name} variant ${deck.variants.length + 1}`;
+      document.getElementById('import-actions-msg').textContent = `Adding variant to: ${deck.name}`;
+    }
+  } else {
+    setImportMode('new');
+    document.getElementById('import-actions-msg').textContent = '';
+  }
+
+  rebuildOutput();
+  document.getElementById('import-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('import-input').focus(), 80);
+}
+
+function closeImport() {
+  document.getElementById('import-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  // reset
+  document.getElementById('import-input').value = '';
+  document.getElementById('import-deck-name').value = '';
+  document.getElementById('import-headliner').value = '';
+  document.getElementById('import-variant-label').value = '';
+  document.getElementById('import-edition-select').value = '';
+  document.getElementById('import-edition-custom').value = '';
+  importState.colors.clear();
+  document.querySelectorAll('.import-color-pip').forEach(p => p.classList.remove('selected'));
+  document.getElementById('import-edition-custom-field').style.display = 'none';
+  setImportMode('new');
+}
+
+document.getElementById('import-btn').addEventListener('click', () => openImport());
+document.getElementById('import-close-btn').addEventListener('click', closeImport);
+document.getElementById('import-close-btn2').addEventListener('click', closeImport);
+document.getElementById('import-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('import-modal')) closeImport();
+});
+
+document.getElementById('import-copy-btn').addEventListener('click', () => {
+  if (!lastSnippet) return;
+  navigator.clipboard.writeText(lastSnippet).then(() => {
+    const btn = document.getElementById('import-copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = orig, 1800);
+  }).catch(() => { /* fallback silent */ });
+});
+
+// ── "+ Add Variant" from deck modal ───────────────────────────────
+document.getElementById('modal-add-variant-btn').addEventListener('click', () => {
+  if (state.openDeckId && state.openEditionId) {
+    closeModal();
+    setTimeout(() => openImport({ deckId: state.openDeckId, editionId: state.openEditionId }), 120);
+  }
+});
+
+// ── MTGJSON auto-fetcher ───────────────────────────────────────────
+const JMP_SET_CODES = new Set(['JMP','J21','J22','J25','JDMU','JBRO','JONE','JMOM','JLTR','JLTR2','ATJ']);
+const MTGJSON_BASE = 'https://mtgjson.com/api/v5';
+let allMtgjsonDecks = [];
+
+async function loadMtgjsonList() {
+  const btn = document.getElementById('mtgjson-load-btn');
+  const status = document.getElementById('mtgjson-status');
+  if (mtgjsonDeckList) { populateMtgjsonSelect(mtgjsonDeckList); return; }
+  btn.disabled = true;
+  status.textContent = 'Fetching deck list…';
+  try {
+    const r = await fetch(`${MTGJSON_BASE}/DeckList.json`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const json = await r.json();
+    mtgjsonDeckList = json.data || [];
+    allMtgjsonDecks = mtgjsonDeckList.filter(d => JMP_SET_CODES.has(d.code));
+    if (allMtgjsonDecks.length === 0) {
+      // MTGJSON may use different codes — show all if filter returns nothing
+      allMtgjsonDecks = mtgjsonDeckList.filter(d =>
+        (d.fileName || '').match(/JMP|J22|J25|J21|JDMU|JBRO|JONE|JMOM|JLTR/i)
+      );
+    }
+    status.textContent = allMtgjsonDecks.length > 0
+      ? `${allMtgjsonDecks.length} Jumpstart decks found`
+      : `${mtgjsonDeckList.length} total decks loaded (no Jumpstart filter match — showing all)`;
+    if (allMtgjsonDecks.length === 0) allMtgjsonDecks = mtgjsonDeckList;
+    populateMtgjsonSelect(allMtgjsonDecks);
+    document.getElementById('mtgjson-search').style.display = '';
+    document.getElementById('mtgjson-deck-select').style.display = '';
+    document.getElementById('mtgjson-bulk-btn').classList.add('visible');
+  } catch(e) {
+    status.textContent = `⚠ Could not reach MTGJSON (${e.message}). Use manual paste instead.`;
+    btn.disabled = false;
+  }
+}
+
+function populateMtgjsonSelect(decks) {
+  const sel = document.getElementById('mtgjson-deck-select');
+  sel.innerHTML = '<option value="">— Select a deck to auto-fill —</option>';
+  for (const d of decks) {
+    const opt = document.createElement('option');
+    opt.value = d.fileName;
+    opt.textContent = `${d.name} (${d.code})`;
+    sel.appendChild(opt);
+  }
+}
+
+document.getElementById('mtgjson-load-btn').addEventListener('click', loadMtgjsonList);
+
+document.getElementById('mtgjson-search').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  const filtered = allMtgjsonDecks.filter(d =>
+    d.name.toLowerCase().includes(q) || d.code.toLowerCase().includes(q)
+  );
+  populateMtgjsonSelect(filtered);
+});
+
+document.getElementById('mtgjson-deck-select').addEventListener('change', async function() {
+  const fileName = this.value;
+  if (!fileName) return;
+  const status = document.getElementById('mtgjson-status');
+  status.textContent = 'Fetching deck…';
+  try {
+    const r = await fetch(`${MTGJSON_BASE}/decks/${fileName}.json`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const json = await r.json();
+    const deck = json.data;
+    if (!deck) throw new Error('No data');
+
+    // Auto-fill metadata fields
+    const rawName = deck.name || fileName.replace(/_[A-Z0-9]+$/, '').replace(/\d+$/, '').replace(/([A-Z])/g, ' $1').trim();
+    document.getElementById('import-deck-name').value = rawName;
+
+    // Build card list from mainBoard
+    const mainBoard = deck.mainBoard || [];
+    let listText = '';
+    const spells = mainBoard.filter(c => !isBasicCard(c.name));
+    const lands  = mainBoard.filter(c =>  isBasicCard(c.name));
+    for (const c of [...spells, ...lands]) {
+      listText += `${c.count} ${c.name}\n`;
+    }
+    document.getElementById('import-input').value = listText.trim();
+
+    // Try to detect colors from card colors
+    const colorSet = new Set();
+    for (const c of spells) {
+      if (c.colors) for (const cl of c.colors) colorSet.add(cl);
+    }
+    importState.colors.clear();
+    document.querySelectorAll('.import-color-pip').forEach(p => {
+      p.classList.remove('selected');
+      if (colorSet.has(p.dataset.c)) {
+        importState.colors.add(p.dataset.c);
+        p.classList.add('selected');
+      }
+    });
+
+    // Variant label: include variant number from fileName
+    const varNum = (fileName.match(/(\d+)_[A-Z0-9]+$/) || [])[1];
+    if (varNum) document.getElementById('import-variant-label').value = `Variant ${varNum}`;
+
+    status.textContent = `✓ ${deck.name} — ${mainBoard.length} cards loaded`;
+    rebuildOutput();
+  } catch(e) {
+    status.textContent = `⚠ Could not fetch ${fileName}: ${e.message}`;
+  }
+});
+
+// ─── EDIT MODE ────────────────────────────────────────────────────────────────
+let editMode = false;
+
+function enterEditMode() {
+  editMode = true;
+  document.body.classList.add('edit-mode');
+  document.getElementById('edit-mode-badge').classList.add('visible');
+  renderGrid();
+}
+function exitEditMode() {
+  editMode = false;
+  document.body.classList.remove('edit-mode');
+  document.getElementById('edit-mode-badge').classList.remove('visible');
+  renderGrid();
+}
+
+// Password modal
+document.getElementById('edit-mode-btn').addEventListener('click', () => {
+  if (editMode) { exitEditMode(); return; }
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+  document.getElementById('pw-modal').classList.add('open');
+  setTimeout(() => document.getElementById('pw-input').focus(), 60);
+});
+function closePwModal() { document.getElementById('pw-modal').classList.remove('open'); }
+document.getElementById('pw-cancel-btn').addEventListener('click', closePwModal);
+document.getElementById('pw-confirm-btn').addEventListener('click', () => {
+  const val = document.getElementById('pw-input').value;
+  if (val === EDIT_PASSWORD) { closePwModal(); enterEditMode(); }
+  else { document.getElementById('pw-error').style.display = 'block'; document.getElementById('pw-input').value = ''; document.getElementById('pw-input').focus(); }
+});
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('pw-confirm-btn').click();
+});
+
+// Save / Export dropdown
+document.getElementById('save-menu-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  document.getElementById('save-dropdown').classList.toggle('open');
+});
+document.addEventListener('click', () => document.getElementById('save-dropdown').classList.remove('open'));
+
+// Download complete self-contained index.html
+document.getElementById('save-download-btn').addEventListener('click', async () => {
+  try {
+    // Fetch current page source
+    const res = await fetch(location.href);
+    let src = await res.text();
+    // Replace inline data block with current liveData
+    const newDataBlock = `// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
+    src = src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+    const blob = new Blob([src], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) {
+    // Fallback: generate minimal standalone file
+    const content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Jumpstart Data</title></head><body><script>const DECK_DATA = ${JSON.stringify(liveData, null, 2)};<\/script><p>Data exported. Replace the DECK_DATA block in your index.html with the script tag above.</p></body></html>`;
+    const blob = new Blob([content], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'deck-data-export.html'; a.click();
+    URL.revokeObjectURL(url);
+  }
+  document.getElementById('save-dropdown').classList.remove('open');
+});
+
+// Reset
+document.getElementById('save-rebuild-btn').addEventListener('click', () => {
+  document.getElementById('save-dropdown').classList.remove('open');
+  if (!confirm('Wipe ALL deck data and rebuild from taw/magic-preconstructed-decks-data?\n\nYour ownership marks will be kept. This will correctly populate all editions including all 46 Historic Horizons themes.')) return;
   wipeAndRebuildFromSource();
 });
 
+document.getElementById('save-reset-btn').addEventListener('click', () => {
+  if (!confirm('Reset ALL data and settings including ownership? This cannot be undone.')) return;
+  localStorage.clear();
+  state.owned = new Set();
+  resetLiveData();
+  document.getElementById('save-dropdown').classList.remove('open');
+  renderTabs();
+  renderGrid();
+  showToast('All data and settings cleared.');
+});
+
+// ── Wipe & Rebuild from taw source ──────────────────────────────────────────
 async function wipeAndRebuildFromSource() {
   const overlay  = document.getElementById('rebuild-overlay');
   const statusEl = document.getElementById('rebuild-status');
   const barEl    = document.getElementById('rebuild-bar');
   const detailEl = document.getElementById('rebuild-detail');
-  const setP = (pct, msg, detail='') => { barEl.style.width = pct+'%'; statusEl.textContent = msg; detailEl.textContent = detail; };
+  const setP     = (pct, msg, detail='') => {
+    barEl.style.width = pct + '%';
+    statusEl.textContent = msg;
+    detailEl.textContent = detail;
+  };
   overlay.classList.add('open');
   setP(0, 'Fetching taw/magic-preconstructed-decks-data…', 'One request · no duplicates possible');
+
   let allTaw;
   try {
     const r = await fetch('https://raw.githubusercontent.com/taw/magic-preconstructed-decks-data/master/decks_v2.json');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     setP(12, 'Parsing JSON…');
     allTaw = await r.json();
-  } catch(e) { overlay.classList.remove('open'); showToast('⚠ Fetch failed: ' + e.message, 5000); return; }
-  setP(22, 'Filtering Jumpstart halfdecks…');
-  const tawCodeMap = {};
-  for (const [id, cfg] of Object.entries(EDITION_CONFIG)) {
-    tawCodeMap[id] = id;
-    if (cfg.tawCode) tawCodeMap[cfg.tawCode] = id;
+  } catch(e) {
+    overlay.classList.remove('open');
+    showToast('⚠ Fetch failed: ' + e.message, 5000);
+    return;
   }
+
+  setP(22, 'Filtering Jumpstart halfdecks…');
+  const jmpCodes = new Set(Object.keys(EDITION_CONFIG));
   const jmpDecks = allTaw.filter(d => {
     const sc = (d.set_code || '').toLowerCase();
-    if (!tawCodeMap[sc]) return false;
+    if (!jmpCodes.has(sc)) return false;
     const n = (d.cards || []).reduce((s,c) => s + (c.count||1), 0);
     return n >= 12 && n <= 25;
   });
-  setP(30, `Found ${jmpDecks.length} halfdecks. Grouping themes…`);
+  setP(30, `Found ${jmpDecks.length} halfdecks across ${new Set(jmpDecks.map(d=>d.set_code.toLowerCase())).size} sets. Grouping themes…`);
+
+  // Group by setCode + baseName (strip variant number suffix)
   const normName = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const grouped = {};
+  const grouped  = {};
   for (const d of jmpDecks) {
-    const sc   = tawCodeMap[(d.set_code||'').toLowerCase()] || d.set_code.toLowerCase();
+    const sc  = d.set_code.toLowerCase();
     const base = d.name.replace(/\s*\(\d+\)$/, '').replace(/\s+\d+$/, '').trim();
     const key  = sc + '|' + normName(base);
     if (!grouped[key]) grouped[key] = { sc, base, variants: [] };
@@ -36290,103 +36604,276 @@ async function wipeAndRebuildFromSource() {
   }
   for (const g of Object.values(grouped)) {
     g.variants.sort((a,b) => {
-      const na = parseInt((a.name.match(/\((\d+)\)$/) || [0,0])[1]) || parseInt((a.name.match(/\s(\d+)$/) || [0,0])[1]) || 0;
-      const nb = parseInt((b.name.match(/\((\d+)\)$/) || [0,0])[1]) || parseInt((b.name.match(/\s(\d+)$/) || [0,0])[1]) || 0;
+      const na = parseInt((a.name.match(/\((\d+)\)$/) || [0,0])[1]) || 0;
+      const nb = parseInt((b.name.match(/\((\d+)\)$/) || [0,0])[1]) || 0;
       return na - nb;
     });
   }
+
   setP(45, 'Building editions…');
   const edMap = {};
   const entries = Object.values(grouped);
   for (let i = 0; i < entries.length; i++) {
     const { sc, base, variants } = entries[i];
-    if (i % 20 === 0) { setP(45 + Math.round(40*i/entries.length), 'Building editions…', sc.toUpperCase()+': '+base); await new Promise(r=>setTimeout(r,0)); }
-    if (!edMap[sc]) { const cfg=EDITION_CONFIG[sc]||{}; edMap[sc]={id:sc,name:cfg.name||sc.toUpperCase(),year:cfg.year||null,code:(cfg.code||sc.toUpperCase()),note:cfg.note||(cfg.tieIn?'Set tie-in':undefined),decks:[]}; }
-    const builtVariants = variants.map(td => ({ label: td.name, cards: (td.cards||[]).map(c => ({name:c.name,qty:c.count||1,...(isBasicCard(c.name)?{basic:true}:{})})) }));
-    const allCards = builtVariants.flatMap(v=>v.cards);
-    let headliner; for(const v of builtVariants){const c=v.cards.find(x=>!x.basic);if(c){headliner=c.name;break;}}
-    edMap[sc].decks.push({id:sc+'-'+normName(base),name:base,headliner,colors:detectColors(allCards),variants:builtVariants});
-  }
-  setP(88, 'Sorting and saving…');
-  const mainOrder = MAIN_SET_ORDER;
-  const editions = [
-    ...mainOrder.filter(id=>edMap[id]).map(id=>edMap[id]),
-    ...Object.values(edMap).filter(e=>!mainOrder.includes(e.id)).sort((a,b)=>(a.year||9999)-(b.year||9999))
-  ];
-  // Preserve editions not in taw (j21, msh) from current liveData
-  for (const ed of liveData.editions) {
-    if (!edMap[ed.id] && !editions.find(e=>e.id===ed.id)) {
-      const cfg = EDITION_CONFIG[ed.id];
-      const pos = mainOrder.indexOf(ed.id);
-      if (pos !== -1) editions.splice(pos, 0, ed);
-      else editions.push(ed);
+    if (i % 20 === 0) {
+      setP(45 + Math.round(40 * i / entries.length), 'Building editions…', `${sc.toUpperCase()}: ${base}`);
+      await new Promise(r => setTimeout(r, 0)); // yield to UI
     }
+    if (!edMap[sc]) {
+      const cfg = EDITION_CONFIG[sc] || {};
+      edMap[sc] = { id: sc, name: cfg.name || sc.toUpperCase(), year: cfg.year || null,
+                    code: sc.toUpperCase(), note: cfg.note || (cfg.tieIn ? 'Set tie-in' : undefined), decks: [] };
+    }
+    const builtVariants = variants.map(td => ({
+      label: td.name,
+      cards: (td.cards || []).map(c => ({
+        name: c.name, qty: c.count || 1,
+        ...(isBasicCard(c.name) ? { basic: true } : {})
+      }))
+    }));
+    const allCards = builtVariants.flatMap(v => v.cards);
+    let headliner;
+    for (const v of builtVariants) { const c = v.cards.find(x=>!x.basic); if(c){headliner=c.name;break;} }
+    edMap[sc].decks.push({
+      id: sc + '-' + normName(base), name: base, headliner,
+      colors: detectColors(allCards), variants: builtVariants
+    });
   }
-  for (const ed of editions) ed.decks.sort((a,b)=>a.name.localeCompare(b.name));
-  const savedOwned = [...state.owned]; const savedQty = [...state.ownedQty];
-  liveData = { editions }; saveLiveData();
-  state.owned = new Set(savedOwned); state.ownedQty = new Map(savedQty);
-  saveOwned(); saveOwnedQty();
+
+  setP(88, 'Sorting and saving…');
+  const mainOrder = ['jmp','j21','j22','j25','atj'];
+  const editions  = [
+    ...mainOrder.filter(id => edMap[id]).map(id => edMap[id]),
+    ...Object.values(edMap).filter(e => !mainOrder.includes(e.id)).sort((a,b) => (a.year||9999)-(b.year||9999))
+  ];
+  for (const ed of editions) ed.decks.sort((a,b) => a.name.localeCompare(b.name));
+
+  const savedOwned = [...state.owned];
+  liveData = { editions };
+  saveLiveData();
+  state.owned = new Set(savedOwned);
+  saveOwned();
+
   setP(100, 'Done!');
-  await new Promise(r=>setTimeout(r,350));
+  await new Promise(r => setTimeout(r, 350));
   overlay.classList.remove('open');
-  const totD = editions.reduce((s,e)=>s+e.decks.length,0);
-  const totV = editions.reduce((s,e)=>e.decks.reduce((s2,d)=>s2+d.variants.length,0)+s,0);
-  renderTabs(); renderGrid();
+
+  const totD = editions.reduce((s,e) => s + e.decks.length, 0);
+  const totV = editions.reduce((s,e) => e.decks.reduce((s2,d) => s2 + d.variants.length, 0) + s, 0);
+  renderTabs();
+  renderGrid();
   showToast(`✓ ${editions.length} sets · ${totD} themes · ${totV} variants loaded from source`, 6000);
 }
 
-// ─── FORCE RESYNC ──────────────────────────────────────────────────────────────
-document.getElementById('save-force-resync-btn')?.addEventListener('click', async () => {
-  document.getElementById('save-dropdown')?.classList.remove('open');
-  showToast('⏳ Fetching latest from GitHub…', 60000);
-  try {
-    const res = await fetch(SITE_URL + '?v=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const text = await res.text();
-    const dataMatch = text.match(/const OWNED_DATA = (\[.*?\]);/s);
-    const verMatch  = text.match(/const OWNED_VERSION = "([^"]+)"/);
-    if (!dataMatch) throw new Error('Could not find OWNED_DATA in fetched file.');
-    const remoteOwned = JSON.parse(dataMatch[1]);
-    const remoteVersion = verMatch ? verMatch[1] : Date.now().toString();
-    if (remoteOwned.length === 0) {
-      showToast('⚠ GitHub file has 0 owned variants. On your laptop: Download → Push first, then retry.', 8000);
-      return;
-    }
-    if (!confirm(`Found ${remoteOwned.length} owned variant(s) on GitHub.\nReplace your local collection with this?`)) return;
-    state.owned = new Set(remoteOwned);
-    try {
-      const qm = text.match(/const OWNED_QTY = (\[.*?\]);/s);
-      if (qm) { state.ownedQty = new Map(JSON.parse(qm[1])); saveOwnedQty(); }
-    } catch(e) {}
-    saveOwned();
-    localStorage.setItem('jmp-owned-version', remoteVersion);
-    if (isMobileDevice()) { state.showOwnedOnly = true; document.getElementById('owned-only-btn')?.classList.add('active'); }
-    renderGrid();
-    showToast(`✓ Resynced — ${remoteOwned.length} owned variants loaded from GitHub`, 5000);
-  } catch(e) {
-    showToast(`⚠ Resync failed: ${e.message}`, 5000);
+// Generate self-contained HTML content (used by GitHub push)
+async function generateSelfContainedHtml() {
+  const res = await fetch(location.href);
+  let src = await res.text();
+  const newDataBlock = `// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
+  return src.replace(/\/\/ DECK_DATA_START[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+}
+
+// Add Deck button
+document.getElementById('add-deck-btn').addEventListener('click', () => {
+  openEditDeckModal(null, null);
+});
+
+// ─── EDIT DECK MODAL ──────────────────────────────────────────────────────────
+let editingColors = new Set();
+let editingVariants = []; // [{label, cards}]
+
+function openEditDeckModal(deckId, editionId) {
+  const isNew = !deckId;
+  document.getElementById('edit-deck-modal-title').textContent = isNew ? '＋ New Deck' : 'Edit Deck';
+  document.getElementById('edit-deck-id').value = deckId || '';
+  document.getElementById('edit-edition-id').value = editionId || '';
+
+  // Populate edition dropdown
+  const edSel = document.getElementById('edit-edition-select');
+  edSel.innerHTML = '<option value="">— Select edition —</option>';
+  for (const ed of liveData.editions) {
+    const o = document.createElement('option'); o.value = ed.id;
+    o.textContent = `${ed.name} (${ed.year})`;
+    edSel.appendChild(o);
   }
+
+  // Fill fields
+  editingColors.clear();
+  document.querySelectorAll('.edit-color-pip').forEach(p => p.classList.remove('selected'));
+
+  if (!isNew) {
+    const { deck, edition } = findDeck(deckId) || {};
+    if (!deck) return;
+    document.getElementById('edit-deck-name').value = deck.name || '';
+    document.getElementById('edit-deck-headliner').value = deck.headliner || '';
+    edSel.value = edition.id;
+    for (const c of (deck.colors || [])) {
+      editingColors.add(c);
+      document.querySelector(`.edit-color-pip[data-c="${c}"]`)?.classList.add('selected');
+    }
+    editingVariants = deepClone(deck.variants || []);
+  } else {
+    document.getElementById('edit-deck-name').value = '';
+    document.getElementById('edit-deck-headliner').value = '';
+    edSel.value = '';
+    editingVariants = [{ label: 'Variant 1', cards: [] }];
+  }
+
+  renderVariantList();
+  document.getElementById('edit-delete-deck-btn').style.display = isNew ? 'none' : '';
+  document.getElementById('edit-deck-modal').classList.add('open');
+}
+
+function closeEditDeckModal() { document.getElementById('edit-deck-modal').classList.remove('open'); }
+document.getElementById('edit-deck-close-btn').addEventListener('click', closeEditDeckModal);
+document.getElementById('edit-deck-cancel-btn').addEventListener('click', closeEditDeckModal);
+
+document.querySelectorAll('.edit-color-pip').forEach(pip => {
+  pip.addEventListener('click', () => {
+    const c = pip.dataset.c;
+    if (editingColors.has(c)) { editingColors.delete(c); pip.classList.remove('selected'); }
+    else { editingColors.add(c); pip.classList.add('selected'); }
+  });
+});
+
+function renderVariantList() {
+  const container = document.getElementById('edit-variants-list');
+  container.innerHTML = '';
+  editingVariants.forEach((v, i) => {
+    const row = document.createElement('div');
+    row.className = 'variant-row-edit';
+    row.innerHTML = `
+      <input type="text" value="${esc(v.label)}" placeholder="Variant name" data-vi="${i}">
+      <button class="vr-edit-cards" data-vi="${i}" title="Edit card list for this variant">✏ Cards (${(v.cards||[]).filter(c=>!c.basic).length})</button>
+      <button class="vr-del" data-vi="${i}" title="Delete variant">✕</button>`;
+    container.appendChild(row);
+    row.querySelector('input').addEventListener('input', e => { editingVariants[i].label = e.target.value; });
+    row.querySelector('.vr-edit-cards').addEventListener('click', () => editVariantCards(i));
+    row.querySelector('.vr-del').addEventListener('click', () => {
+      if (editingVariants.length === 1 && !confirm('Remove the only variant?')) return;
+      editingVariants.splice(i, 1);
+      renderVariantList();
+    });
+  });
+}
+
+document.getElementById('edit-add-variant-btn').addEventListener('click', () => {
+  editingVariants.push({ label: `Variant ${editingVariants.length + 1}`, cards: [] });
+  renderVariantList();
+});
+
+function editVariantCards(vi) {
+  // Open importer in Add Variant mode, pre-fill card list from existing cards
+  const variant = editingVariants[vi];
+  const cardText = (variant.cards || []).map(c => `${c.qty} ${c.name}`).join('\n');
+  closeEditDeckModal();
+  openImport({ _editVariant: true, vi, variantLabel: variant.label });
+  setTimeout(() => {
+    document.getElementById('import-input').value = cardText;
+    document.getElementById('import-variant-label').value = variant.label;
+    rebuildOutput();
+    // Add "Apply Cards" button
+    const actMsg = document.getElementById('import-actions-msg');
+    actMsg.textContent = `Editing cards for variant: ${variant.label}`;
+    const applyBtn = document.getElementById('import-apply-btn') || (() => {
+      const b = document.createElement('button');
+      b.id = 'import-apply-btn';
+      b.className = 'btn-primary';
+      b.textContent = '✓ Apply to Deck';
+      b.style.cssText = 'margin-right:.5rem';
+      document.getElementById('import-copy-btn').before(b);
+      return b;
+    })();
+    applyBtn.style.display = '';
+    applyBtn.onclick = () => {
+      const raw = document.getElementById('import-input').value;
+      const cards = parseDecklist(raw);
+      editingVariants[vi].cards = cards;
+      editingVariants[vi].label = document.getElementById('import-variant-label').value || variant.label;
+      closeImport();
+      openEditDeckModal(
+        document.getElementById('edit-deck-id').value || null,
+        document.getElementById('edit-edition-id').value || null
+      );
+    };
+  }, 100);
+}
+
+// Save deck changes
+document.getElementById('edit-deck-save-btn').addEventListener('click', () => {
+  const deckId = document.getElementById('edit-deck-id').value;
+  const editionId = document.getElementById('edit-edition-select').value;
+  const name = document.getElementById('edit-deck-name').value.trim();
+  const headliner = document.getElementById('edit-deck-headliner').value.trim();
+  const colors = [...editingColors];
+  if (!name) { alert('Deck name is required.'); return; }
+  if (!editionId) { alert('Please select an edition.'); return; }
+
+  const ed = liveData.editions.find(e => e.id === editionId);
+  if (!ed) { alert('Edition not found.'); return; }
+
+  if (deckId) {
+    // Update existing deck
+    const deck = ed.decks.find(d => d.id === deckId);
+    if (!deck) {
+      // Deck moved to different edition — remove from old, add to new
+      for (const e of liveData.editions) {
+        const idx = e.decks.findIndex(d => d.id === deckId);
+        if (idx !== -1) { e.decks.splice(idx, 1); break; }
+      }
+      ed.decks.push({ id: deckId, name, headliner: headliner || undefined, colors, variants: editingVariants });
+    } else {
+      deck.name = name;
+      deck.headliner = headliner || undefined;
+      deck.colors = colors;
+      deck.variants = editingVariants;
+    }
+  } else {
+    // New deck
+    const id = `${editionId}-${name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}`;
+    if (ed.decks.find(d => d.id === id)) {
+      if (!confirm(`A deck with ID "${id}" already exists. Add anyway?`)) return;
+    }
+    ed.decks.push({ id, name, headliner: headliner || undefined, colors, variants: editingVariants });
+  }
+
+  saveLiveData();
+  closeEditDeckModal();
+  renderGrid();
+});
+
+// Delete deck
+document.getElementById('edit-delete-deck-btn').addEventListener('click', () => {
+  const deckId = document.getElementById('edit-deck-id').value;
+  if (!deckId || !confirm('Permanently delete this deck from your data?')) return;
+  for (const ed of liveData.editions) {
+    const idx = ed.decks.findIndex(d => d.id === deckId);
+    if (idx !== -1) { ed.decks.splice(idx, 1); break; }
+  }
+  saveLiveData();
+  closeEditDeckModal();
+  renderGrid();
 });
 
 // ─── GITHUB PUSH ──────────────────────────────────────────────────────────────
+function openGhModal() {
   document.getElementById('gh-owner').value = localStorage.getItem('gh-owner') || '';
-  document.getElementById('gh-repo').value = localStorage.getItem('gh-repo')  || '';
-  document.getElementById('gh-path').value = localStorage.getItem('gh-path')  || 'data.js';
+  document.getElementById('gh-repo').value  = localStorage.getItem('gh-repo')  || '';
+  document.getElementById('gh-path').value  = localStorage.getItem('gh-path')  || 'data.js';
   document.getElementById('gh-token').value = localStorage.getItem('gh-token') || '';
   document.getElementById('gh-push-status').className = 'gh-push-status';
   document.getElementById('gh-push-status').textContent = '';
-  document.getElementById('gh-modal')?.classList.add('open');
-  document.getElementById('save-dropdown')?.classList.remove('open');
+  document.getElementById('gh-modal').classList.add('open');
+  document.getElementById('save-dropdown').classList.remove('open');
 }
-document.getElementById('save-github-btn')?.addEventListener('click', openGhModal);
-document.getElementById('gh-cancel-btn')?.addEventListener('click', () => document.getElementById('gh-modal')?.classList.remove('open'));
+document.getElementById('save-github-btn').addEventListener('click', openGhModal);
+document.getElementById('gh-cancel-btn').addEventListener('click', () => document.getElementById('gh-modal').classList.remove('open'));
 
-document.getElementById('gh-push-btn')?.addEventListener('click', async () => {
-  const owner = document.getElementById('gh-owner')?.value.trim();
-  const repo  = document.getElementById('gh-repo')?.value.trim();
-  const path  = document.getElementById('gh-path')?.value.trim() || 'data.js';
-  const token = document.getElementById('gh-token')?.value.trim();
+document.getElementById('gh-push-btn').addEventListener('click', async () => {
+  const owner = document.getElementById('gh-owner').value.trim();
+  const repo  = document.getElementById('gh-repo').value.trim();
+  const path  = document.getElementById('gh-path').value.trim() || 'data.js';
+  const token = document.getElementById('gh-token').value.trim();
   const status = document.getElementById('gh-push-status');
   if (!owner || !repo || !token) { status.className = 'gh-push-status err'; status.textContent = '⚠ Owner, repo, and token are all required.'; return; }
   // Save settings
@@ -36410,9 +36897,6 @@ document.getElementById('gh-push-btn')?.addEventListener('click', async () => {
     if (!putRes.ok) { const e = await putRes.json(); throw new Error(e.message || putRes.statusText); }
     status.className = 'gh-push-status ok';
     status.textContent = `✓ Pushed successfully! GitHub Pages will rebuild in ~30 seconds.`;
-    // Auto-close the modal after 2s so it doesn't get baked into next save's outerHTML
-    setTimeout(() => document.getElementById('gh-modal')?.classList.remove('open'), 2000);
-    showToast('✓ Pushed to GitHub — rebuilding in ~30s', 4000);
   } catch(e) {
     status.className = 'gh-push-status err';
     status.textContent = `⚠ ${e.message}`;
@@ -36442,16 +36926,16 @@ function detectColors(cards) {
 }
 
 // ── "Add to Browser" from importer ────────────────────────────────
-document.getElementById('import-add-btn')?.addEventListener('click', () => {
-  const raw = document.getElementById('import-input')?.value;
+document.getElementById('import-add-btn').addEventListener('click', () => {
+  const raw = document.getElementById('import-input').value;
   const cards = parseDecklist(raw);
-  const variantLabel = document.getElementById('import-variant-label')?.value.trim();
+  const variantLabel = document.getElementById('import-variant-label').value.trim();
 
   if (importState.mode === 'new') {
-    const deckName  = document.getElementById('import-deck-name')?.value.trim();
-    const headliner = document.getElementById('import-headliner')?.value.trim();
-    const edSel     = document.getElementById('import-edition-select')?.value;
-    const edCustom  = document.getElementById('import-edition-custom')?.value.trim();
+    const deckName  = document.getElementById('import-deck-name').value.trim();
+    const headliner = document.getElementById('import-headliner').value.trim();
+    const edSel     = document.getElementById('import-edition-select').value;
+    const edCustom  = document.getElementById('import-edition-custom').value.trim();
     const colors    = [...importState.colors];
 
     if (!deckName) { showToast('⚠ Enter a deck name first.'); return; }
@@ -36482,7 +36966,7 @@ document.getElementById('import-add-btn')?.addEventListener('click', () => {
 
   } else {
     // Add Variant mode
-    const selVal = document.getElementById('existing-deck-select')?.value;
+    const selVal = document.getElementById('existing-deck-select').value;
     if (!selVal) { showToast('⚠ Select an existing deck first.'); return; }
     const [edId, deckId] = selVal.split('|');
     const ed   = liveData.editions.find(e => e.id === edId);
@@ -36502,7 +36986,7 @@ document.getElementById('import-add-btn')?.addEventListener('click', () => {
 });
 
 // ── MTGJSON Bulk Import ────────────────────────────────────────────
-document.getElementById('mtgjson-bulk-btn')?.addEventListener('click', bulkImportFromMtgjson);
+document.getElementById('mtgjson-bulk-btn').addEventListener('click', bulkImportFromMtgjson);
 
 async function bulkImportFromMtgjson() {
   if (!allMtgjsonDecks.length) { showToast('⚠ Load deck list first.'); return; }
@@ -36603,74 +37087,163 @@ async function bulkImportFromMtgjson() {
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ─── EVENT HANDLERS ───────────────────────────────────────────────────────────
+// ─── NEW FEATURE EVENT HANDLERS ──────────────────────────────────────────────
 
-// Password modal
-document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal);
-document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
-  const val = document.getElementById('pw-input').value;
-  if (val === EDIT_PASSWORD) { closePwModal(); enterEditMode(); }
-  else { document.getElementById('pw-error').style.display = 'block'; }
+// Search clear button
+document.getElementById('search-clear-btn')?.addEventListener('click', () => {
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-clear-btn').style.display = 'none';
+  state.search = ''; renderGrid();
+  document.getElementById('search-input').focus();
 });
-document.getElementById('pw-input')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('pw-confirm-btn')?.click();
+document.getElementById('search-input')?.addEventListener('input', function() {
+  document.getElementById('search-clear-btn').style.display = this.value ? 'block' : 'none';
 });
 
-// Edit button
-document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
-  if (editMode) { exitEditMode(); return; }
-  // On mobile: open pw-modal so phone-edit toggle is accessible too
-  document.getElementById('pw-modal')?.classList.add('open');
-  const phoneSection = document.getElementById('phone-edit-section');
-  if (phoneSection) phoneSection.style.display = isMobileDevice() ? 'block' : 'none';
-  const toggle = document.getElementById('phone-edit-toggle');
-  if (toggle) {
-    toggle.classList.toggle('enabled', phoneEditEnabled);
-    toggle.innerHTML = phoneEditEnabled ? '📱 Phone updates ON — tap to disable' : '📱 Enable phone updates';
-  }
-  setTimeout(() => document.getElementById('pw-input')?.focus(), 50);
+// Summary tabs
+document.getElementById('summary-decks-btn')?.addEventListener('click', () => {
+  summaryMode = 'decks';
+  document.getElementById('summary-decks-btn')?.classList.add('active');
+  document.getElementById('summary-stats-btn')?.classList.remove('active');
+  document.getElementById('main-content').style.display = '';
+  renderCollectionSummary();
+});
+document.getElementById('summary-stats-btn')?.addEventListener('click', () => {
+  summaryMode = 'stats';
+  document.getElementById('summary-stats-btn')?.classList.add('active');
+  document.getElementById('summary-decks-btn')?.classList.remove('active');
+  document.getElementById('main-content').style.display = 'none';
+  renderCollectionSummary();
+});
+
+// Collection banner clear
+document.getElementById('collection-banner-clear')?.addEventListener('click', () => {
+  state.showOwnedOnly = false;
+  document.getElementById('owned-only-btn')?.classList.remove('active');
+  state.search = ''; state.edition = 'all'; state.colors.clear();
+  state.letterFilter = null; state.letterLocked = false;
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-clear-btn').style.display = 'none';
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.color-btn[data-c="all"]')?.classList.add('active');
+  document.getElementById('summary-tabs')?.classList.remove('visible');
+  const sp = document.getElementById('summary-panel'); if(sp){sp.classList.remove('visible');sp.innerHTML='';}
+  document.getElementById('main-content').style.display = '';
+  renderGrid();
 });
 
 // Phone edit toggle (inside pw-modal)
 document.getElementById('phone-edit-toggle')?.addEventListener('click', () => {
   phoneEditEnabled = !phoneEditEnabled;
-  localStorage.setItem('jmp-phone-edit', phoneEditEnabled);
+  localStorage.setItem('jmp-phone-edit', String(phoneEditEnabled));
   applyPhoneReadonlyState();
-  const toggle = document.getElementById('phone-edit-toggle');
-  if (toggle) {
-    toggle.classList.toggle('enabled', phoneEditEnabled);
-    toggle.innerHTML = phoneEditEnabled ? '📱 Phone updates ON — tap to disable' : '📱 Enable phone updates';
-  }
-  if (!phoneEditEnabled) {
-    showToast('🔒 Phone updates disabled — resyncing…', 2500);
-    setTimeout(autoResyncFromSite, 500);
-  } else {
-    showToast('📱 Phone updates enabled — you can now mark your collection', 3000);
-  }
+  if (!phoneEditEnabled) { showToast('🔒 Phone updates disabled — resyncing…', 2500); setTimeout(autoResyncFromSite, 500); }
+  else showToast('📱 Phone updates enabled — you can now mark your collection', 3000);
 });
 
-// Always start in normal mode — strip any baked-in state from saved HTML
+// Edit button
+document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
+  if (editMode) { exitEditMode(); return; }
+  document.getElementById('pw-modal')?.classList.add('open');
+  const phoneSection = document.getElementById('phone-edit-section');
+  if (phoneSection) phoneSection.style.display = isMobileDevice() ? 'block' : 'none';
+  const toggle = document.getElementById('phone-edit-toggle');
+  if (toggle) { toggle.classList.toggle('enabled', phoneEditEnabled); toggle.innerHTML = phoneEditEnabled ? '📱 Phone updates ON — tap to disable' : '📱 Enable phone updates'; }
+  setTimeout(() => document.getElementById('pw-input')?.focus(), 50);
+});
+
+// Save: Download
+document.getElementById('save-download-btn')?.addEventListener('click', () => {
+  const openEls = [...document.querySelectorAll('.open')];
+  openEls.forEach(el => el.classList.remove('open'));
+  document.body.classList.remove('edit-mode');
+  const badge = document.getElementById('edit-mode-badge'); badge?.classList.remove('visible');
+  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  openEls.forEach(el => el.classList.add('open'));
+  if (editMode) { document.body.classList.add('edit-mode'); badge?.classList.add('visible'); }
+  const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
+  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+  const ownedVer = Date.now().toString();
+  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${JSON.stringify([...state.owned])};\nconst OWNED_QTY = ${JSON.stringify([...state.ownedQty])};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
+  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
+  const blob = new Blob([src],{type:'text/html'}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='index.html'; a.click(); URL.revokeObjectURL(url);
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  showToast('✓ Downloaded index.html', 3000);
+});
+
+// Save: Force resync
+document.getElementById('save-force-resync-btn')?.addEventListener('click', async () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  showToast('⏳ Fetching latest from GitHub…', 60000);
+  try {
+    const res = await fetch(SITE_URL + '?v=' + Date.now(), {cache:'no-store'});
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const text = await res.text();
+    const dm = text.match(/const OWNED_DATA = (\[.*?\]);/s);
+    const vm = text.match(/const OWNED_VERSION = "([^"]+)"/);
+    if (!dm) throw new Error('Could not find OWNED_DATA');
+    const ro = JSON.parse(dm[1]);
+    if (ro.length===0) { showToast('⚠ GitHub file has 0 owned variants. Push from laptop first.', 8000); return; }
+    if (!confirm(`Found ${ro.length} owned variant(s) on GitHub. Replace local collection?`)) return;
+    state.owned = new Set(ro);
+    try { const qm=text.match(/const OWNED_QTY = (\[.*?\]);/s); if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();} } catch(e){}
+    saveOwned(); localStorage.setItem('jmp-owned-version', vm?vm[1]:Date.now().toString());
+    if (isMobileDevice()) { state.showOwnedOnly=true; document.getElementById('owned-only-btn')?.classList.add('active'); }
+    renderGrid(); showToast(`✓ Resynced — ${ro.length} owned variants`, 5000);
+  } catch(e) { showToast('⚠ Resync failed: '+e.message, 5000); }
+});
+
+// Save: Sync from file
+document.getElementById('save-sync-collection-btn')?.addEventListener('click', () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  if (!OWNED_DATA||OWNED_DATA.length===0) { showToast('No collection data in this file yet.', 5000); return; }
+  const merged = new Set([...state.owned,...OWNED_DATA]);
+  if (!confirm(`Merge ${OWNED_DATA.length} variants from file with your current ${state.owned.size}?`)) return;
+  state.owned=merged; saveOwned(); renderGrid(); showToast(`✓ Merged: ${merged.size} total owned variants`,4000);
+});
+
+// Save: Rebuild
+document.getElementById('save-rebuild-btn')?.addEventListener('click', () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  if (!confirm('Wipe ALL deck data and rebuild from taw source? Ownership is preserved.')) return;
+  wipeAndRebuildFromSource();
+});
+
+// Save: Reset
+document.getElementById('save-reset-btn')?.addEventListener('click', () => {
+  if (!confirm('Reset ALL data and settings? Cannot be undone.')) return;
+  localStorage.clear(); state.owned=new Set(); state.ownedQty=new Map();
+  resetLiveData(); document.getElementById('save-dropdown')?.classList.remove('open');
+  renderTabs(); renderGrid(); showToast('All data cleared.');
+});
+
+// Help
+document.getElementById('help-btn')?.addEventListener('click', () => document.getElementById('help-modal')?.classList.add('open'));
+document.getElementById('help-close-btn')?.addEventListener('click', () => document.getElementById('help-modal')?.classList.remove('open'));
+document.getElementById('help-modal')?.addEventListener('click', e => { if(e.target===document.getElementById('help-modal')) document.getElementById('help-modal')?.classList.remove('open'); });
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
 document.body.classList.remove('edit-mode');
 document.getElementById('edit-mode-badge')?.classList.remove('visible');
+document.getElementById('phone-edit-badge')?.classList.remove('visible');
 document.getElementById('rebuild-overlay')?.classList.remove('open');
 editMode = false;
-// Mobile: My Collection + auto-resync (unless phone edit enabled)
-// Desktop: full unfiltered view
+
 if (isMobileDevice()) {
   state.showOwnedOnly = true;
   document.getElementById('owned-only-btn')?.classList.add('active');
+  document.getElementById('summary-tabs')?.classList.add('visible');
   applyPhoneReadonlyState();
-  if (!phoneEditEnabled) {
-    setTimeout(autoResyncFromSite, 600);
-  } else {
-    showToast(`📱 Phone updates ON — ${state.owned.size} variant${state.owned.size!==1?'s':''} in local cache`, 3000);
-  }
+  if (!phoneEditEnabled) setTimeout(autoResyncFromSite, 600);
+  else showToast(`📱 Phone updates ON — ${state.owned.size} variant${state.owned.size!==1?'s':''} in cache`, 3000);
 } else {
   state.showOwnedOnly = false;
   document.getElementById('owned-only-btn')?.classList.remove('active');
 }
 renderTabs();
 renderGrid();
+
 </script>
 </body>
 </html>
