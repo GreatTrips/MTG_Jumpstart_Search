@@ -338,6 +338,15 @@ body.edit-mode .add-deck-btn{display:flex}
 .gh-push-status{font-size:.82rem;margin-top:.65rem;padding:.45rem .7rem;border-radius:5px;display:none}
 .gh-push-status.ok{background:rgba(92,184,92,.1);color:var(--own-color);display:block}
 .gh-push-status.err{background:rgba(224,85,85,.1);color:#e07070;display:block}
+.toast{background:var(--bg4);border:1px solid var(--own-color);border-radius:8px;bottom:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.5);color:var(--text);font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;left:50%;padding:.6rem 1.2rem;position:fixed;transform:translateX(-50%) translateY(20px);transition:opacity .3s,transform .3s;opacity:0;pointer-events:none;z-index:900;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.rebuild-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;gap:.8rem}
+.rebuild-overlay.open{display:flex}
+.rebuild-title{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);font-weight:700;letter-spacing:.06em}
+.rebuild-status{color:var(--text);font-size:.88rem;max-width:440px;text-align:center;line-height:1.5}
+.rebuild-bar-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:20px;height:6px;overflow:hidden;width:320px}
+.rebuild-bar{background:var(--gold);border-radius:20px;height:100%;transition:width .25s;width:0%}
+.rebuild-detail{color:var(--text2);font-size:.76rem;max-width:440px;text-align:center;font-style:italic}
 </style>
 </head>
 <body>
@@ -354,7 +363,11 @@ body.edit-mode .add-deck-btn{display:flex}
       </div>
     </div>
     <div class="header-right">
+      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
+        <span class="dot"></span>My Collection
+      </button>
       <span class="edit-mode-badge" id="edit-mode-badge">🔓 EDIT MODE</span>
+      <span class="phone-edit-badge" id="phone-edit-badge">📱 PHONE EDIT</span>
       <div class="save-menu-wrap">
         <button class="save-menu-btn" id="save-menu-btn">💾 Save ▾</button>
         <div class="save-dropdown" id="save-dropdown">
@@ -366,10 +379,6 @@ body.edit-mode .add-deck-btn{display:flex}
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
       </div>
-      <button class="owned-btn" id="owned-only-btn" title="Show only decks you own">
-        <span class="dot"></span>My Collection
-      </button>
-
       <button class="edit-btn-header" id="edit-mode-btn" title="Toggle edit mode">✏ Edit</button>
       <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
     </div>
@@ -556,6 +565,10 @@ body.edit-mode .add-deck-btn{display:flex}
     <div class="pw-actions">
       <button class="btn-secondary" id="pw-cancel-btn">Cancel</button>
       <button class="btn-primary" id="pw-confirm-btn">Unlock</button>
+    </div>
+    <div id="phone-edit-section" style="display:none;margin-top:.85rem;border-top:1px solid var(--border);padding-top:.85rem">
+      <button class="phone-edit-toggle" id="phone-edit-toggle">📱 Enable phone updates</button>
+      <p style="color:var(--text2);font-size:.73rem;margin-top:.5rem;line-height:1.45">When enabled: you can mark your collection on this device. Auto-resync is paused.</p>
     </div>
     <p style="color:var(--text2);font-size:.75rem;margin-top:.85rem;line-height:1.5">
       Default password is set in <code style="color:var(--gold)">index.html</code> — search for <code style="color:var(--gold)">EDIT_PASSWORD</code> to change it.
@@ -36125,8 +36138,161 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ─── DOWNLOAD ─────────────────────────────────────────────────────────────────
+document.getElementById('save-download-btn')?.addEventListener('click', () => {
+  const openEls = [...document.querySelectorAll('.open')];
+  openEls.forEach(el => el.classList.remove('open'));
+  document.body.classList.remove('edit-mode');
+  const badge = document.getElementById('edit-mode-badge');
+  badge?.classList.remove('visible');
+
+  let src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+  openEls.forEach(el => el.classList.add('open'));
+  if (editMode) { document.body.classList.add('edit-mode'); badge?.classList.add('visible'); }
+
+  const newDataBlock = `// DECK_VERSION — bump this when deck structure changes to force localStorage refresh\nconst DECK_VERSION = "${DECK_VERSION}";\n// DECK_DATA_START — do not remove this comment (used by Download feature)\nconst DECK_DATA = ${JSON.stringify(liveData, null, 2)};\n// DECK_DATA_END — do not remove this comment`;
+  src = src.replace(/\/\/ DECK_VERSION[\s\S]*?\/\/ DECK_DATA_END/, newDataBlock);
+
+  const ownedArr = JSON.stringify([...state.owned]);
+  const ownedQtyArr = JSON.stringify([...state.ownedQty]);
+  const ownedVer = Date.now().toString();
+  const newOwnedBlock = `// OWNED_DATA_START — do not remove this comment (syncs collection across devices)\nconst OWNED_DATA = ${ownedArr};\nconst OWNED_QTY = ${ownedQtyArr};\nconst OWNED_VERSION = "${ownedVer}";\n// OWNED_DATA_END — do not remove this comment`;
+  src = src.replace(/\/\/ OWNED_DATA_START[\s\S]*?\/\/ OWNED_DATA_END/, newOwnedBlock);
+
+  const blob = new Blob([src], { type: 'text/html' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  showToast('✓ Downloaded index.html — ready to push to GitHub', 3000);
+});
+
+document.getElementById('save-rebuild-btn')?.addEventListener('click', () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  if (!confirm('Wipe ALL deck data and rebuild from taw/magic-preconstructed-decks-data?\n\nYour ownership marks will be kept.')) return;
+  wipeAndRebuildFromSource();
+});
+
+async function wipeAndRebuildFromSource() {
+  const overlay  = document.getElementById('rebuild-overlay');
+  const statusEl = document.getElementById('rebuild-status');
+  const barEl    = document.getElementById('rebuild-bar');
+  const detailEl = document.getElementById('rebuild-detail');
+  const setP = (pct, msg, detail='') => { barEl.style.width = pct+'%'; statusEl.textContent = msg; detailEl.textContent = detail; };
+  overlay.classList.add('open');
+  setP(0, 'Fetching taw/magic-preconstructed-decks-data…', 'One request · no duplicates possible');
+  let allTaw;
+  try {
+    const r = await fetch('https://raw.githubusercontent.com/taw/magic-preconstructed-decks-data/master/decks_v2.json');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    setP(12, 'Parsing JSON…');
+    allTaw = await r.json();
+  } catch(e) { overlay.classList.remove('open'); showToast('⚠ Fetch failed: ' + e.message, 5000); return; }
+  setP(22, 'Filtering Jumpstart halfdecks…');
+  const tawCodeMap = {};
+  for (const [id, cfg] of Object.entries(EDITION_CONFIG)) {
+    tawCodeMap[id] = id;
+    if (cfg.tawCode) tawCodeMap[cfg.tawCode] = id;
+  }
+  const jmpDecks = allTaw.filter(d => {
+    const sc = (d.set_code || '').toLowerCase();
+    if (!tawCodeMap[sc]) return false;
+    const n = (d.cards || []).reduce((s,c) => s + (c.count||1), 0);
+    return n >= 12 && n <= 25;
+  });
+  setP(30, `Found ${jmpDecks.length} halfdecks. Grouping themes…`);
+  const normName = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const grouped = {};
+  for (const d of jmpDecks) {
+    const sc   = tawCodeMap[(d.set_code||'').toLowerCase()] || d.set_code.toLowerCase();
+    const base = d.name.replace(/\s*\(\d+\)$/, '').replace(/\s+\d+$/, '').trim();
+    const key  = sc + '|' + normName(base);
+    if (!grouped[key]) grouped[key] = { sc, base, variants: [] };
+    grouped[key].variants.push(d);
+  }
+  for (const g of Object.values(grouped)) {
+    g.variants.sort((a,b) => {
+      const na = parseInt((a.name.match(/\((\d+)\)$/) || [0,0])[1]) || parseInt((a.name.match(/\s(\d+)$/) || [0,0])[1]) || 0;
+      const nb = parseInt((b.name.match(/\((\d+)\)$/) || [0,0])[1]) || parseInt((b.name.match(/\s(\d+)$/) || [0,0])[1]) || 0;
+      return na - nb;
+    });
+  }
+  setP(45, 'Building editions…');
+  const edMap = {};
+  const entries = Object.values(grouped);
+  for (let i = 0; i < entries.length; i++) {
+    const { sc, base, variants } = entries[i];
+    if (i % 20 === 0) { setP(45 + Math.round(40*i/entries.length), 'Building editions…', sc.toUpperCase()+': '+base); await new Promise(r=>setTimeout(r,0)); }
+    if (!edMap[sc]) { const cfg=EDITION_CONFIG[sc]||{}; edMap[sc]={id:sc,name:cfg.name||sc.toUpperCase(),year:cfg.year||null,code:(cfg.code||sc.toUpperCase()),note:cfg.note||(cfg.tieIn?'Set tie-in':undefined),decks:[]}; }
+    const builtVariants = variants.map(td => ({ label: td.name, cards: (td.cards||[]).map(c => ({name:c.name,qty:c.count||1,...(isBasicCard(c.name)?{basic:true}:{})})) }));
+    const allCards = builtVariants.flatMap(v=>v.cards);
+    let headliner; for(const v of builtVariants){const c=v.cards.find(x=>!x.basic);if(c){headliner=c.name;break;}}
+    edMap[sc].decks.push({id:sc+'-'+normName(base),name:base,headliner,colors:detectColors(allCards),variants:builtVariants});
+  }
+  setP(88, 'Sorting and saving…');
+  const mainOrder = MAIN_SET_ORDER;
+  const editions = [
+    ...mainOrder.filter(id=>edMap[id]).map(id=>edMap[id]),
+    ...Object.values(edMap).filter(e=>!mainOrder.includes(e.id)).sort((a,b)=>(a.year||9999)-(b.year||9999))
+  ];
+  // Preserve editions not in taw (j21, msh) from current liveData
+  for (const ed of liveData.editions) {
+    if (!edMap[ed.id] && !editions.find(e=>e.id===ed.id)) {
+      const cfg = EDITION_CONFIG[ed.id];
+      const pos = mainOrder.indexOf(ed.id);
+      if (pos !== -1) editions.splice(pos, 0, ed);
+      else editions.push(ed);
+    }
+  }
+  for (const ed of editions) ed.decks.sort((a,b)=>a.name.localeCompare(b.name));
+  const savedOwned = [...state.owned]; const savedQty = [...state.ownedQty];
+  liveData = { editions }; saveLiveData();
+  state.owned = new Set(savedOwned); state.ownedQty = new Map(savedQty);
+  saveOwned(); saveOwnedQty();
+  setP(100, 'Done!');
+  await new Promise(r=>setTimeout(r,350));
+  overlay.classList.remove('open');
+  const totD = editions.reduce((s,e)=>s+e.decks.length,0);
+  const totV = editions.reduce((s,e)=>e.decks.reduce((s2,d)=>s2+d.variants.length,0)+s,0);
+  renderTabs(); renderGrid();
+  showToast(`✓ ${editions.length} sets · ${totD} themes · ${totV} variants loaded from source`, 6000);
+}
+
+// ─── FORCE RESYNC ──────────────────────────────────────────────────────────────
+document.getElementById('save-force-resync-btn')?.addEventListener('click', async () => {
+  document.getElementById('save-dropdown')?.classList.remove('open');
+  showToast('⏳ Fetching latest from GitHub…', 60000);
+  try {
+    const res = await fetch(SITE_URL + '?v=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const dataMatch = text.match(/const OWNED_DATA = (\[.*?\]);/s);
+    const verMatch  = text.match(/const OWNED_VERSION = "([^"]+)"/);
+    if (!dataMatch) throw new Error('Could not find OWNED_DATA in fetched file.');
+    const remoteOwned = JSON.parse(dataMatch[1]);
+    const remoteVersion = verMatch ? verMatch[1] : Date.now().toString();
+    if (remoteOwned.length === 0) {
+      showToast('⚠ GitHub file has 0 owned variants. On your laptop: Download → Push first, then retry.', 8000);
+      return;
+    }
+    if (!confirm(`Found ${remoteOwned.length} owned variant(s) on GitHub.\nReplace your local collection with this?`)) return;
+    state.owned = new Set(remoteOwned);
+    try {
+      const qm = text.match(/const OWNED_QTY = (\[.*?\]);/s);
+      if (qm) { state.ownedQty = new Map(JSON.parse(qm[1])); saveOwnedQty(); }
+    } catch(e) {}
+    saveOwned();
+    localStorage.setItem('jmp-owned-version', remoteVersion);
+    if (isMobileDevice()) { state.showOwnedOnly = true; document.getElementById('owned-only-btn')?.classList.add('active'); }
+    renderGrid();
+    showToast(`✓ Resynced — ${remoteOwned.length} owned variants loaded from GitHub`, 5000);
+  } catch(e) {
+    showToast(`⚠ Resync failed: ${e.message}`, 5000);
+  }
+});
+
 // ─── GITHUB PUSH ──────────────────────────────────────────────────────────────
-function openGhModal() {
   document.getElementById('gh-owner').value = localStorage.getItem('gh-owner') || '';
   document.getElementById('gh-repo').value = localStorage.getItem('gh-repo')  || '';
   document.getElementById('gh-path').value = localStorage.getItem('gh-path')  || 'data.js';
@@ -36359,9 +36525,62 @@ async function bulkImportFromMtgjson() {
 }
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-// Always start in normal mode — strip any edit state baked into saved HTML
+
+// ─── EVENT HANDLERS ───────────────────────────────────────────────────────────
+
+// Password modal
+function closePwModal() {
+  document.getElementById('pw-modal')?.classList.remove('open');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+}
+document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal);
+document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
+  const val = document.getElementById('pw-input').value;
+  if (val === EDIT_PASSWORD) { closePwModal(); enterEditMode(); }
+  else { document.getElementById('pw-error').style.display = 'block'; }
+});
+document.getElementById('pw-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('pw-confirm-btn')?.click();
+});
+
+// Edit button
+document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
+  if (editMode) { exitEditMode(); return; }
+  // On mobile: open pw-modal so phone-edit toggle is accessible too
+  document.getElementById('pw-modal')?.classList.add('open');
+  const phoneSection = document.getElementById('phone-edit-section');
+  if (phoneSection) phoneSection.style.display = isMobileDevice() ? 'block' : 'none';
+  const toggle = document.getElementById('phone-edit-toggle');
+  if (toggle) {
+    toggle.classList.toggle('enabled', phoneEditEnabled);
+    toggle.innerHTML = phoneEditEnabled ? '📱 Phone updates ON — tap to disable' : '📱 Enable phone updates';
+  }
+  setTimeout(() => document.getElementById('pw-input')?.focus(), 50);
+});
+
+// Phone edit toggle (inside pw-modal)
+document.getElementById('phone-edit-toggle')?.addEventListener('click', () => {
+  phoneEditEnabled = !phoneEditEnabled;
+  localStorage.setItem('jmp-phone-edit', phoneEditEnabled);
+  applyPhoneReadonlyState();
+  const toggle = document.getElementById('phone-edit-toggle');
+  if (toggle) {
+    toggle.classList.toggle('enabled', phoneEditEnabled);
+    toggle.innerHTML = phoneEditEnabled ? '📱 Phone updates ON — tap to disable' : '📱 Enable phone updates';
+  }
+  if (!phoneEditEnabled) {
+    showToast('🔒 Phone updates disabled — resyncing…', 2500);
+    setTimeout(autoResyncFromSite, 500);
+  } else {
+    showToast('📱 Phone updates enabled — you can now mark your collection', 3000);
+  }
+});
+
+// Always start in normal mode — strip any baked-in state from saved HTML
 document.body.classList.remove('edit-mode');
 document.getElementById('edit-mode-badge')?.classList.remove('visible');
+document.getElementById('rebuild-overlay')?.classList.remove('open');
 editMode = false;
 // Mobile: My Collection + auto-resync (unless phone edit enabled)
 // Desktop: full unfiltered view
