@@ -276,6 +276,8 @@ body.phone-readonly .qty-row{display:none !important}
 .edit-mode-badge{align-items:center;background:rgba(255,160,30,.12);border:1px solid rgba(255,160,30,.45);border-radius:5px;color:#f0a020;display:none;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;gap:.35rem;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap}
 .edit-mode-badge.visible{display:flex}
 body.edit-mode .edit-mode-badge{display:flex}
+.phone-edit-badge{align-items:center;background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.4);border-radius:5px;color:var(--own-color);display:none;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;gap:.35rem;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap}
+.phone-edit-badge.visible{display:flex}
 .edit-btn-header{align-items:center;background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;display:flex;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;gap:.3rem;letter-spacing:.04em;padding:.4rem .75rem;transition:all .2s;white-space:nowrap}
 .edit-btn-header:hover{border-color:var(--border-hover);color:var(--text)}
 body.edit-mode .edit-btn-header{border-color:rgba(255,160,30,.5);color:#f0a020}
@@ -36031,6 +36033,81 @@ function highlightImg(name) {
   if (t) { t.classList.add('highlighted'); t.scrollIntoView({ block:'nearest', behavior:'smooth' }); }
 }
 
+// ─── EDIT MODE ────────────────────────────────────────────────────────────────
+let editMode = false;
+function enterEditMode() {
+  editMode = true;
+  document.body.classList.add('edit-mode');
+  document.getElementById('edit-mode-badge')?.classList.add('visible');
+  renderGrid();
+}
+function exitEditMode() {
+  editMode = false;
+  document.body.classList.remove('edit-mode');
+  document.getElementById('edit-mode-badge')?.classList.remove('visible');
+  renderGrid();
+}
+
+// ─── PHONE EDIT MODE ──────────────────────────────────────────────────────────
+let phoneEditEnabled = localStorage.getItem('jmp-phone-edit') === 'true';
+const SITE_URL = 'https://greattrips.github.io/MTG_Jumpstart_Search/index.html';
+
+function isMobileDevice() { return window.innerWidth <= 700; }
+
+function applyPhoneReadonlyState() {
+  if (!isMobileDevice()) return;
+  const isReadOnly = !phoneEditEnabled;
+  document.body.classList.toggle('phone-readonly', isReadOnly);
+  document.getElementById('phone-readonly-notice')?.classList.toggle('visible', isReadOnly);
+  const badge = document.getElementById('phone-edit-badge');
+  if (badge) badge.classList.toggle('visible', phoneEditEnabled);
+  const toggle = document.getElementById('phone-edit-toggle');
+  if (toggle) {
+    toggle.classList.toggle('enabled', phoneEditEnabled);
+    toggle.innerHTML = phoneEditEnabled
+      ? '📱 Phone updates ON — tap to disable'
+      : '📱 Enable phone updates';
+  }
+}
+
+async function autoResyncFromSite() {
+  try {
+    const res = await fetch(SITE_URL + '?v=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const text = await res.text();
+    const dataMatch = text.match(/const OWNED_DATA = (\[.*?\]);/s);
+    const verMatch  = text.match(/const OWNED_VERSION = "([^"]+)"/);
+    if (!dataMatch) return;
+    const remoteOwned = JSON.parse(dataMatch[1]);
+    const remoteVer   = verMatch ? verMatch[1] : '';
+    const localVer    = localStorage.getItem('jmp-owned-version') || '';
+    if (remoteOwned.length > 0 && remoteVer !== localVer) {
+      state.owned = new Set(remoteOwned);
+      try { const qm = text.match(/const OWNED_QTY = (\[.*?\]);/s); if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();} } catch(e){}
+      saveOwned();
+      localStorage.setItem('jmp-owned-version', remoteVer);
+      renderGrid();
+      showToast(`✓ Collection synced — ${remoteOwned.length} variant${remoteOwned.length!==1?'s':''}`, 3000);
+    } else if (remoteOwned.length === 0) {
+      showToast(state.owned.size > 0
+        ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} (server has no data yet)`
+        : '📦 No collection on server — push from laptop first', 4000);
+    } else {
+      showToast(`📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} — up to date`, 2500);
+    }
+  } catch(e) {
+    showToast(state.owned.size > 0
+      ? `📦 ${state.owned.size} variant${state.owned.size!==1?'s':''} loaded (offline)`
+      : '⚠ Could not reach server', 3000);
+  }
+}
+
+function closePwModal() {
+  document.getElementById('pw-modal')?.classList.remove('open');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+}
+
 // ─── EVENTS ──────────────────────────────────────────────────────────────────
 // Tabs are rendered dynamically by renderTabs() — no static listeners needed
 
@@ -36529,11 +36606,6 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 // ─── EVENT HANDLERS ───────────────────────────────────────────────────────────
 
 // Password modal
-function closePwModal() {
-  document.getElementById('pw-modal')?.classList.remove('open');
-  document.getElementById('pw-input').value = '';
-  document.getElementById('pw-error').style.display = 'none';
-}
 document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal);
 document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
   const val = document.getElementById('pw-input').value;
