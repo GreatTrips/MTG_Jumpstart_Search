@@ -36455,36 +36455,6 @@ document.getElementById('save-download-btn').addEventListener('click', () => {
   document.getElementById('save-dropdown')?.classList.remove('open');
   showToast('\u2713 Downloaded index.html', 3000);
 });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
-    URL.revokeObjectURL(url);
-  } catch(e) {
-    // Fallback: generate minimal standalone file
-    const content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Jumpstart Data</title></head><body>\x3cscript>const DECK_DATA = ${JSON.stringify(liveData, null, 2)};\x3c/script><p>Data exported. Replace the DECK_DATA block in your index.html with the script tag above.</p><div id="help-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem">
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column">
-    <div style="border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)">
-      <h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">📖 Help &amp; Sync Guide</h2>
-      <button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">✕</button>
-    </div>
-    <div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)">
-      <p><strong style="color:var(--gold)">Mark owned:</strong> click any deck → select variant → Mark Owned. Use Qty ＋/− for duplicates.</p>
-      <p><strong style="color:var(--gold)">Save &amp; sync:</strong> 💾 Save ▾ → ⬇ Download → upload to GitHub → phone refreshes automatically.</p>
-      <p><strong style="color:var(--gold)">Phone not updating?</strong> 💾 Save ▾ → 🔄 Force resync from website.</p>
-      <p><strong style="color:var(--gold)">Multiple people:</strong> each downloads → laptop opens each file → 📲 Sync collection from file → push merged result.</p>
-      <p><strong style="color:var(--gold)">After code updates from Claude:</strong> download new file → open locally → download again (re-bakes your collection) → push that second download.</p>
-      <p><strong style="color:var(--gold)">GitHub Push setup:</strong> github.com → Settings → Developer settings → Fine-grained tokens → generate with Contents read/write on MTG_Jumpstart_Search.</p>
-      <p><strong style="color:var(--gold)">Tips:</strong> Click "Jumpstart Deck Browser" to reset all filters. Click 🔓 EDIT MODE badge to exit. Edit password: <code style="color:var(--gold)">jumpstart</code>. ⟳ Rebuild fetches fresh deck lists. ↺ Reset clears everything.</p>
-    </div>
-  </div>
-</div>
-</body></html>`;
-    const blob = new Blob([content], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'deck-data-export.html'; a.click();
-    URL.revokeObjectURL(url);
-  }
-  document.getElementById('save-dropdown').classList.remove('open');
-});
 
 // Reset
 document.getElementById('save-rebuild-btn').addEventListener('click', () => {
