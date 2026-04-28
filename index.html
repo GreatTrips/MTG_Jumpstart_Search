@@ -393,7 +393,7 @@ body.edit-mode .add-deck-btn{display:flex}
       </div>
       <button class="edit-btn-header" id="edit-mode-btn" title="Enter/exit edit mode">✏ Edit</button>
       <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
-    </div>/div>
+    </div>
   </div>
   <nav class="edition-tabs" id="edition-tabs" role="tablist">
     <button class="tab active" data-edition="all">All Editions</button>
@@ -35403,12 +35403,7 @@ const DECK_DATA = {
   ]
 };
 // DECK_DATA_END — do not remove this comment
-// OWNED_DATA_START — do not remove this comment
-const OWNED_DATA = [];
-const OWNED_QTY = [];
-const OWNED_VERSION = "0";
-// OWNED_DATA_END — do not remove this comment
-// OWNED_DATA_START — do not remove this comment (syncs collection across devices)
+// // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
 const OWNED_DATA = [];
 // OWNED_DATA_END — do not remove this comment
 </script>
@@ -35420,21 +35415,14 @@ const EDIT_PASSWORD = 'jumpstart';
 function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
 let liveData = (() => {
   try {
-    const saved = localStorage.getItem('jmp-live-data');
-    if (saved) {
-      const loaded = JSON.parse(saved);
-      // Merge any editions in DECK_DATA not in localStorage (e.g. J21 after taw rebuild)
-      const loadedIds = new Set(loaded.editions.map(e => e.id));
-      for (const ed of DECK_DATA.editions) {
-        if (!loadedIds.has(ed.id)) {
-          const idx = DECK_DATA.editions.indexOf(ed);
-          const insertBefore = loaded.editions.findIndex(le =>
-            DECK_DATA.editions.findIndex(de => de.id === le.id) > idx
-          );
-          if (insertBefore === -1) loaded.editions.push(deepClone(ed));
-          else loaded.editions.splice(insertBefore, 0, deepClone(ed));
-        }
-      }
+    const saved    = localStorage.getItem('jmp-live-data');
+    const savedVer = localStorage.getItem('jmp-data-version');
+    if (saved && savedVer === DECK_VERSION) {
+      const loaded    = JSON.parse(saved);
+      const loadedMap = new Map(loaded.editions.map(e => [e.id, e]));
+      loaded.editions = DECK_DATA.editions.map(ded => loadedMap.get(ded.id) || deepClone(ded));
+      const staticIds = new Set(DECK_DATA.editions.map(e => e.id));
+      for (const [id, ed] of loadedMap) if (!staticIds.has(id)) loaded.editions.push(ed);
       return loaded;
     }
   } catch(e) {}
@@ -35442,6 +35430,7 @@ let liveData = (() => {
 })();
 function saveLiveData() {
   localStorage.setItem('jmp-live-data', JSON.stringify(liveData));
+  localStorage.setItem('jmp-data-version', DECK_VERSION);
 }
 function resetLiveData() {
   liveData = deepClone(DECK_DATA);
@@ -35734,7 +35723,7 @@ function renderModal(deck, ed) {
       ${deck.headliner ? `<div class="modal-headliner">${esc(deck.headliner)}</div>` : ''}
     </div>
     <button class="modal-close" id="modal-close-btn">✕</button>`;
-  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  document.getElementById('modal-close-btn')?.addEventListener('click', closeModal);
   document.getElementById('modal-edition-label').textContent = `${ed.name} · ${ed.year}`;
 
   // Variant row
@@ -35919,18 +35908,18 @@ document.querySelectorAll('.color-btn').forEach(btn => {
 });
 
 let searchTimer;
-document.getElementById('search-input').addEventListener('input', e => {
+document.getElementById('search-input')?.addEventListener('input', e => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { state.search = e.target.value.trim(); renderGrid(); }, 180);
 });
 
-document.getElementById('owned-only-btn').addEventListener('click', () => {
+document.getElementById('owned-only-btn')?.addEventListener('click', () => {
   state.showOwnedOnly = !state.showOwnedOnly;
   document.getElementById('owned-only-btn').classList.toggle('active', state.showOwnedOnly);
   renderGrid();
 });
 
-document.getElementById('modal-overlay').addEventListener('click', e => {
+document.getElementById('modal-overlay')?.addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 });
 
@@ -36006,18 +35995,18 @@ function setImportMode(mode) {
   document.getElementById('import-edition-custom-field').style.display = 'none';
   rebuildOutput();
 }
-document.getElementById('mode-new-btn').addEventListener('click', () => setImportMode('new'));
-document.getElementById('mode-add-btn').addEventListener('click', () => setImportMode('add'));
+document.getElementById('mode-new-btn')?.addEventListener('click', () => setImportMode('new'));
+document.getElementById('mode-add-btn')?.addEventListener('click', () => setImportMode('add'));
 
 // ── Edition selector ───────────────────────────────────────────────
-document.getElementById('import-edition-select').addEventListener('change', function() {
+document.getElementById('import-edition-select')?.addEventListener('change', function() {
   document.getElementById('import-edition-custom-field').style.display = this.value === '__custom__' ? '' : 'none';
   rebuildOutput();
 });
-document.getElementById('import-edition-custom').addEventListener('input', rebuildOutput);
+document.getElementById('import-edition-custom')?.addEventListener('input', rebuildOutput);
 
 // ── Existing deck selector ─────────────────────────────────────────
-document.getElementById('existing-deck-select').addEventListener('change', function() {
+document.getElementById('existing-deck-select')?.addEventListener('change', function() {
   if (!this.value) return;
   const [edId, deckId] = this.value.split('|');
   const ed = liveData.editions.find(e => e.id === edId);
@@ -36161,7 +36150,7 @@ function rebuildOutput() {
   }
 }
 
-document.getElementById('import-input').addEventListener('input', rebuildOutput);
+document.getElementById('import-input')?.addEventListener('input', rebuildOutput);
 
 // ── Open / close import modal ──────────────────────────────────────
 function openImport(prefill = null) {
@@ -36209,14 +36198,14 @@ function closeImport() {
   setImportMode('new');
 }
 
-document.getElementById('import-btn').addEventListener('click', () => openImport());
-document.getElementById('import-close-btn').addEventListener('click', closeImport);
-document.getElementById('import-close-btn2').addEventListener('click', closeImport);
-document.getElementById('import-modal').addEventListener('click', e => {
+document.getElementById('import-btn')?.addEventListener('click', () => openImport());
+document.getElementById('import-close-btn')?.addEventListener('click', closeImport);
+document.getElementById('import-close-btn2')?.addEventListener('click', closeImport);
+document.getElementById('import-modal')?.addEventListener('click', e => {
   if (e.target === document.getElementById('import-modal')) closeImport();
 });
 
-document.getElementById('import-copy-btn').addEventListener('click', () => {
+document.getElementById('import-copy-btn')?.addEventListener('click', () => {
   if (!lastSnippet) return;
   navigator.clipboard.writeText(lastSnippet).then(() => {
     const btn = document.getElementById('import-copy-btn');
@@ -36227,7 +36216,7 @@ document.getElementById('import-copy-btn').addEventListener('click', () => {
 });
 
 // ── "+ Add Variant" from deck modal ───────────────────────────────
-document.getElementById('modal-add-variant-btn').addEventListener('click', () => {
+document.getElementById('modal-add-variant-btn')?.addEventListener('click', () => {
   if (state.openDeckId && state.openEditionId) {
     closeModal();
     setTimeout(() => openImport({ deckId: state.openDeckId, editionId: state.openEditionId }), 120);
@@ -36282,9 +36271,9 @@ function populateMtgjsonSelect(decks) {
   }
 }
 
-document.getElementById('mtgjson-load-btn').addEventListener('click', loadMtgjsonList);
+document.getElementById('mtgjson-load-btn')?.addEventListener('click', loadMtgjsonList);
 
-document.getElementById('mtgjson-search').addEventListener('input', function() {
+document.getElementById('mtgjson-search')?.addEventListener('input', function() {
   const q = this.value.toLowerCase();
   const filtered = allMtgjsonDecks.filter(d =>
     d.name.toLowerCase().includes(q) || d.code.toLowerCase().includes(q)
@@ -36292,7 +36281,7 @@ document.getElementById('mtgjson-search').addEventListener('input', function() {
   populateMtgjsonSelect(filtered);
 });
 
-document.getElementById('mtgjson-deck-select').addEventListener('change', async function() {
+document.getElementById('mtgjson-deck-select')?.addEventListener('change', async function() {
   const fileName = this.value;
   if (!fileName) return;
   const status = document.getElementById('mtgjson-status');
@@ -36360,7 +36349,7 @@ function exitEditMode() {
 }
 
 // Password modal
-document.getElementById('edit-mode-btn').addEventListener('click', () => {
+document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
   if (editMode) { exitEditMode(); return; }
   document.getElementById('pw-input').value = '';
   document.getElementById('pw-error').style.display = 'none';
@@ -36368,25 +36357,25 @@ document.getElementById('edit-mode-btn').addEventListener('click', () => {
   setTimeout(() => document.getElementById('pw-input').focus(), 60);
 });
 function closePwModal() { document.getElementById('pw-modal').classList.remove('open'); }
-document.getElementById('pw-cancel-btn').addEventListener('click', closePwModal);
-document.getElementById('pw-confirm-btn').addEventListener('click', () => {
+document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal);
+document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
   const val = document.getElementById('pw-input').value;
   if (val === EDIT_PASSWORD) { closePwModal(); enterEditMode(); }
   else { document.getElementById('pw-error').style.display = 'block'; document.getElementById('pw-input').value = ''; document.getElementById('pw-input').focus(); }
 });
-document.getElementById('pw-input').addEventListener('keydown', e => {
+document.getElementById('pw-input')?.addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('pw-confirm-btn').click();
 });
 
 // Save / Export dropdown
-document.getElementById('save-menu-btn').addEventListener('click', e => {
+document.getElementById('save-menu-btn')?.addEventListener('click', e => {
   e.stopPropagation();
   document.getElementById('save-dropdown').classList.toggle('open');
 });
 document.addEventListener('click', () => document.getElementById('save-dropdown').classList.remove('open'));
 
 // Download complete self-contained index.html
-document.getElementById('save-download-btn').addEventListener('click', async () => {
+document.getElementById('save-download-btn')?.addEventListener('click', async () => {
   try {
     // Fetch current page source
     const res = await fetch(location.href);
@@ -36400,7 +36389,7 @@ document.getElementById('save-download-btn').addEventListener('click', async () 
     URL.revokeObjectURL(url);
   } catch(e) {
     // Fallback: generate minimal standalone file
-    const content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Jumpstart Data</title></head><body><script>const DECK_DATA = ${JSON.stringify(liveData, null, 2)};<\/script><p>Data exported. Replace the DECK_DATA block in your index.html with the script tag above.</p><div id="help-modal" style="display:none;pointer-events:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1rem"><div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto"><div style="border-bottom:1px solid var(--border);display:flex;align-items:center;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)"><h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">Help &amp; Sync Guide</h2><button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">✕</button></div><div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)"><p><strong style="color:var(--gold)">Mark owned:</strong> click deck → select variant → Mark Owned. Use Qty ± for duplicates.</p><p><strong style="color:var(--gold)">Sync (easiest):</strong> 💾 Save ▾ → Push collection.json to GitHub → phone auto-loads on next refresh.</p><p><strong style="color:var(--gold)">After Claude updates:</strong> just upload the new index.html to GitHub. Your collection.json is separate and untouched.</p><p><strong style="color:var(--gold)">Phone not updating?</strong> 💾 Save ▾ → Force resync from website.</p><p><strong style="color:var(--gold)">Tips:</strong> Click "Jumpstart Deck Browser" to reset filters. Click 🔓 EDIT MODE badge to exit edit mode. Password: <code style="color:var(--gold)">jumpstart</code>.</p></div></div></div>
+    const content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Jumpstart Data</title></head><body>\x3cscript>const DECK_DATA = ${JSON.stringify(liveData, null, 2)};<\/script><p>Data exported. Replace the DECK_DATA block in your index.html with the script tag above.</p><div id="help-modal" style="display:none;pointer-events:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1rem"><div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto"><div style="border-bottom:1px solid var(--border);display:flex;align-items:center;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)"><h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">Help &amp; Sync Guide</h2><button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">✕</button></div><div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)"><p><strong style="color:var(--gold)">Mark owned:</strong> click deck → select variant → Mark Owned. Use Qty ± for duplicates.</p><p><strong style="color:var(--gold)">Sync (easiest):</strong> 💾 Save ▾ → Push collection.json to GitHub → phone auto-loads on next refresh.</p><p><strong style="color:var(--gold)">After Claude updates:</strong> just upload the new index.html to GitHub. Your collection.json is separate and untouched.</p><p><strong style="color:var(--gold)">Phone not updating?</strong> 💾 Save ▾ → Force resync from website.</p><p><strong style="color:var(--gold)">Tips:</strong> Click "Jumpstart Deck Browser" to reset filters. Click 🔓 EDIT MODE badge to exit edit mode. Password: <code style="color:var(--gold)">jumpstart</code>.</p></div></div></div>
 </body></html>`;
     const blob = new Blob([content], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
