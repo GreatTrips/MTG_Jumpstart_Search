@@ -359,13 +359,13 @@ body.edit-mode .add-deck-btn{display:flex}
 
 /* ── Mobile header: search on its own row ── */
 @media(max-width:600px){
-  .header-top{grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:.55rem .6rem}
+  .header-top{grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:.55rem .6rem;width:100%;box-sizing:border-box}
   .header-center{grid-column:1/-1;grid-row:2;justify-content:stretch}
   .search-wrap{max-width:100%;width:100%}
   .header-right{grid-column:2;grid-row:1;justify-content:flex-end}
   .site-logo{font-size:1.05rem}
-  /* Edition tabs: match the deck-grid content width */
-  .edition-tabs{width:100%;box-sizing:border-box}
+  /* Edition tabs: break out of header padding then re-add it, guaranteeing same visual width as search box */
+  .edition-tabs{margin-left:-1.25rem;margin-right:-1.25rem;padding-left:1.25rem;padding-right:1.25rem;box-sizing:border-box}
 }
 </style>
 </head>
