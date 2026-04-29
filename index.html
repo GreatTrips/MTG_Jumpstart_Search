@@ -356,6 +356,15 @@ body.edit-mode .add-deck-btn{display:flex}
 .gh-push-status{font-size:.82rem;margin-top:.65rem;padding:.45rem .7rem;border-radius:5px;display:none}
 .gh-push-status.ok{background:rgba(92,184,92,.1);color:var(--own-color);display:block}
 .gh-push-status.err{background:rgba(224,85,85,.1);color:#e07070;display:block}
+
+/* ── Mobile header: search on its own row ── */
+@media(max-width:600px){
+  .header-top{grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:.55rem .6rem}
+  .header-center{grid-column:1/-1;grid-row:2;justify-content:stretch}
+  .search-wrap{max-width:100%}
+  .header-right{grid-column:2;grid-row:1;justify-content:flex-end}
+  .site-logo{font-size:1.05rem}
+}
 </style>
 </head>
 <body>
@@ -368,28 +377,28 @@ body.edit-mode .add-deck-btn{display:flex}
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
         <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false">
-        <button class="search-clear-btn" id="search-clear-btn" title="Clear" style="display:none;position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;padding:.15rem .25rem">\u2715</button>
+        <button class="search-clear-btn" id="search-clear-btn" title="Clear" style="display:none;position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;padding:.15rem .25rem">✕</button>
         <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
       </div>
     </div>
     <div class="header-right">
       <button class="owned-btn" id="owned-only-btn" title="Show only decks you own"><span class="dot"></span>My Collection</button>
-      <span id="phone-edit-badge" style="display:none;align-items:center;background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.4);border-radius:5px;color:var(--own-color);cursor:pointer;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap">\uD83D\uDCF1 PHONE EDIT</span>
-      <span class="edit-mode-badge" id="edit-mode-badge" title="Click to exit edit mode" style="cursor:pointer">\uD83D\uDD13 EDIT MODE</span>
+      <span id="phone-edit-badge" style="display:none;align-items:center;background:rgba(92,184,92,.12);border:1px solid rgba(92,184,92,.4);border-radius:5px;color:var(--own-color);cursor:pointer;font-family:'Cinzel',serif;font-size:.66rem;font-weight:700;letter-spacing:.06em;padding:.28rem .65rem;white-space:nowrap">📱 PHONE EDIT</span>
+      <span class="edit-mode-badge" id="edit-mode-badge" title="Click to exit edit mode" style="cursor:pointer">🔓 EDIT MODE</span>
       <div class="save-menu-wrap">
-        <button class="save-menu-btn" id="save-menu-btn">\uD83D\uDCBE Save \u25BE</button>
+        <button class="save-menu-btn" id="save-menu-btn">💾 Save ▾</button>
         <div class="save-dropdown" id="save-dropdown">
-          <button class="save-dropdown-item" id="save-download-btn">\u2B07 Download index.html</button>
-          <button class="save-dropdown-item" id="save-export-collection-btn">\uD83D\uDCE4 Export collection.json</button>
-          <button class="save-dropdown-item" id="save-push-collection-btn">\u2B06 Push collection.json to GitHub</button>
-          <button class="save-dropdown-item" id="save-import-collection-btn">\uD83D\uDCE5 Import collection.json</button>
-          <button class="save-dropdown-item" id="save-github-btn">\u2699 GitHub Settings\u2026</button>
-          <button class="save-dropdown-item" id="save-rebuild-btn">\u27F3 Wipe &amp; Rebuild from Source</button>
-          <button class="save-dropdown-item" id="save-force-resync-btn">\uD83D\uDD04 Force resync from website</button>
-          <button class="save-dropdown-item danger" id="save-reset-btn">\u21BA Reset all data &amp; settings</button>
+          <button class="save-dropdown-item" id="save-download-btn">⬇ Download index.html</button>
+          <button class="save-dropdown-item" id="save-export-collection-btn">📤 Export collection.json</button>
+          <button class="save-dropdown-item" id="save-push-collection-btn">⬆ Push collection.json to GitHub</button>
+          <button class="save-dropdown-item" id="save-import-collection-btn">📥 Import collection.json</button>
+          <button class="save-dropdown-item" id="save-github-btn">⚙ GitHub Settings…</button>
+          <button class="save-dropdown-item" id="save-rebuild-btn">⟳ Wipe &amp; Rebuild from Source</button>
+          <button class="save-dropdown-item" id="save-force-resync-btn">🔄 Force resync from website</button>
+          <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
         </div>
       </div>
-      <button class="edit-btn-header" id="edit-mode-btn" title="Enter/exit edit mode">\u270F Edit</button>
+      <button class="edit-btn-header" id="edit-mode-btn" title="Enter/exit edit mode">✏ Edit</button>
       <button class="help-btn" id="help-btn" title="Help &amp; sync instructions">?</button>
     </div>
 <nav class="edition-tabs" id="edition-tabs" role="tablist">
@@ -411,9 +420,9 @@ body.edit-mode .add-deck-btn{display:flex}
   <button class="add-deck-btn" id="add-deck-btn">＋ Add New Deck</button>
 </div>
 
-<div id="phone-readonly-notice" style="display:none;background:rgba(100,160,255,.07);border-bottom:1px solid rgba(100,160,255,.2);color:#90b8ff;font-family:'Crimson Pro',serif;font-size:.82rem;padding:.35rem 1.25rem">\uD83D\uDD12 Phone view \u2014 read-only</div>
-<div id="collection-banner" style="display:none;background:rgba(92,184,92,.08);border-bottom:1px solid rgba(92,184,92,.25);color:#7dd87d;font-family:'Crimson Pro',serif;font-size:.88rem;padding:.45rem 1.25rem;align-items:center;gap:.4rem"><span>\uD83D\uDCE6 Filtered to My Collection</span><button id="collection-banner-clear" style="color:var(--own-color);cursor:pointer;font-weight:600;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit">Click here to clear</button></div>
-<div id="summary-tabs" style="display:none;gap:.5rem;padding:.5rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border)"><button class="summary-tab-btn active" id="summary-decks-btn">\uD83C\uDCCF Decks</button><button class="summary-tab-btn" id="summary-stats-btn">\uD83D\uDCCA Summary</button></div>
+<div id="phone-readonly-notice" style="display:none;background:rgba(100,160,255,.07);border-bottom:1px solid rgba(100,160,255,.2);color:#90b8ff;font-family:'Crimson Pro',serif;font-size:.82rem;padding:.35rem 1.25rem">🔒 Phone view — read-only</div>
+<div id="collection-banner" style="display:none;background:rgba(92,184,92,.08);border-bottom:1px solid rgba(92,184,92,.25);color:#7dd87d;font-family:'Crimson Pro',serif;font-size:.88rem;padding:.45rem 1.25rem;align-items:center;gap:.4rem"><span>📦 Filtered to My Collection</span><button id="collection-banner-clear" style="color:var(--own-color);cursor:pointer;font-weight:600;text-decoration:underline;background:none;border:none;padding:0;font-family:inherit;font-size:inherit">Click here to clear</button></div>
+<div id="summary-tabs" style="display:none;gap:.5rem;padding:.5rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border)"><button class="summary-tab-btn active" id="summary-decks-btn">🃏 Decks</button><button class="summary-tab-btn" id="summary-stats-btn">📊 Summary</button></div>
 <div id="summary-panel" style="padding:1rem 1.25rem;display:none"></div>
 <main id="main-content"></main>
 
@@ -559,12 +568,13 @@ Moxfield, or plain card names."></textarea>
 </div>
 
 <!-- Password Modal -->
+<div id="help-modal" style="display:none;pointer-events:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1rem"><div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto"><div style="border-bottom:1px solid var(--border);display:flex;align-items:center;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)"><h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">Help &amp; Sync Guide</h2><button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">✕</button></div><div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)"><p><strong style="color:var(--gold)">Mark owned:</strong> click deck → select variant → Mark Owned.</p><p><strong style="color:var(--gold)">Sync collection:</strong> 💾 Save ▾ → Push collection.json to GitHub → phone auto-loads on refresh.</p><p><strong style="color:var(--gold)">After code updates:</strong> just upload new index.html. collection.json stays untouched.</p><p><strong style="color:var(--gold)">Phone not updating?</strong> 💾 Save ▾ → Force resync from website.</p><p><strong style="color:var(--gold)">Tips:</strong> Click "Jumpstart Deck Browser" to reset filters. Password: <code style="color:var(--gold)">jumpstart</code>.</p></div></div></div>
 <div class="pw-modal" id="pw-modal">
   <div class="pw-box">
     <h3>🔐 Enter Edit Password</h3>
     <input type="password" id="pw-input" placeholder="Password" autocomplete="off">
     <div class="pw-error" id="pw-error">Incorrect password. Try again.</div>
-    <div id="phone-edit-section" style="display:none;margin-bottom:.85rem;border-bottom:1px solid var(--border);padding-bottom:.85rem"><button id="phone-edit-toggle" style="align-items:center;background:rgba(100,160,255,.08);border:1px solid rgba(100,160,255,.3);border-radius:6px;color:#90b8ff;cursor:pointer;display:flex;font-family:Cinzel,serif;font-size:.78rem;font-weight:600;padding:.38rem .9rem;width:100%">\uD83D\uDCF1 Enable phone updates</button><p style="color:var(--text2);font-size:.73rem;margin-top:.5rem">When enabled: mark collection on this device.</p></div>
+    <div id="phone-edit-section" style="display:none;margin-bottom:.85rem;border-bottom:1px solid var(--border);padding-bottom:.85rem"><button id="phone-edit-toggle" style="align-items:center;background:rgba(100,160,255,.08);border:1px solid rgba(100,160,255,.3);border-radius:6px;color:#90b8ff;cursor:pointer;display:flex;font-family:Cinzel,serif;font-size:.78rem;font-weight:600;padding:.38rem .9rem;width:100%">📱 Enable phone updates</button><p style="color:var(--text2);font-size:.73rem;margin-top:.5rem">When enabled: mark collection on this device.</p></div>
     <div class="pw-actions">
       <button class="btn-secondary" id="pw-cancel-btn">Cancel</button>
       <button class="btn-primary" id="pw-confirm-btn">Unlock</button>
@@ -625,11 +635,11 @@ Moxfield, or plain card names."></textarea>
 <!-- GitHub Push Modal -->
 <div class="gh-modal" id="gh-modal">
   <div class="gh-box">
-    <h3>\u2699 GitHub Settings</h3>
+    <h3>⚙ GitHub Settings</h3>
     <p class="gh-hint">Saved locally. Used by Push collection.json.</p>
     <div class="edit-field" style="margin-bottom:.6rem"><label>Repo Owner</label><input type="text" id="gh-owner-input" placeholder="e.g. greattrips"></div>
     <div class="edit-field" style="margin-bottom:.6rem"><label>Repo Name</label><input type="text" id="gh-repo-input" placeholder="e.g. MTG_Jumpstart_Search"></div>
-    <div class="edit-field" style="margin-bottom:.85rem"><label>Personal Access Token</label><input type="password" id="gh-token-input" placeholder="github_pat_\u2026"></div>
+    <div class="edit-field" style="margin-bottom:.85rem"><label>Personal Access Token</label><input type="password" id="gh-token-input" placeholder="github_pat_…"></div>
     <div id="gh-push-status" class="gh-push-status"></div>
     <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.85rem">
       <button class="btn-secondary" id="gh-cancel-btn">Cancel</button>
@@ -36947,33 +36957,18 @@ async function autoLoadCollectionJson() {
 
 async function autoResyncFromSite() {
   try {
-    const res = await fetch(COLLECTION_URL + '?v=' + Date.now(), {cache:'no-store'});
-    if (res.ok) {
-      const data = await res.json();
-      if (data.owned && Array.isArray(data.owned) && data.owned.length > 0) {
-        state.owned = new Set(data.owned);
-        if (data.ownedQty) { state.ownedQty = new Map(data.ownedQty); saveOwnedQty(); }
-        saveOwned();
-        localStorage.setItem('jmp-collection-version', data.version || '');
-        renderGrid();
-        showToast('\u2713 Collection synced \u2014 ' + data.owned.length + ' variant' + (data.owned.length !== 1 ? 's' : ''), 3000);
-        return;
-      }
-    }
-  } catch(e) {}
-  try {
-    const res = await fetch(SITE_URL + '?v=' + Date.now(), {cache:'no-store'});
-    if (!res.ok) { showToast('\u26A0 Could not reach server', 3000); return; }
-    const txt = await res.text();
-    const dm = txt.match(/const OWNED_DATA = (\[.*?\]);/s);
-    if (!dm) { showToast('\u26A0 No collection data on server', 3000); return; }
-    const ro = JSON.parse(dm[1]);
-    if (ro.length === 0) { showToast('\uD83D\uDCE6 ' + state.owned.size + ' variants \u2014 server empty', 3000); return; }
-    state.owned = new Set(ro);
-    try { const qm = txt.match(/const OWNED_QTY = (\[.*?\]);/s); if(qm){state.ownedQty=new Map(JSON.parse(qm[1]));saveOwnedQty();} } catch(e) {}
-    saveOwned(); renderGrid();
-    showToast('\u2713 Synced \u2014 ' + ro.length + ' variants', 3000);
-  } catch(e) { showToast('\uD83D\uDCE6 ' + state.owned.size + ' variants (offline)', 2500); }
+    const url = COLLECTION_URL + '?v=' + Date.now();
+    const res = await fetch(url, {cache:'no-store', headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}});
+    if (!res.ok) return; // collection.json not found yet — stay silent
+    const data = await res.json();
+    if (!data.owned || !Array.isArray(data.owned)) return;
+    state.owned = new Set(data.owned);
+    if (data.ownedQty) { state.ownedQty = new Map(data.ownedQty); saveOwnedQty(); }
+    saveOwned();
+    localStorage.setItem('jmp-collection-version', data.version || '');
+    renderGrid();
+    if (data.owned.length > 0) showToast('\u2713 Collection synced \u2014 ' + data.owned.length + ' variant' + (data.owned.length !== 1 ? 's' : ''), 3000);
+  } catch(e) { /* network unavailable — stay silent */ }
 }
 
 let summaryMode = 'decks';
@@ -37161,7 +37156,7 @@ document.getElementById('save-force-resync-btn')?.addEventListener('click', asyn
     if (isMobileDevice()) { state.showOwnedOnly = true; document.getElementById('owned-only-btn')?.classList.add('active'); }
     renderGrid();
     const ts = data.version ? ' (v'+data.version.slice(-6)+')' : ''; showToast('\u2713 Synced: ' + data.owned.length + ' variant' + (data.owned.length !== 1 ? 's' : '') + ts, 5000);
-  } catch(e) { showToast('\u26A0 Sync failed: ' + e.message, 5000); }
+  } catch(e) { showToast('\u26A0 Sync failed: ' + (e.message||e), 7000); }
 });
 
 document.getElementById('save-rebuild-btn')?.addEventListener('click', () => {
@@ -37202,7 +37197,7 @@ renderGrid();
 setTimeout(autoLoadCollectionJson, 1000);
 
 </script>
-<div id="help-modal" style="display:none;pointer-events:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1rem"><div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto"><div style="border-bottom:1px solid var(--border);display:flex;align-items:center;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)"><h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">Help &amp; Sync Guide</h2><button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">\u2715</button></div><div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)"><p><strong style="color:var(--gold)">Mark owned:</strong> click deck \u2192 select variant \u2192 Mark Owned.</p><p><strong style="color:var(--gold)">Sync collection:</strong> \uD83D\uDCBE Save \u25BE \u2192 Push collection.json to GitHub \u2192 phone auto-loads on refresh.</p><p><strong style="color:var(--gold)">After code updates:</strong> just upload new index.html. collection.json stays untouched.</p><p><strong style="color:var(--gold)">Phone not updating?</strong> \uD83D\uDCBE Save \u25BE \u2192 Force resync from website.</p><p><strong style="color:var(--gold)">Tips:</strong> Click "Jumpstart Deck Browser" to reset filters. Password: <code style="color:var(--gold)">jumpstart</code>.</p></div></div></div>
-<footer style="text-align:center;padding:1.5rem 1.25rem 2rem;color:var(--text2);font-family:'Crimson Pro',serif;font-size:.82rem;border-top:1px solid var(--border);margin-top:2rem">Card data from <a href="https://github.com/taw/magic-preconstructed-decks-data" target="_blank" style="color:var(--gold);text-decoration:none">taw/magic-preconstructed-decks-data</a> (upstream of <a href="https://mtgjson.com" target="_blank" style="color:var(--gold);text-decoration:none">MTGJSON</a>). Card images via <a href="https://scryfall.com" target="_blank" style="color:var(--gold);text-decoration:none">Scryfall</a>. Magic: The Gathering \u00A9 Wizards of the Coast.</footer>
+
+<footer style="text-align:center;padding:1.5rem 1.25rem 2rem;color:var(--text2);font-family:'Crimson Pro',serif;font-size:.82rem;border-top:1px solid var(--border);margin-top:2rem">Card data from <a href="https://github.com/taw/magic-preconstructed-decks-data" target="_blank" style="color:var(--gold);text-decoration:none">taw/magic-preconstructed-decks-data</a> (upstream of <a href="https://mtgjson.com" target="_blank" style="color:var(--gold);text-decoration:none">MTGJSON</a>). Card images via <a href="https://scryfall.com" target="_blank" style="color:var(--gold);text-decoration:none">Scryfall</a>. Magic: The Gathering © Wizards of the Coast.</footer>
 </body>
 </html>
