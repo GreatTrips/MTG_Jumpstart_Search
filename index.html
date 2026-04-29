@@ -367,7 +367,7 @@ body.edit-mode .add-deck-btn{display:flex}
     <div class="header-center">
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
-        <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false"
+        <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false">
         <button class="search-clear-btn" id="search-clear-btn" title="Clear" style="display:none;position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;padding:.15rem .25rem">✕</button>>
         <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
       </div>
@@ -35461,6 +35461,10 @@ function loadOwned() {
 function saveOwned() {
   localStorage.setItem('jmp-owned', JSON.stringify([...state.owned]));
 }
+function loadOwnedQty(){try{const s=localStorage.getItem('jmp-owned-qty');if(s)return new Map(JSON.parse(s));if(typeof OWNED_QTY!=='undefined'&&OWNED_QTY.length){localStorage.setItem('jmp-owned-qty',JSON.stringify(OWNED_QTY));return new Map(OWNED_QTY);}return new Map();}catch{return new Map();}}
+function saveOwnedQty(){localStorage.setItem('jmp-owned-qty',JSON.stringify([...state.ownedQty]));}
+function getOwnedQty(deckId,vi){return state.ownedQty.get(ownedKey(deckId,vi))||1;}
+function setOwnedQty(deckId,vi,qty){const k=ownedKey(deckId,vi);if(qty<=0)state.ownedQty.delete(k);else state.ownedQty.set(k,qty);saveOwnedQty();}
 function ownedKey(deckId, vi) { return `${deckId}:${vi}`; }
 function isVariantOwned(deckId, vi) { return state.owned.has(ownedKey(deckId, vi)); }
 function isDeckOwned(deck) { return deck.variants.some((_, i) => isVariantOwned(deck.id, i)); }
@@ -35474,7 +35478,8 @@ function toggleOwned(deckId, vi) {
 const state = {
   edition: 'all', colors: new Set(), search: '',
   openDeckId: null, openEditionId: null, openVariant: 0,
-  cardCache: {}, owned: loadOwned(), showOwnedOnly: false
+  cardCache: {}, owned: loadOwned(), ownedQty: loadOwnedQty(), showOwnedOnly: false,
+  letterFilter: null, letterLocked: false
 };
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
