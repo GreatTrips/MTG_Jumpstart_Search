@@ -366,8 +366,10 @@ body.edit-mode .add-deck-btn{display:flex}
   .search-wrap{max-width:100%;width:100%}
   .header-right{grid-column:2;grid-row:1;justify-content:flex-end}
   .site-logo{font-size:1.05rem}
-  /* Edition tabs now has same full-viewport width with matching padding as header-top */
+  /* Edition tabs: full width, matching padding as header-top */
   .edition-tabs{width:100%;box-sizing:border-box;padding-left:1.25rem;padding-right:1.25rem}
+  /* Compact tabs so more editions fit in view before scrolling */
+  .tab{font-size:.65rem;padding:.5rem .5rem;letter-spacing:.03em}
 }
 </style>
 </head>
@@ -652,7 +654,7 @@ Moxfield, or plain card names."></textarea>
   </div>
 </div>
 <script>
-const DECK_VERSION = "2026-04";
+const DECK_VERSION = "2026-05";
 // DECK_DATA_START — do not remove this comment
 const DECK_DATA = {
   "editions": [
@@ -10517,688 +10519,6 @@ const DECK_DATA = {
                   "basic": true
                 }
               ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "j21",
-      "name": "Historic Horizons",
-      "year": 2021,
-      "code": "J21",
-      "note": "Arena only",
-      "decks": [
-        {
-          "id": "j21-abovetheclouds",
-          "name": "Above the Clouds",
-          "headliner": "Spectral Sailor",
-          "colors": [
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Above the Clouds",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-animated",
-          "name": "Animated",
-          "headliner": "Rise and Shine",
-          "colors": [
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Animated",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-bears",
-          "name": "Bears",
-          "headliner": "Ayula, Queen Among Bears",
-          "colors": [
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Bears",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-collected",
-          "name": "Collected",
-          "headliner": "Collected Company",
-          "colors": [
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Collected",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-cycling",
-          "name": "Cycling",
-          "headliner": "Flourishing Fox",
-          "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Cycling",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-davriel",
-          "name": "Davriel",
-          "headliner": "Davriel, Soul Broker",
-          "colors": [
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Davriel",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-delirium",
-          "name": "Delirium",
-          "headliner": "Dragon's Rage Channeler",
-          "colors": [
-            "U",
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Delirium",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-enchanted",
-          "name": "Enchanted",
-          "headliner": "Sythis, Harvest's Hand",
-          "colors": [
-            "W",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Enchanted",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-energy",
-          "name": "Energy",
-          "headliner": "Bristling Hydra",
-          "colors": [
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Energy",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-evolving",
-          "name": "Evolving",
-          "headliner": "Simic Ascendancy",
-          "colors": [
-            "U",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Evolving",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-flickering",
-          "name": "Flickering",
-          "headliner": "Restoration Angel",
-          "colors": [
-            "W",
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Flickering",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-freyalise",
-          "name": "Freyalise",
-          "headliner": "Freyalise, Skyshroud Partisan",
-          "colors": [
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Freyalise",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-goblinfodder",
-          "name": "Goblin Fodder",
-          "headliner": "Pashalik Mons",
-          "colors": [
-            "B",
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Goblin Fodder",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-goblins",
-          "name": "Goblins",
-          "headliner": "Goblin Dark-Dwellers",
-          "colors": [
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Goblins",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-humans",
-          "name": "Humans",
-          "headliner": "Thalia's Lieutenant",
-          "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Humans",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-inthemachine",
-          "name": "In the Machine",
-          "headliner": "Nettlecyst",
-          "colors": [
-            "W",
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "In the Machine",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-junkyard",
-          "name": "Junkyard",
-          "headliner": "Goblin Engineer",
-          "colors": [
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Junkyard",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-kiora",
-          "name": "Kiora",
-          "headliner": "Kiora, the Tide's Fury",
-          "colors": [
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Kiora",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-legion",
-          "name": "Legion",
-          "headliner": "Ranger-Captain of Eos",
-          "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Legion",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-lostandfound",
-          "name": "Lost and Found",
-          "headliner": "Necrogoyf",
-          "colors": [
-            "U",
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Lost and Found",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-madness",
-          "name": "Madness",
-          "headliner": "Chainer, Nightmare Adept",
-          "colors": [
-            "B",
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Madness",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-manyfaced",
-          "name": "Many Faced",
-          "headliner": "King of the Pride",
-          "colors": [
-            "W",
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Many Faced",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-merfolk",
-          "name": "Merfolk",
-          "headliner": "Svyelun of Sea and Sky",
-          "colors": [
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Merfolk",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-modular",
-          "name": "Modular",
-          "headliner": "Zabaz, the Glimmerwasp",
-          "colors": [
-            "W",
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Modular",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-ninjas",
-          "name": "Ninjas",
-          "headliner": "Ingenious Infiltrator",
-          "colors": [
-            "U",
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Ninjas",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-onthedraw",
-          "name": "On the Draw",
-          "headliner": "Seasoned Pyromancer",
-          "colors": [
-            "U",
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "On the Draw",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-phyrexian",
-          "name": "Phyrexian",
-          "headliner": "Glistener Elf",
-          "colors": [
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Phyrexian",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-plague",
-          "name": "Plague",
-          "headliner": "Yawgmoth, Thran Physician",
-          "colors": [
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Plague",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-pumpedup",
-          "name": "Pumped Up",
-          "headliner": "Rishkar, Peema Renegade",
-          "colors": [
-            "W",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Pumped Up",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-rainbow",
-          "name": "Rainbow",
-          "headliner": "Rienne, Angel of Rebirth",
-          "colors": [
-            "W",
-            "U",
-            "B",
-            "R",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Rainbow",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-rats",
-          "name": "Rats",
-          "headliner": "Marrow-Gnawer",
-          "colors": [
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Rats",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-reanimated",
-          "name": "Reanimated",
-          "headliner": "Priest of Fell Rites",
-          "colors": [
-            "W",
-            "B"
-          ],
-          "variants": [
-            {
-              "label": "Reanimated",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-relentless",
-          "name": "Relentless",
-          "headliner": "Altar of the Goyf",
-          "colors": [
-            "B",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Relentless",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-rhonas",
-          "name": "Rhonas",
-          "headliner": "Rhonas's Last Stand",
-          "colors": [
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Rhonas",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-sarkhan",
-          "name": "Sarkhan",
-          "headliner": "Sarkhan, Wanderer to Shiv",
-          "colors": [
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Sarkhan",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-scorchedearth",
-          "name": "Scorched Earth",
-          "headliner": "Murasa Behemoth",
-          "colors": [
-            "R",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Scorched Earth",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-serrasrealm",
-          "name": "Serra's Realm",
-          "headliner": "Serra, the Benevolent",
-          "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Serra's Realm",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-shamans",
-          "name": "Shamans",
-          "headliner": "Harmonic Prodigy",
-          "colors": [
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Shamans",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-sliverassault",
-          "name": "Sliver Assault",
-          "headliner": "Lavabelly Sliver",
-          "colors": [
-            "W",
-            "R"
-          ],
-          "variants": [
-            {
-              "label": "Sliver Assault",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-sliverhive",
-          "name": "Sliver Hive",
-          "headliner": "The First Sliver",
-          "colors": [
-            "W",
-            "U",
-            "B",
-            "R",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Sliver Hive",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-spirits",
-          "name": "Spirits",
-          "headliner": "Katilda, Dawnhart Prime",
-          "colors": [
-            "W",
-            "U"
-          ],
-          "variants": [
-            {
-              "label": "Spirits",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-squirrels",
-          "name": "Squirrels",
-          "headliner": "Chatterfang, Squirrel General",
-          "colors": [
-            "B",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Squirrels",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-storm",
-          "name": "Storm",
-          "headliner": "Goblin Anarchomancer",
-          "colors": [
-            "R",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Storm",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-teyo",
-          "name": "Teyo",
-          "headliner": "Teyo, Aegis Adept",
-          "colors": [
-            "W"
-          ],
-          "variants": [
-            {
-              "label": "Teyo",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-tinkerer",
-          "name": "Tinkerer",
-          "headliner": "Lonis, Cryptozoologist",
-          "colors": [
-            "U",
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Tinkerer",
-              "cards": []
-            }
-          ]
-        },
-        {
-          "id": "j21-wolves",
-          "name": "Wolves",
-          "headliner": "Tovolar, Dire Overlord",
-          "colors": [
-            "G"
-          ],
-          "variants": [
-            {
-              "label": "Wolves",
-              "cards": []
             }
           ]
         }
@@ -33935,7 +33255,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Lórien Revealed",
+                  "name": "L\u00f3rien Revealed",
                   "qty": 1
                 },
                 {
@@ -33984,7 +33304,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Lothlórien Lookout",
+                  "name": "Lothl\u00f3rien Lookout",
                   "qty": 1
                 },
                 {
@@ -34047,7 +33367,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Lothlórien Lookout",
+                  "name": "Lothl\u00f3rien Lookout",
                   "qty": 1
                 },
                 {
@@ -34128,7 +33448,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Dúnedain Rangers",
+                  "name": "D\u00fanedain Rangers",
                   "qty": 1
                 },
                 {
@@ -34252,7 +33572,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Grishnákh, Brash Instigator",
+                  "name": "Grishn\u00e1kh, Brash Instigator",
                   "qty": 1
                 },
                 {
@@ -34311,7 +33631,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Grishnákh, Brash Instigator",
+                  "name": "Grishn\u00e1kh, Brash Instigator",
                   "qty": 1
                 },
                 {
@@ -34380,7 +33700,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Nazgûl",
+                  "name": "Nazg\u00fbl",
                   "qty": 1
                 },
                 {
@@ -34439,7 +33759,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Gríma Wormtongue",
+                  "name": "Gr\u00edma Wormtongue",
                   "qty": 1
                 },
                 {
@@ -34524,7 +33844,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Éowyn, Lady of Rohan",
+                  "name": "\u00c9owyn, Lady of Rohan",
                   "qty": 1
                 },
                 {
@@ -34780,7 +34100,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Éomer of the Riddermark",
+                  "name": "\u00c9omer of the Riddermark",
                   "qty": 1
                 },
                 {
@@ -34839,7 +34159,7 @@ const DECK_DATA = {
                   "qty": 1
                 },
                 {
-                  "name": "Éomer of the Riddermark",
+                  "name": "\u00c9omer of the Riddermark",
                   "qty": 1
                 },
                 {
@@ -35505,7 +34825,7 @@ function deckMatchesSearch(deck, q) {
 
 // Edition display metadata
 const EDITION_CONFIG = {jmp:{name:'Jumpstart',year:2020,tieIn:false},j21:{name:'Historic Horizons',year:2021,tieIn:false},j22:{name:'Jumpstart 2022',year:2022,tieIn:false},j25:{name:'Foundations Jumpstart',year:2024,tieIn:false},atj:{name:'Avatar: The Last Airbender Jumpstart',year:2025,tieIn:false},msh:{name:'Marvel Super Heroes Jumpstart',year:2026,tieIn:false},jdmu:{name:'Dominaria United Jumpstart',year:2022,tieIn:true,code:'DMU'},jbro:{name:"Brothers' War Jumpstart",year:2022,tieIn:true,code:'BRO'},jone:{name:'Phyrexia: All Will Be One Jumpstart',year:2023,tieIn:true,code:'ONE'},jmom:{name:'March of the Machine Jumpstart',year:2023,tieIn:true,code:'MOM'},jltr:{name:'Lord of the Rings Jumpstart',year:2023,tieIn:true,code:'LTR'},};
-const MAIN_SET_ORDER = ['jmp','j21','j22','j25','atj','msh'];
+const MAIN_SET_ORDER = ['jmp','j22','j25','atj','msh'];
 function getTieInIds() {
   return new Set(liveData.editions.filter(e => {
     const cfg = EDITION_CONFIG[e.id];
