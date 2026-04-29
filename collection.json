@@ -1,6 +1,6 @@
 {
-  "version": "1777492053261",
-  "exportedAt": "2026-04-29T19:47:33.261Z",
+  "version": "1777492773840",
+  "exportedAt": "2026-04-29T19:59:33.840Z",
   "owned": [
     "jmp-lightning:1",
     "j22-ferocious:3",
@@ -31,7 +31,8 @@
     "jmp-spooky:3",
     "jmp-minions:3",
     "j22-cats:3",
-    "j25-explorers:1"
+    "j25-explorers:1",
+    "jmp-chandra:0"
   ],
   "ownedQty": [
     [
