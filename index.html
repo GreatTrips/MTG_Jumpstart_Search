@@ -357,13 +357,22 @@ body.edit-mode .add-deck-btn{display:flex}
 .gh-push-status.ok{background:rgba(92,184,92,.1);color:var(--own-color);display:block}
 .gh-push-status.err{background:rgba(224,85,85,.1);color:#e07070;display:block}
 
-/* ── Mobile header: search on its own row ── */
+/* ── Mobile layout ── */
+html,body{overflow-x:hidden}
 @media(max-width:600px){
-  .header-top{grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:.55rem .6rem}
-  .header-center{grid-column:1/-1;grid-row:2;justify-content:stretch}
-  .search-wrap{max-width:100%}
-  .header-right{grid-column:2;grid-row:1;justify-content:flex-end}
-  .site-logo{font-size:1.05rem}
+  /* Header: logo + buttons row 1, search full-width row 2 */
+  .site-header{padding:.75rem .75rem 0}
+  .header-top{grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:.5rem .5rem;width:100%}
+  .header-center{grid-column:1/-1;grid-row:2;justify-content:stretch;width:100%}
+  .search-wrap{max-width:100%;width:100%}
+  .header-right{grid-column:2;grid-row:1;justify-content:flex-end;gap:.35rem}
+  .site-logo{font-size:1rem}
+  /* Edition tabs: full viewport width, same side padding as header */
+  .edition-tabs{width:100%;box-sizing:border-box;padding:0}
+  /* Main content: match header side padding */
+  main{padding:1.25rem .75rem}
+  /* Buttons: tighten on small screens */
+  .owned-only-btn,.edit-mode-btn-wrap{font-size:.75rem;padding:.3rem .5rem}
 }
 </style>
 </head>
