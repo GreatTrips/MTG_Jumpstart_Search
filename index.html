@@ -20,7 +20,9 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 /* ── Header ── */
 .site-header{background:linear-gradient(180deg,#08081a 0%,var(--bg) 100%);border-bottom:1px solid var(--border);padding:1.25rem 1.25rem 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
 .header-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;margin-bottom:1rem}
-.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap}
+.site-logo{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:.04em;text-shadow:0 0 20px rgba(201,168,76,.3);white-space:nowrap;background:none;border:none;padding:0;cursor:pointer;outline:none;-webkit-appearance:none}
+.site-logo:focus{outline:none}
+.site-logo:focus-visible{outline:2px solid rgba(201,168,76,.4);border-radius:4px}
 .site-logo span{color:var(--text2);font-weight:400}
 .header-center{display:flex;align-items:center;justify-content:center}
 .header-right{display:flex;align-items:center;gap:.6rem;justify-content:flex-end}
@@ -368,7 +370,7 @@ body.edit-mode .add-deck-btn{display:flex}
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
         <input type="text" id="search-input" placeholder="Search deck or card name…" autocomplete="off" spellcheck="false">
-        <button class="search-clear-btn" id="search-clear-btn" title="Clear" style="display:none;position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;padding:.15rem .25rem">✕</button>>
+        <button class="search-clear-btn" id="search-clear-btn" title="Clear" style="display:none;position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;padding:.15rem .25rem">✕</button>
         <span class="search-mode-badge" id="search-mode-badge" style="display:none">CARD</span>
       </div>
     </div>
@@ -560,6 +562,27 @@ Moxfield, or plain card names."></textarea>
   <div class="rebuild-detail" id="rebuild-detail"></div>
 </div>
 
+
+<div id="help-modal" style="display:none;pointer-events:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1rem">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto">
+    <div style="border-bottom:1px solid var(--border);display:flex;align-items:center;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)">
+      <h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">Help &amp; Sync Guide</h2>
+      <button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">✕</button>
+    </div>
+    <div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)">
+      <p><strong style="color:var(--gold)">Mark owned:</strong> click deck → select variant → Mark Owned. Use Qty ± for duplicates.</p>
+      <p><strong style="color:var(--gold)">Sync (easiest):</strong> 💾 Save ▾ → Push collection.json to GitHub → phone auto-loads on next refresh.</p>
+      <p><strong style="color:var(--gold)">After Claude code updates:</strong> just upload the new index.html to GitHub. Your collection.json is separate and untouched.</p>
+      <p><strong style="color:var(--gold)">Phone not updating?</strong> 💾 Save ▾ → Force resync from website.</p>
+      <p><strong style="color:var(--gold)">My Collection:</strong> 🃏 Decks tab shows owned tiles. 📊 Summary tab shows color breakdown per release.</p>
+      <p><strong style="color:var(--gold)">Multiple people:</strong> each exports collection.json → laptop imports each → push merged result.</p>
+      <p><strong style="color:var(--gold)">Tips:</strong> Click "Jumpstart Deck Browser" to reset all filters. Click 🔓 EDIT MODE badge to exit. Password: <code style="color:var(--gold)">jumpstart</code>. ⟳ Rebuild fetches fresh deck lists.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
 <!-- Password Modal -->
 <div class="pw-modal" id="pw-modal">
   <div class="pw-box">
@@ -660,7 +683,7 @@ Moxfield, or plain card names."></textarea>
 
 <script id="jmp-data-script">
 const DECK_VERSION = "2026-04";
-// DECK_DATA_START — do not remove this comment (used by Download feature)
+// DECK_DATA_START — do not remove this comment
 const DECK_DATA = {
   "editions": [
     {
@@ -35402,10 +35425,10 @@ const DECK_DATA = {
     }
   ]
 };
-// DECK_DATA_END — do not remove this comment — do not remove this comment
+// DECK_DATA_END — do not remove this comment
 // // OWNED_DATA_START — do not remove this comment (syncs collection across devices)
-const OWNED_DATA = ["jmp-lightning:1","j22-ferocious:3","j22-goblins:1","jmp-abovetheclouds:3","j22-thinkagain:1","j22-fiery:1","j25-copied:1","j25-drowned:0","j25-enchanted:1","j25-vampires:2","j25-armed:0","jbro-unearthed:0","jbro-powerstones:0","jmp-vampires:2","jbro-titanic:0","jmp-featheredfriends:0","jmp-smashing:3","jmp-legion:2","jmp-doctor:1","jltr-journey:1","jmp-treehugging:2","j22-insects:0","jmp-plusone:3","jbro-infantry:1","jltr-mordor:0","jmp-plusone:1","jmp-spooky:3","jmp-minions:3","j22-cats:3","j25-explorers:1","jmp-archaeology:0"];
-// OWNED_DATA_END — do not remove this comment — do not remove this comment
+const OWNED_DATA = [];
+// OWNED_DATA_END — do not remove this comment
 </script>
 <script>
 // ─── EDIT PASSWORD (change this in the file to your preferred password) ───────
@@ -36393,13 +36416,7 @@ document.getElementById('save-download-btn')?.addEventListener('click', async ()
     const a = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
     URL.revokeObjectURL(url);
   } catch(e) {
-    // Fallback: generate minimal standalone file
-    const content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Jumpstart Data</title></head><body>\x3cscript>const DECK_DATA = ${JSON.stringify(liveData, null, 2)};<\/script><p>Data exported. Replace the DECK_DATA block in your index.html with the script tag above.</p><div id="help-modal" style="display:none;pointer-events:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1rem"><div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto"><div style="border-bottom:1px solid var(--border);display:flex;align-items:center;padding:.9rem 1.2rem;position:sticky;top:0;background:var(--bg2)"><h2 style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);flex:1;margin:0">Help &amp; Sync Guide</h2><button id="help-close-btn" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text2);cursor:pointer;font-size:.9rem;padding:.2rem .5rem">✕</button></div><div style="padding:1.2rem 1.4rem;line-height:1.7;font-family:'Crimson Pro',serif;font-size:.97rem;color:var(--text)"><p><strong style="color:var(--gold)">Mark owned:</strong> click deck → select variant → Mark Owned. Use Qty ± for duplicates.</p><p><strong style="color:var(--gold)">Sync (easiest):</strong> 💾 Save ▾ → Push collection.json to GitHub → phone auto-loads on next refresh.</p><p><strong style="color:var(--gold)">After Claude updates:</strong> just upload the new index.html to GitHub. Your collection.json is separate and untouched.</p><p><strong style="color:var(--gold)">Phone not updating?</strong> 💾 Save ▾ → Force resync from website.</p><p><strong style="color:var(--gold)">Tips:</strong> Click "Jumpstart Deck Browser" to reset filters. Click 🔓 EDIT MODE badge to exit edit mode. Password: <code style="color:var(--gold)">jumpstart</code>.</p></div></div></div>
-</body></html>`;
-    const blob = new Blob([content], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'deck-data-export.html'; a.click();
-    URL.revokeObjectURL(url);
+    showToast('\u26A0 Download failed: ' + e.message, 5000);
   }
   document.getElementById('save-dropdown').classList.remove('open');
 });
@@ -37236,6 +37253,5 @@ if(isMobileDevice()){
 renderTabs();
 renderGrid();
 setTimeout(autoLoadCollectionJson,1000);
+
 </script>
-</body>
-</html>
