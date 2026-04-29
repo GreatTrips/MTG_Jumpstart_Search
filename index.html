@@ -35602,9 +35602,10 @@ function renderGrid() {
           const matchHint = searchResult.type === 'card' && searchResult.matches.length > 0
             ? `<div class="card-match-hint">Contains: ${esc(searchResult.matches.slice(0,2).join(', '))}${searchResult.matches.length > 2 ? '…' : ''}</div>` : '';
           html += `<button class="deck-card variant-card owned-card" data-deck="${deck.id}" data-ed="${edition.id}" data-vi="${vi}" tabindex="0">
-            ${showVariantLabel ? `<div class="deck-name">${esc(deck.name)}</div><div class="variant-title">${esc(v.label)}</div>` : `<div class="variant-title" style="font-size:.88rem">${esc(deck.name)}</div>`}
+            ${showVariantLabel
+              ? `<div class="deck-name">${esc(deck.name)}<span class="deck-code-badge">${esc(edition.code || edition.id.toUpperCase())}</span></div><div class="variant-title">${esc(v.label)}</div>`
+              : `<div class="deck-name" style="font-size:.88rem">${esc(deck.name)}<span class="deck-code-badge">${esc(edition.code || edition.id.toUpperCase())}</span></div>`}
             ${matchHint}
-            <div style="margin-bottom:.4rem"><span class="edition-badge">${esc(edition.code || edition.id.toUpperCase())}</span></div>
             <div class="deck-footer">
               <div class="color-pips">${pips}</div>
               <div class="deck-meta">
