@@ -34838,6 +34838,7 @@ function renderTabs() {
   const nav      = document.getElementById('edition-tabs');
   const prevActive = state.edition;
   nav.innerHTML  = '';
+  const mobile   = window.innerWidth <= 600;
   const makeTab  = (edId, label) => {
     const b = document.createElement('button');
     b.className = 'tab' + (prevActive === edId ? ' active' : '');
@@ -34852,13 +34853,12 @@ function renderTabs() {
     });
     return b;
   };
+  const TAB_LABELS       = {jmp:'JMP (2020)',j22:'JMP 2022',j25:'Foundations',atj:'Avatar: TLA',msh:'Marvel Heroes'};
+  const TAB_LABELS_SHORT = {jmp:'JMP',j22:"'22",j25:'Foundations',atj:'Avatar',msh:'Marvel'};
   nav.appendChild(makeTab('all', mobile ? 'All' : 'All Editions'));
   const mainEds = liveData.editions
     .filter(e => !getTieInIds().has(e.id))
     .sort((a,b) => (EDITION_CONFIG[a.id]?.year||9999) - (EDITION_CONFIG[b.id]?.year||9999));
-  const TAB_LABELS       = {jmp:'JMP (2020)',j22:'JMP 2022',j25:'Foundations',atj:'Avatar: TLA',msh:'Marvel Heroes'};
-  const TAB_LABELS_SHORT = {jmp:'JMP',j22:"'22",j25:'Foundations',atj:'Avatar',msh:'Marvel'};
-  const mobile = window.innerWidth <= 600;
   for (const ed of mainEds) {
     const label = mobile
       ? (TAB_LABELS_SHORT[ed.id] || ed.code || ed.id.toUpperCase())
