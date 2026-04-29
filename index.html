@@ -34852,16 +34852,21 @@ function renderTabs() {
     });
     return b;
   };
-  nav.appendChild(makeTab('all', 'All Editions'));
+  nav.appendChild(makeTab('all', mobile ? 'All' : 'All Editions'));
   const mainEds = liveData.editions
     .filter(e => !getTieInIds().has(e.id))
     .sort((a,b) => (EDITION_CONFIG[a.id]?.year||9999) - (EDITION_CONFIG[b.id]?.year||9999));
-  const TAB_LABELS = {jmp:'JMP (2020)',j21:'Historic Horizons',j22:'JMP 2022',j25:'Foundations',atj:'Avatar: TLA',msh:'Marvel Heroes'};
+  const TAB_LABELS       = {jmp:'JMP (2020)',j22:'JMP 2022',j25:'Foundations',atj:'Avatar: TLA',msh:'Marvel Heroes'};
+  const TAB_LABELS_SHORT = {jmp:'JMP',j22:"'22",j25:'Foundations',atj:'Avatar',msh:'Marvel'};
+  const mobile = window.innerWidth <= 600;
   for (const ed of mainEds) {
-    nav.appendChild(makeTab(ed.id, TAB_LABELS[ed.id] || `${ed.name} (${ed.year||'?'})`));
+    const label = mobile
+      ? (TAB_LABELS_SHORT[ed.id] || ed.code || ed.id.toUpperCase())
+      : (TAB_LABELS[ed.id] || `${ed.name} (${ed.year||'?'})`);
+    nav.appendChild(makeTab(ed.id, label));
   }
   if (liveData.editions.some(e => getTieInIds().has(e.id)))
-    nav.appendChild(makeTab('tie-ins', 'Set Tie-ins ↓'));
+    nav.appendChild(makeTab('tie-ins', mobile ? 'Tie-ins ↓' : 'Set Tie-ins ↓'));
 }
 
 function getFilteredData() {
