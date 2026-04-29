@@ -387,7 +387,7 @@ body.edit-mode .add-deck-btn{display:flex}
           <button class="save-dropdown-item" id="save-export-collection-btn">📤 Export collection.json</button>
           <button class="save-dropdown-item" id="save-push-collection-btn">⬆ Push collection.json to GitHub</button>
           <button class="save-dropdown-item" id="save-import-collection-btn">📥 Import collection.json</button>
-          <button class="save-dropdown-item" id="save-github-btn">⬆ Push to GitHub…</button>
+          <button class="save-dropdown-item" id="save-github-btn">⚙ GitHub Settings…</button>
           <button class="save-dropdown-item" id="save-rebuild-btn">⟳ Wipe &amp; Rebuild from Source</button>
           <button class="save-dropdown-item" id="save-force-resync-btn">🔄 Force resync from website</button>
           <button class="save-dropdown-item danger" id="save-reset-btn">↺ Reset all data &amp; settings</button>
@@ -653,35 +653,31 @@ Moxfield, or plain card names."></textarea>
 <!-- GitHub Push Modal -->
 <div class="gh-modal" id="gh-modal">
   <div class="gh-box">
-    <h3>⬆ Push to GitHub</h3>
+    <h3>⚙ GitHub Settings</h3>
     <p class="gh-hint">
-      Enter your GitHub repo details and a <a href="https://github.com/settings/tokens/new?scopes=repo&description=Jumpstart+Browser" target="_blank" rel="noopener">Personal Access Token</a> with <strong>repo</strong> write scope. These are stored only in your browser's localStorage.
+      Enter your GitHub credentials. These are saved only in your browser's localStorage and never pushed anywhere. Used by <strong>Push collection.json to GitHub</strong>.
     </p>
     <div class="edit-field" style="margin-bottom:.6rem">
-      <label>Repo Owner (your GitHub username)</label>
-      <input type="text" id="gh-owner" placeholder="e.g. your-username">
+      <label>Repo Owner (GitHub username)</label>
+      <input type="text" id="gh-owner-input" placeholder="e.g. greattrips">
     </div>
     <div class="edit-field" style="margin-bottom:.6rem">
       <label>Repo Name</label>
-      <input type="text" id="gh-repo" placeholder="e.g. jumpstart-browser">
-    </div>
-    <div class="edit-field" style="margin-bottom:.6rem">
-      <label>File Path in repo</label>
-      <input type="text" id="gh-path" placeholder="index.html" value="index.html">
+      <input type="text" id="gh-repo-input" placeholder="e.g. MTG_Jumpstart_Search">
     </div>
     <div class="edit-field" style="margin-bottom:.85rem">
-      <label>Personal Access Token</label>
-      <input type="password" id="gh-token" placeholder="ghp_…">
+      <label>Personal Access Token (github_pat_…)</label>
+      <input type="password" id="gh-token-input" placeholder="github_pat_…">
     </div>
     <div id="gh-push-status" class="gh-push-status"></div>
     <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.85rem">
       <button class="btn-secondary" id="gh-cancel-btn">Cancel</button>
-      <button class="btn-primary" id="gh-push-btn">Commit & Push</button>
+      <button class="btn-primary" id="gh-push-btn">Save Settings</button>
     </div>
   </div>
 </div>
 
-<script id="jmp-data-script">
+<script>
 const DECK_VERSION = "2026-04";
 // DECK_DATA_START — do not remove this comment
 const DECK_DATA = {
@@ -36377,13 +36373,6 @@ function exitEditMode() {
 }
 
 // Password modal
-document.getElementById('edit-mode-btn')?.addEventListener('click', () => {
-  if (editMode) { exitEditMode(); return; }
-  document.getElementById('pw-input').value = '';
-  document.getElementById('pw-error').style.display = 'none';
-  document.getElementById('pw-modal').classList.add('open');
-  setTimeout(() => document.getElementById('pw-input').focus(), 60);
-});
 function closePwModal() { document.getElementById('pw-modal').classList.remove('open'); }
 document.getElementById('pw-cancel-btn')?.addEventListener('click', closePwModal);
 document.getElementById('pw-confirm-btn')?.addEventListener('click', () => {
@@ -36771,50 +36760,33 @@ document.getElementById('edit-delete-deck-btn')?.addEventListener('click', () =>
 
 // ─── GITHUB PUSH ──────────────────────────────────────────────────────────────
 function openGhModal() {
-  document.getElementById('gh-owner').value = localStorage.getItem('gh-owner') || '';
-  document.getElementById('gh-repo').value  = localStorage.getItem('gh-repo')  || '';
-  document.getElementById('gh-path').value  = localStorage.getItem('gh-path')  || 'data.js';
-  document.getElementById('gh-token').value = localStorage.getItem('gh-token') || '';
-  document.getElementById('gh-push-status').className = 'gh-push-status';
-  document.getElementById('gh-push-status').textContent = '';
   document.getElementById('gh-modal').classList.add('open');
-  document.getElementById('save-dropdown').classList.remove('open');
+  document.getElementById('gh-owner-input').value = localStorage.getItem('gh-owner') || 'greattrips';
+  document.getElementById('gh-repo-input').value  = localStorage.getItem('gh-repo')  || 'MTG_Jumpstart_Search';
+  document.getElementById('gh-token-input').value = localStorage.getItem('gh-token') || '';
+  document.getElementById('gh-push-status').textContent = '';
+  document.getElementById('gh-push-status').className = 'gh-push-status';
 }
 document.getElementById('save-github-btn')?.addEventListener('click', openGhModal);
 document.getElementById('gh-cancel-btn')?.addEventListener('click', () => document.getElementById('gh-modal').classList.remove('open'));
 
-document.getElementById('gh-push-btn')?.addEventListener('click', async () => {
-  const owner = document.getElementById('gh-owner').value.trim();
-  const repo  = document.getElementById('gh-repo').value.trim();
-  const path  = document.getElementById('gh-path').value.trim() || 'data.js';
-  const token = document.getElementById('gh-token').value.trim();
-  const status = document.getElementById('gh-push-status');
-  if (!owner || !repo || !token) { status.className = 'gh-push-status err'; status.textContent = '⚠ Owner, repo, and token are all required.'; return; }
-  // Save settings
-  localStorage.setItem('gh-owner', owner); localStorage.setItem('gh-repo', repo);
-  localStorage.setItem('gh-path', path);  localStorage.setItem('gh-token', token);
-
-  status.className = 'gh-push-status'; status.style.display = 'block'; status.textContent = '⏳ Fetching current file SHA…';
-  try {
-    const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-    const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
-    const getRes = await fetch(apiBase, { headers });
-    let sha = null;
-    if (getRes.ok) { const data = await getRes.json(); sha = data.sha; }
-    else if (getRes.status !== 404) throw new Error(`GitHub API: ${getRes.status} ${getRes.statusText}`);
-
-    status.textContent = sha ? '⏳ Committing updated file…' : '⏳ Creating new file…';
-    const htmlContent = await generateSelfContainedHtml();
-    const content = btoa(unescape(encodeURIComponent(htmlContent)));
-    const body = { message: `Update deck data — ${new Date().toLocaleString()}`, content, ...(sha ? { sha } : {}) };
-    const putRes = await fetch(apiBase, { method: 'PUT', headers, body: JSON.stringify(body) });
-    if (!putRes.ok) { const e = await putRes.json(); throw new Error(e.message || putRes.statusText); }
-    status.className = 'gh-push-status ok';
-    status.textContent = `✓ Pushed successfully! GitHub Pages will rebuild in ~30 seconds.`;
-  } catch(e) {
-    status.className = 'gh-push-status err';
-    status.textContent = `⚠ ${e.message}`;
+document.getElementById('gh-push-btn')?.addEventListener('click', () => {
+  const owner = document.getElementById('gh-owner-input').value.trim();
+  const repo  = document.getElementById('gh-repo-input').value.trim();
+  const path  = document.getElementById('gh-path-input').value.trim();
+  const token = document.getElementById('gh-token-input').value.trim();
+  if (!owner || !repo || !token) {
+    document.getElementById('gh-status').className = 'gh-push-status err';
+    document.getElementById('gh-status').textContent = 'Owner, repo and token are required.';
+    return;
   }
+  localStorage.setItem('gh-owner', owner);
+  localStorage.setItem('gh-repo',  repo);
+  localStorage.setItem('gh-path',  path || 'index.html');
+  localStorage.setItem('gh-token', token);
+  document.getElementById('gh-status').className = 'gh-push-status ok';
+  document.getElementById('gh-status').textContent = '\u2713 Settings saved. Use Push collection.json to sync your collection.';
+  setTimeout(() => document.getElementById('gh-modal').classList.remove('open'), 2000);
 });
 
 // ── Toast helper ──────────────────────────────────────────────────
